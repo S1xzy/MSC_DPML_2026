@@ -1,5 +1,4 @@
-# ตกลง Percent ของคะแนนในรายวิชา
-
+# สัดส่วนของคะแนนในรายวิชา SC677 703 Data Preparation and Machine Learning Algorithm
 ## ตาราง
 | Components | Percent |
 | :--- | :---: |
