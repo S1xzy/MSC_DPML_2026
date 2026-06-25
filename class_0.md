@@ -12,12 +12,11 @@
 
 A >= 80, ..., F < 50 อิงเกณฑ์
 
-25 Jun - 19 July ศึกษาและรายงานความคืบหน้าการศึกษา Research Paper
+## 25 Jun - 19 July ศึกษาและรายงานความคืบหน้าการศึกษา Research Paper
 | Activity | Date |
 | :--- | :---: |
 | นำเสนองานที่น่าจะเป็นงาน Research Project | 30 June |
 | เลือกและแนะนำการอ่าน Title-Abstract | 2 July |
 | นำเสนอ Title-Abstract แนะนำการอ่าน Conclusion-Discussion | 14 July |
 | นำเสนอ Conclusion-Discussion | 16 July |
-| Final Exam | 20% |
-| Github | 10% |
+
