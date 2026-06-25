@@ -19,4 +19,3 @@ A >= 80, ..., F < 50 อิงเกณฑ์
 | เลือกและแนะนำการอ่าน Title-Abstract | 2 July |
 | นำเสนอ Title-Abstract แนะนำการอ่าน Conclusion-Discussion | 14 July |
 | นำเสนอ Conclusion-Discussion | 16 July |
-
