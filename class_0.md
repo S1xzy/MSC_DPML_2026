@@ -1,5 +1,5 @@
 # สัดส่วนของคะแนนในรายวิชา SC677 703 Data Preparation and Machine Learning Algorithm
-## ตาราง
+## Scoring proportions
 | Components | Percent |
 | :--- | :---: |
 | Research Project | 30% |
@@ -9,9 +9,19 @@
 | Final Exam | 20% |
 | Github | 10% |
 
-A >= 80, ..., F < 50 อิงเกณฑ์
+## Grade Criterias
+| Grade | Range |
+| :---: | :---: |
+| A | ≥ 80 |
+| B+ | 75 - 79 |
+| B | 70 - 74 |
+| C+ | 65 - 69 |
+| C | 55 - 64 |
+| D+ | 45 - 54 |
+| D | 40 - 44 |
+| F | < 40 |
 
-## 25 Jun - 19 July ศึกษาและรายงานความคืบหน้าการศึกษา Research Paper
+## Activities
 | Activity | Date |
 | :--- | :---: |
 | นำเสนองานที่น่าจะเป็นงาน Research Project & AI Ethics | 30 June |
