@@ -1,5 +1,8 @@
-# สัดส่วนของคะแนนในรายวิชา SC677 703 Data Preparation and Machine Learning Algorithm
-## Scoring proportions
+# The grading proportions for SC677 703 Data Preparation and Machine Learning Algorithm
+> Created by **Supawit Ps Chaingam 695020003-1**
+
+For the 1/2026 academic semester, the score distribution, grading criteria, and course activities for this subject are structured as follows:
+## 📝 Scoring proportions
 | Components | Percent |
 | :--- | :---: |
 | Research Project | 30% |
@@ -9,7 +12,7 @@
 | Final Exam | 20% |
 | Github | 10% |
 
-## Grade Criterias
+## 📈 Grade Criterias
 | Grade | Range |
 | :---: | :---: |
 | A | ≥ 80 |
@@ -21,7 +24,7 @@
 | D | 40 - 44 |
 | F | < 40 |
 
-## Activities
+## 📋 Activities
 | Activity | Date |
 | :--- | :---: |
 | นำเสนองานที่น่าจะเป็นงาน Research Project & AI Ethics | 30 June |
