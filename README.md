@@ -6,4 +6,4 @@
 > Faculty of Science, Department of Statistics, Khon Kaen University
 
 # ❓ About this Repository
-This repository is researved for **SC 677 703 Data Preparation and Machine Learning Algorithm** subject only. it includes practice codes, assignments, projects, lectures and others by Supawit Ps Chaingam, a master in statistics and data science student.
+This repository is researved for **SC 677 703 Data Preparation and Machine Learning Algorithm** subject only. It includes practice codes, assignments, projects, lectures and others by **Supawit Ps Chaingam**, master student in statistics and data science student (stat-ds).
