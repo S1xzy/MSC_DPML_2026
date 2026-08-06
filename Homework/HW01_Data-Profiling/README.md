@@ -11,3 +11,4 @@
 2. Data input (mount Google Drive, load dataset)
 3. Data Profiling with `ydata-profiling`
 4. Data validation with Great Expectations (expectation suite, run validation)
+5. Problems — inject missing values into the `id` column and re-run validation to see the expectation suite catch it
