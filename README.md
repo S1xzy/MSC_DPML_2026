@@ -14,7 +14,7 @@
 This repository is researved for **SC 677 703 Data Preparation and Machine Learning Algorithm** subject only. It includes practice codes, assignments, projects, lectures and others by **Supawit Ps Chaingam**, master student in statistics and data science student (stat-ds).
 
 # 📚 Lectures
-Lecture notes (PDF) are stored in [`Lectures/`](Lectures) — see [Lectures/README.md](Lectures/README.md) for the full list with dates and topics.
+Lecture notes or codes are stored in [`Lectures/`](Lectures) — see [Lectures/README.md](Lectures/README.md) for the full list with dates and topics.
 
 # 📝 Homework
 Homework assignments are collected in [`Homework/`](Homework), one subfolder per assignment.
