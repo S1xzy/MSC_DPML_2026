@@ -1,4 +1,9 @@
 # 📑 M.SC - Data Prepation and Machine Learning Algorithm
+**🧑‍💼 Course Lecturer** \
+**Asst. Dr. Thanapong Intharah**
+> **Lecturer at KKU** \
+> Faculty of Science, Department of Statistics, Khon Kaen University 
+
 👋🏻**Introduction** \
 **Name**: Supawit "Ps" Chaingam \
 **Student ID** : 695020003-1 
