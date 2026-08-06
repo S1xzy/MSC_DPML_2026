@@ -23,6 +23,13 @@ Lecture notes are stored in [`Lectures/`](Lectures) as PDF files.
 | 3 | 6 Aug 2026 | Data Preparation for ML & AI (Session 1 of 5) — Framing, data quality, and evaluation hygiene | [Lecture03_2026-08-06.pdf](Lectures/Lecture03_2026-08-06.pdf) |
 | 3.1 | 6 Aug 2026 | Supplement — Cross-Validation concept (K-fold training/testing, averaging test results across models) | [Lecture03_2026-08-06_Cross-Validation-Concept.pdf](Lectures/Lecture03_2026-08-06_Cross-Validation-Concept.pdf) |
 
+# 📝 Homework
+Homework assignments are collected in [`Homework/`](Homework), one subfolder per assignment.
+
+| # | Topic | Format | Folder |
+| :---: | :--- | :--- | :--- |
+| 1 | Data Profiling | Google Colab (.ipynb) | [HW01_Data-Profiling/](Homework/HW01_Data-Profiling) |
+
 # 📄 Paper Based
 Work related to the paper assigned for in-depth study is collected in [`Paper-Based/`](Paper-Based).
 
