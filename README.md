@@ -26,4 +26,5 @@ Homework assignments are collected in [`Homework/`](Homework), one subfolder per
 # 📄 Paper Based
 Work related to the paper assigned for in-depth study is collected in [`Paper-Based/`](Paper-Based).
 
-> ⏳ Paper not yet selected — this section will be filled in once the paper is chosen.
+> ⏳ **Paper Based**: Early Detection of Multimodal Fake News via Reinforced Propagation Path Generation \
+> 🔎 **Author**: L. Zhang et al.
