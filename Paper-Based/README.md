@@ -3,7 +3,8 @@
 This section collects all work related to the paper assigned by the professor for in-depth study (research project basis).
 
 > ⏳ **Paper Based**: Early Detection of Multimodal Fake News via Reinforced Propagation Path Generation \
-> 🔎 **Author**: L. Zhang et al.
+> 🔎 **Author**: L. Zhang et al. \
+> 💻 **Official Code (RPPG-Fake)**: [github.com/LitianD/RPPG-Fake](https://github.com/LitianD/RPPG-Fake)
 
 Once the paper is chosen, this folder will include items such as:
 - The paper (PDF)

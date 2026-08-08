@@ -27,4 +27,5 @@ Homework assignments are collected in [`Homework/`](Homework), one subfolder per
 Work related to the paper assigned for in-depth study is collected in [`Paper-Based/`](Paper-Based).
 
 > ⏳ **Paper Based**: Early Detection of Multimodal Fake News via Reinforced Propagation Path Generation \
-> 🔎 **Author**: L. Zhang et al.
+> 🔎 **Author**: L. Zhang et al. \
+> 💻 **Official Code (RPPG-Fake)**: [github.com/LitianD/RPPG-Fake](https://github.com/LitianD/RPPG-Fake)
