@@ -7,4 +7,5 @@
 | 3 | 6 Aug 2026 | Data Preparation for ML & AI (Session 1 of 5) — Framing, data quality, and evaluation hygiene | [Lecture03_2026-08-06.pdf](Lecture03_2026-08-06.pdf) |
 | 3.1 | 6 Aug 2026 | Supplement — Cross-Validation concept (K-fold training/testing, averaging test results across models) | [Lecture03_2026-08-06_Cross-Validation-Concept.pdf](Lecture03_2026-08-06_Cross-Validation-Concept.pdf) |
 | 4 | 10 Aug 2026 | Data Pre-Processing | [Lecture04_2026-08-10_Pre-Processing.pdf](Lecture04_2026-08-10_Pre-Processing.pdf) |
+| 4.1 | 10 Aug 2026 | Supplement — Data Augmentation | [Lecture04.1_2026-08-10_Augmentation.pdf](Lecture04.1_2026-08-10_Augmentation.pdf) |
 | 5 | 11 Aug 2026 | Data Augmentation | [Lecture05_2026-08-11_Data-Augmentation.pdf](Lecture05_2026-08-11_Data-Augmentation.pdf) |
