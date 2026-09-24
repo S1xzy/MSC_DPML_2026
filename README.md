@@ -23,6 +23,13 @@ Homework assignments are collected in [`Homework/`](Homework), one subfolder per
 | :---: | :--- | :--- | :--- |
 | 1 | Data Profiling | Google Colab (.ipynb) | [HW01_Data-Profiling/](Homework/HW01_Data-Profiling) |
 
+# ✏️ Quiz
+Quizzes are collected in [`Quiz/`](Quiz) — see [Quiz/README.md](Quiz/README.md).
+
+| # | Submission Date | Description | PDF |
+| :---: | :---: | :--- | :--- |
+| 2 | 24 Sep 2026 | Neural Network — Single-layer Perceptron (α = 0.70, 5 epochs), test on 2 samples + Accuracy / Precision / Recall / Specificity | [📄 View PDF](Quiz/Quiz02_2026-09-24_Perceptron-NN.pdf) |
+
 # 📄 Paper Based
 Work related to the paper assigned for in-depth study is collected in [`Paper-Based/`](Paper-Based).
 
