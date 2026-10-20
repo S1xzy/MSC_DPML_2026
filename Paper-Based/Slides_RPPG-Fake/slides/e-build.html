@@ -1,0 +1,22 @@
+<section id="e-build" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">04 · การทดลอง · จัดการข้อมูล</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">เตรียมข้อมูลให้ครบ 3 ส่วน ก่อนเข้า model</h2>
+<div style="display:flex;align-items:center;gap:10px">
+<p style="flex:1;font-size:24px;font-weight:600;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px;text-align:center">ดาวน์โหลด</p>
+<x-shape kind="arrow-right" style="width:36px;height:22px;background:#9AA6B2"></x-shape>
+<p style="flex:1;font-size:24px;font-weight:600;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px;text-align:center">แปลงเป็นรูปแบบเดียว</p>
+<x-shape kind="arrow-right" style="width:36px;height:22px;background:#9AA6B2"></x-shape>
+<p style="flex:1;font-size:24px;font-weight:600;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px;text-align:center">เติมรูป + เนื้อข่าว</p>
+<x-shape kind="arrow-right" style="width:36px;height:22px;background:#9AA6B2"></x-shape>
+<p style="flex:1;font-size:24px;font-weight:600;background:#FBE7D3;color:#8A4208;border-radius:12px;padding:16px;text-align:center">คัดเฉพาะข่าวครบ</p>
+<x-shape kind="arrow-right" style="width:36px;height:22px;background:#9AA6B2"></x-shape>
+<p style="flex:1;font-size:24px;font-weight:600;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px;text-align:center">แบ่ง 7:1:2 + CLIP</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;align-items:center;gap:24px"><p style="width:220px;font-size:28px;font-weight:600">PHEME</p><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:14px"><div style="width:1000px;height:30px;background:#D8DFE6;border-radius:6px"></div><p style="font-size:24px;color:#4F5D6B">5,802 ทั้งหมด</p></div><div style="display:flex;align-items:center;gap:14px"><div style="width:345px;height:30px;background:#2950B8;border-radius:6px"></div><p style="font-size:24px;font-weight:600">2,004 มีรูป (35%)</p></div></div></div>
+<div style="display:flex;align-items:center;gap:24px"><p style="width:220px;font-size:28px;font-weight:600">GossipCop</p><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:14px"><div style="width:942px;height:30px;background:#D8DFE6;border-radius:6px"></div><p style="font-size:24px;color:#4F5D6B">5,464 ทั้งหมด</p></div><div style="display:flex;align-items:center;gap:14px"><div style="width:487px;height:30px;background:#2950B8;border-radius:6px"></div><p style="font-size:24px;font-weight:600">2,827 ครบ (52%)</p></div></div></div>
+<div style="display:flex;align-items:center;gap:24px"><p style="width:220px;font-size:28px;font-weight:600">PolitiFact</p><div style="flex:1;display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center;gap:14px"><div style="width:83px;height:30px;background:#2950B8;border-radius:6px"></div><p style="font-size:24px;font-weight:600">483 ใช้ทั้งหมด (ข้อมูลของผู้เขียน · ไม่มีรูป)</p></div></div></div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">scripts: convert_pheme.py · convert_upfd.py · fetch_pheme_images.py · fetch_fnn_articles.py · keep_complete.py</p>
+<aside>ขั้นตอน: ดาวน์โหลด PHEME (figshare), UPFD (เส้นทาง retweet) และ FakeNewsNet (หัวข้อข่าว) แปลงทุกชุดเป็นรูปแบบ news_actions เดียวกับ PolitiFact ของผู้เขียน ดึงรูปที่แนบ tweet และดึงเนื้อข่าว + รูปหลักของ GossipCop จากเว็บต้นทางหรือ Wayback Machine แล้วคัดเฉพาะข่าวที่มีครบทั้งสามส่วน เพราะ paper เป็น multimodal สุดท้ายแบ่ง train/val/test 7:1:2 แบบ stratified ต่อ seed และคำนวณ feature CLIP เก็บไว้ ความยาวแท่งเทียบสัดส่วนจริง</aside>
+</section>

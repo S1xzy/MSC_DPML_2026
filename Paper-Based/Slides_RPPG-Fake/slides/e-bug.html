@@ -1,0 +1,17 @@
+<section id="e-bug" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">04 · การทดลอง · รอบ 8</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">Bug ที่พบ: user ทุกคนได้ embedding เดียวกัน</h2>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FBE7D3;border-radius:16px;padding:26px 28px;display:flex;flex-direction:column;gap:8px"><p style="font-size:24px;font-weight:600;color:#8A4208">ก่อนแก้</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:64px;font-weight:700;line-height:1">1</p><p style="font-size:24px;color:#4F5D6B">embedding ที่ต่างกัน จาก 14,583 คน (PHEME)</p></div>
+<div style="flex:1;background:#E3EAFB;border-radius:16px;padding:26px 28px;display:flex;flex-direction:column;gap:8px"><p style="font-size:24px;font-weight:600;color:#1E3F94">หลังแก้</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:64px;font-weight:700;line-height:1">14,549</p><p style="font-size:24px;color:#4F5D6B">embedding ที่ต่างกัน · คนใกล้กันแชร์ข่าวเดียวกัน 97%</p></div>
+</div>
+<table style="font-size:24px;width:1664px">
+<tr><th style="width:30%">สาเหตุ</th><th style="width:36%">ผลกระทบ</th><th style="width:34%">วิธีแก้</th></tr>
+<tr><td>ค่าก่อนเข้า tanh (Eq. 7) สูงราว 15 → ตันที่ ±1</td><td>user ใน H ได้ vector เดียวกัน</td><td>z-score ด้วยสถิติของ user ใน H</td></tr>
+<tr><td>node view เลือกคู่บวก/ลบจาก embedding ตัวเอง</td><td>Module 1 ยุบเหลือ ~1 มิติ</td><td>ใช้ความคล้ายของเพื่อนบ้านใน H (คงที่)</td></tr>
+<tr><td>train เห็นแต่ user ที่รู้จัก · test 63% เป็นคนใหม่</td><td>train กับ test ไม่เหมือนกัน</td><td>user ใหม่ทุกคน = UNK เดียวกัน</td></tr>
+<tr><td>discriminator เทียบเส้นทางคนละขนาด</td><td>reward ให้คะแนนตามความยาว</td><td>เทียบที่ขนาดเท่ากัน</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">พบระหว่างดึงตัวอย่างจริงทำสไลด์ · ตรวจโค้ดซ้ำทั้งหมดก่อน train ใหม่ · ทุกการแก้มี config flag</p>
+<aside>รอบ 8 เราพบว่า embedding ของ user ที่ส่งให้ Module 2 และ 3 เหมือนกันทุกคนในกราฟ H สาเหตุหลักคือ output ของ Module 1 มีส่วนร่วม (common component) ใหญ่มาก พอผ่าน tanh ในสมการ Eq. 7 ค่าตันที่ ±1 ทุกช่อง นอกจากนี้ node view เลือกคู่บวก/ลบจาก embedding ของตัวเอง ทำให้ยุบเหลือแทบมิติเดียว ตรวจซ้ำพบอีกสองจุด คือ train ไม่เคยเห็น user แปลกหน้าแต่ test มี 63% และ discriminator เทียบเส้นทางคนละขนาด เราแก้ทั้งหมด แล้ว train ใหม่ หลังแก้ embedding ต่างกันเกือบทุกคน และคนที่ embedding ใกล้กันเคยแชร์ข่าวเดียวกันจริง 97%</aside>
+</section>

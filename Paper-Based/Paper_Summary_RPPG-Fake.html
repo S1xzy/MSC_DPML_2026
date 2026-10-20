@@ -1,0 +1,1596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RPPG-Fake Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f5f1; --surface:#ffffff; --surface-2:#efede6; --ink:#1d1f24; --muted:#5f636d; --line:#dcd9cf;
+  --cl:#0f8a7e; --cl-soft:#d8f0ec; --rl:#6b4fd8; --rl-soft:#e7e1fb; --det:#c77700; --det-soft:#fbecd2;
+  --pub:#d4a017; --news:#d24b3e; --user:#3b6fd4;
+  --ok:#1f8a4c; --ok-soft:#dcf2e4; --warn:#b26a00; --warn-soft:#fbeed6; --bad:#c23b32; --bad-soft:#f9dfdc;
+  --code-bg:#1b1d22; --code-ink:#e8e6df; --hl:#fff3b0; --cmt:#f4b400;
+  --shadow:0 1px 2px rgba(0,0,0,.05),0 4px 14px rgba(0,0,0,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121317; --surface:#1b1d23; --surface-2:#23262e; --ink:#ecebe6; --muted:#a2a5ad; --line:#30333c;
+    --cl:#3cc3b4; --cl-soft:#143834; --rl:#a08cff; --rl-soft:#2a2350; --det:#f0a43a; --det-soft:#3a2b12;
+    --pub:#e8c14a; --news:#ff7d72; --user:#6f9bff;
+    --ok:#4fca82; --ok-soft:#173826; --warn:#f0a43a; --warn-soft:#3a2b12; --bad:#ff7d72; --bad-soft:#40201d;
+    --code-bg:#0d0e11; --code-ink:#e8e6df; --hl:#4a4220; --cmt:#f4b400; --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121317; --surface:#1b1d23; --surface-2:#23262e; --ink:#ecebe6; --muted:#a2a5ad; --line:#30333c;
+  --cl:#3cc3b4; --cl-soft:#143834; --rl:#a08cff; --rl-soft:#2a2350; --det:#f0a43a; --det-soft:#3a2b12;
+  --pub:#e8c14a; --news:#ff7d72; --user:#6f9bff;
+  --ok:#4fca82; --ok-soft:#173826; --warn:#f0a43a; --warn-soft:#3a2b12; --bad:#ff7d72; --bad-soft:#40201d;
+  --code-bg:#0d0e11; --code-ink:#e8e6df; --hl:#4a4220; --cmt:#f4b400; --shadow:none;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 "IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+code,.mono{font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:.88em}
+a{color:inherit}
+.wrap{max-width:1140px;margin:0 auto;padding:0 16px}
+header.top{padding:26px 0 10px}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-size:clamp(21px,3.2vw,30px);line-height:1.25;margin:6px 0;font-weight:700;max-width:860px}
+.sub{color:var(--muted);margin:0;font-size:14px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.chip{font-size:12px;padding:3px 10px;border-radius:999px;background:var(--surface-2);color:var(--muted);border:1px solid var(--line)}
+
+/* toolbar */
+.toolbar{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.tb-row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:8px 0}
+.tablist{display:flex;gap:4px;overflow-x:auto;scrollbar-width:thin;flex:1 1 100%;min-width:0}
+.tools{margin-left:auto}
+.tab{flex:0 0 auto;border:1px solid transparent;background:none;color:var(--muted);font:inherit;font-size:14px;padding:7px 11px;border-radius:8px;cursor:pointer;white-space:nowrap;display:flex;gap:7px;align-items:center;position:relative}
+.tab .n{font-family:"IBM Plex Mono",monospace;font-size:11px;width:20px;height:20px;border-radius:50%;display:inline-grid;place-items:center;background:var(--surface-2);color:var(--muted)}
+.tab:hover{color:var(--ink);background:var(--surface)}
+.tab[aria-selected="true"]{color:var(--ink);background:var(--surface);border-color:var(--line);font-weight:600;box-shadow:var(--shadow)}
+.tab[aria-selected="true"] .n{background:var(--ink);color:var(--bg)}
+.tab .cc{position:absolute;top:1px;right:1px;min-width:16px;height:16px;border-radius:8px;background:var(--cmt);color:#222;font-size:10px;font-weight:700;display:none;place-items:center;padding:0 4px}
+.tab .cc.on{display:grid}
+.tools{display:flex;gap:6px;flex-wrap:wrap}
+.tbtn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:13px;padding:6px 10px;border-radius:8px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.tbtn:hover{border-color:var(--muted)}
+.tbtn[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.tbtn .badge{background:var(--cmt);color:#222;border-radius:9px;padding:0 6px;font-size:11px;font-weight:700}
+button:focus-visible,.tab:focus-visible{outline:2px solid var(--rl);outline-offset:2px}
+.modebar{display:none;padding:6px 0 8px;font-size:13px;color:var(--muted)}
+.modebar.on{display:block}
+.modebar b{color:var(--ink)}
+
+main{padding:22px 0 60px}
+section.panel{display:none;animation:fade .25s ease}
+section.panel.on{display:block}
+@keyframes fade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+h2{font-size:22px;margin:0 0 4px}
+.lead{color:var(--muted);margin:0 0 18px;max-width:780px}
+h3{font-size:16px;margin:0 0 8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.grid>*{min-width:0}
+.mt{margin-top:14px}.mt2{margin-top:24px}
+.small{font-size:13px;color:var(--muted)}
+.tag{display:inline-block;font-size:11.5px;font-weight:600;padding:1px 8px;border-radius:999px;white-space:nowrap}
+.t-cl{background:var(--cl-soft);color:var(--cl)}.t-rl{background:var(--rl-soft);color:var(--rl)}.t-det{background:var(--det-soft);color:var(--det)}
+.t-ok{background:var(--ok-soft);color:var(--ok)}.t-warn{background:var(--warn-soft);color:var(--warn)}.t-bad{background:var(--bad-soft);color:var(--bad)}
+ul.tight{margin:6px 0 0;padding-left:18px}ul.tight li{margin:2px 0}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:3px;border-radius:9px;border:1px solid var(--line)}
+.seg button{border:0;background:none;color:var(--muted);font:inherit;font-size:13px;padding:5px 11px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:var(--shadow)}
+.seg button:disabled{opacity:.35;cursor:default}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.between{justify-content:space-between}
+.note{border-left:3px solid var(--warn);background:var(--warn-soft);padding:8px 12px;border-radius:0 8px 8px 0;font-size:13.5px}
+.note.info{border-color:var(--rl);background:var(--rl-soft)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-weight:600;color:var(--muted);font-size:12.5px}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl-wrap{overflow-x:auto}
+.formula{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--surface-2);padding:6px 9px;border-radius:6px;margin:6px 0;overflow-x:auto;white-space:nowrap}
+input[type=range]{width:100%;accent-color:var(--rl)}
+.pipe{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px}
+.pipe .p{background:var(--surface-2);border:1px solid var(--line);border-radius:6px;padding:3px 8px;font-family:"IBM Plex Mono",monospace;font-size:11.5px}
+.pipe .ar{color:var(--muted)}
+
+/* roadmap */
+.flow{display:grid;grid-template-columns:repeat(7,1fr);gap:20px}
+.phase{display:flex;flex-direction:column;gap:8px;position:relative}
+.phase-h{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+.phase-h b{font-family:"IBM Plex Mono",monospace;background:var(--ink);color:var(--bg);border-radius:4px;padding:0 5px;font-size:11px}
+.phase:not(:last-child)::after{content:"";position:absolute;right:-16px;top:50%;width:12px;height:12px;border-top:2px solid var(--muted);border-right:2px solid var(--muted);transform:translateY(-50%) rotate(45deg);opacity:.5}
+.node{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:9px 10px;text-align:left;font:inherit;color:var(--ink);cursor:pointer;transition:.15s;box-shadow:var(--shadow)}
+.node:hover{transform:translateY(-1px);border-color:var(--muted)}
+.node .nt{font-weight:600;font-size:13.5px;line-height:1.3;display:block}
+.node .ns{font-size:12px;color:var(--muted);line-height:1.35;display:block;margin-top:2px}
+.node.sel{outline:2px solid var(--ink)}
+.k-prob{border-left:4px solid var(--bad)}.k-cl{border-left:4px solid var(--cl)}.k-rl{border-left:4px solid var(--rl)}.k-det{border-left:4px solid var(--det)}.k-res{border-left:4px solid var(--ok)}
+.flow-detail{margin-top:16px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center}
+.gobtn{border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font:inherit;font-size:13px;border-radius:8px;padding:6px 12px;cursor:pointer;white-space:nowrap}
+.gobtn:hover{border-color:var(--muted)}
+@media (max-width:1000px){
+  .flow{grid-template-columns:1fr;gap:24px}
+  .phase:not(:last-child)::after{right:auto;left:50%;top:auto;bottom:-19px;transform:translateX(-50%) rotate(135deg)}
+  .flow-detail{grid-template-columns:1fr}
+}
+
+/* svg common */
+svg text{font-family:"IBM Plex Sans",sans-serif;fill:var(--ink)}
+svg .mono{font-family:"IBM Plex Mono",monospace}
+svg .mut{fill:var(--muted)}
+.blk{cursor:pointer}
+.blk:hover rect{filter:brightness(.96)}
+.blk.sel rect{stroke:var(--ink);stroke-width:2.6}
+.split2{display:grid;grid-template-columns:minmax(0,1.8fr) minmax(250px,1fr);gap:14px}
+@media (max-width:900px){.split2{grid-template-columns:1fr}}
+.info-k{font-size:12px;color:var(--muted);margin-top:8px}
+.info-v{font-family:"IBM Plex Mono",monospace;font-size:12.5px;background:var(--surface-2);border-radius:6px;padding:6px 8px;margin-top:3px;word-break:break-word}
+.meter{height:10px;border-radius:5px;background:var(--surface-2);overflow:hidden;border:1px solid var(--line)}
+.meter i{display:block;height:100%;background:var(--bad);transition:width .25s}
+.mrow{display:grid;grid-template-columns:150px 1fr 70px;gap:8px;align-items:center;font-size:13px;padding:6px 0;border-bottom:1px solid var(--line)}
+.mrow:last-child{border-bottom:0}
+.st{font-weight:600;font-size:12px}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+
+/* data */
+.bars2{display:flex;height:22px;border-radius:6px;overflow:hidden;border:1px solid var(--line);font-size:11px;font-weight:600}
+.bars2 div{display:grid;place-items:center;color:#fff;white-space:nowrap;overflow:hidden}
+.b-fake{background:#c23b32}.b-real{background:#2d9a5a}
+.s-tr{background:#3b6fd4}.s-va{background:#d48a1f}.s-te{background:#2d9a5a}
+.audit{display:grid;gap:8px}
+.aud{display:grid;grid-template-columns:28px 1fr;gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.ic{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px}
+.ic.ok{background:var(--ok-soft);color:var(--ok)}.ic.warn{background:var(--warn-soft);color:var(--warn)}.ic.bad{background:var(--bad-soft);color:var(--bad)}
+.aud b{font-weight:600}
+.aud p{margin:2px 0 0;font-size:13px;color:var(--muted)}
+
+/* code */
+.files{display:grid;grid-template-columns:240px 1fr;gap:12px}
+@media (max-width:760px){.files{grid-template-columns:1fr}}
+.flist{display:flex;flex-direction:column;gap:4px;min-width:0}
+@media (max-width:760px){.flist{flex-direction:row;overflow-x:auto}}
+.fbtn{text-align:left;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:13px;padding:8px 10px;border-radius:8px;cursor:pointer;flex:0 0 auto}
+.fbtn small{display:block;color:var(--muted);font-size:11.5px}
+.fbtn[aria-pressed="true"]{border-color:var(--ink);box-shadow:var(--shadow)}
+pre.code{background:var(--code-bg);color:var(--code-ink);border-radius:10px;padding:12px 14px;overflow-x:auto;font:12.3px/1.55 "IBM Plex Mono",monospace;margin:8px 0 0}
+pre.code .c{color:#8b93a5}
+pre.code mark{background:rgba(255,125,114,.24);color:inherit;border-radius:3px;padding:0 2px}
+pre.code mark.g{background:rgba(79,202,130,.2)}
+.issue{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
+.issue:last-child{border-bottom:0}
+.issue .tag{align-self:start;margin-top:2px}
+.loc{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted)}
+.stage{display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:stretch}
+.stage .arrow{display:grid;place-items:center;color:var(--muted);font-size:22px}
+@media (max-width:760px){.stage{grid-template-columns:1fr}.stage .arrow{transform:rotate(90deg)}}
+
+/* metrics */
+.cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;max-width:330px;font-size:12.5px}
+.cm .h{color:var(--muted);display:grid;place-items:center;font-size:11.5px;padding:2px}
+.cm input{width:100%;font:600 16px "IBM Plex Mono",monospace;text-align:center;border:1px solid var(--line);border-radius:8px;padding:12px 4px;background:var(--surface);color:var(--ink)}
+.mres{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.mres .card{padding:10px 12px}
+.mres .v{font:700 20px "IBM Plex Mono",monospace}
+.mbar{height:5px;border-radius:3px;background:var(--surface-2);margin-top:6px;overflow:hidden}
+.mbar i{display:block;height:100%;background:var(--ink)}
+.big{font:700 26px "IBM Plex Mono",monospace;line-height:1.1}
+
+/* results */
+.headline{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.row3{display:flex;gap:16px;margin-top:6px;flex-wrap:wrap}
+.row3 div{font-size:12px;color:var(--muted)}
+.row3 b{display:block;font:700 18px "IBM Plex Mono",monospace;color:var(--ink)}
+svg.chart text{font-size:12px}
+svg.chart .ax{font-family:"IBM Plex Mono",monospace;font-size:10.5px;fill:var(--muted)}
+svg.chart .val{font-family:"IBM Plex Mono",monospace;font-size:11px}
+.term{background:var(--code-bg);color:var(--code-ink);border-radius:10px;overflow:hidden;font:12.3px/1.6 "IBM Plex Mono",monospace}
+.term .bar{background:rgba(255,255,255,.06);padding:6px 12px;font-size:11.5px;color:#9aa0ad}
+.term pre{margin:0;padding:12px 14px;overflow-x:auto;white-space:pre}
+.term .dim{color:#7d8494}.term .hi{color:#ffd27a}.term .gr{color:#8fe3a8}
+
+/* summary */
+.eq{font:600 clamp(15px,2.3vw,20px) "IBM Plex Sans",sans-serif;text-align:center;padding:18px 10px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;align-items:center}
+.eq .pill{padding:6px 14px;border-radius:999px}
+.sum-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}
+.sum-grid h3{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+footer{color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding:16px 0 30px}
+.pager{display:flex;justify-content:space-between;margin-top:28px;gap:10px}
+
+/* edit + comment */
+body.editing [data-ek]{outline:1px dashed color-mix(in srgb,var(--rl) 55%,transparent);outline-offset:2px;border-radius:3px;cursor:text}
+body.editing [data-ek]:focus{outline:2px solid var(--rl);background:color-mix(in srgb,var(--rl-soft) 50%,transparent)}
+[data-ek].edited{box-shadow:inset 3px 0 0 var(--rl)}
+body.commenting [data-ek]{cursor:copy}
+body.commenting [data-ek]:hover{background:var(--hl);border-radius:3px}
+[data-ek].has-cmt{background:linear-gradient(transparent 62%,color-mix(in srgb,var(--cmt) 35%,transparent) 0);position:relative}
+[data-ek].has-cmt::after{content:attr(data-cc);position:relative;top:-.55em;margin-left:3px;font:700 10px "IBM Plex Sans",sans-serif;background:var(--cmt);color:#222;border-radius:7px;padding:0 4px;line-height:14px;display:inline-block}
+[data-ek].flash{animation:flash 1.4s ease}
+@keyframes flash{0%,60%{background:var(--hl)}100%{background:transparent}}
+.drawer{position:fixed;top:0;right:0;height:100%;width:min(400px,100%);background:var(--surface);border-left:1px solid var(--line);box-shadow:-8px 0 24px rgba(0,0,0,.12);z-index:50;transform:translateX(105%);transition:transform .2s ease;display:flex;flex-direction:column}
+.drawer.on{transform:none}
+.drawer header{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:8px}
+.drawer .body{overflow-y:auto;padding:12px 16px;flex:1}
+.cmt{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:10px;background:var(--bg)}
+.cmt.res{opacity:.6}
+.cmt .q{font-size:12.5px;color:var(--muted);border-left:3px solid var(--cmt);padding-left:8px;margin:4px 0 6px;max-height:3.2em;overflow:hidden}
+.cmt .meta{font-size:11.5px;color:var(--muted);display:flex;justify-content:space-between;gap:6px}
+.cmt .txt{font-size:14px;white-space:pre-wrap;word-break:break-word}
+.cmt .acts{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.cmt .acts button{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:12px;border-radius:6px;padding:2px 8px;cursor:pointer}
+.cmt .rep{margin:6px 0 0 10px;padding-left:8px;border-left:2px solid var(--line);font-size:13px}
+.composer{position:fixed;z-index:60;inset:0;background:rgba(0,0,0,.25);display:none;align-items:center;justify-content:center;padding:16px}
+.composer.on{display:flex}
+.composer .box{background:var(--surface);border:1px solid var(--line);border-radius:12px;width:min(440px,100%);padding:16px;box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.composer textarea,.composer input{width:100%;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:8px;padding:8px;background:var(--bg);color:var(--ink)}
+.composer textarea{min-height:90px;resize:vertical}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;z-index:70;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+
+/* reproduction tab */
+.rep-ok{color:var(--ok);font-weight:700}.rep-warn{color:var(--warn);font-weight:700}.rep-bad{color:var(--bad);font-weight:700}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:8px}
+.stat{background:var(--surface-2);border-radius:8px;padding:8px 10px;font-size:12px;color:var(--muted)}
+.stat b{display:block;font:700 17px "IBM Plex Mono",monospace;color:var(--ink)}
+.covrow{display:grid;grid-template-columns:120px 1fr 1fr;gap:8px;align-items:center;font-size:12.5px;margin:7px 0}
+.covbar{height:16px;background:var(--surface-2);border-radius:4px;overflow:hidden;position:relative}
+.covbar i{display:block;height:100%}
+.covbar span{position:absolute;left:6px;top:0;font:600 10.5px/16px "IBM Plex Mono",monospace;color:var(--ink)}
+
+/* progress tab */
+.prog-meter{text-align:right;min-width:120px}
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.steps li{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:10px;padding:8px 10px;cursor:pointer;background:var(--surface)}
+.steps li:hover{border-color:var(--muted)}
+.steps li.sel{outline:2px solid var(--ink)}
+.steps .dot{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font:700 11px "IBM Plex Mono",monospace}
+.steps .done .dot,.steps li.done .dot{background:var(--ok-soft);color:var(--ok)}
+.steps li.now .dot{background:var(--rl);color:#fff}
+.steps li.next .dot{background:var(--surface-2);color:var(--muted);border:1px dashed var(--muted)}
+.steps .st-t{font-weight:600;font-size:13.5px;line-height:1.3}
+.steps .st-s{font-size:12px;color:var(--muted)}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.tl-day{border-top:3px solid var(--rl);padding-top:8px}
+.tl-day b{font:700 13px "IBM Plex Mono",monospace}
+.tl-day ul{margin:6px 0 0;padding-left:16px;font-size:12.5px;color:var(--muted)}
+.checklist{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.checklist li{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:start;font-size:13.5px}
+.checklist .box{width:18px;height:18px;border:2px solid var(--muted);border-radius:4px;margin-top:2px}
+.checklist .eta{font:12px "IBM Plex Mono",monospace;color:var(--muted);white-space:nowrap}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="eyebrow">Paper Summary · SC 677 703 DPMLA</div>
+    <h1>Early Detection of Multimodal Fake News via Reinforced Propagation Path Generation (RPPG-Fake)</h1>
+    <p class="sub">L. Zhang, X. Zhang, Z. Zhou, X. Zhang, S. Wang, P. S. Yu, C. Li · <i>IEEE TKDE</i> 37(2), 2025, pp. 613–625 · <a href="https://doi.org/10.1109/TKDE.2024.3496701" target="_blank" rel="noopener">doi:10.1109/TKDE.2024.3496701</a></p>
+    <div class="chips">
+      <span class="chip">Binary classification: Fake / Real</span>
+      <span class="chip">Text + Image + Propagation graph</span>
+      <span class="chip">Contrastive GNN · Reinforcement learning</span>
+      <span class="chip">Code: LitianD/RPPG-Fake</span>
+    </div>
+  </div>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <div class="tb-row">
+      <div class="tablist" role="tablist" id="tablist" aria-label="Sections"></div>
+      <div class="tools">
+        <button class="tbtn" id="btnEdit" type="button" aria-pressed="false" title="Edit text on the page">✎ Edit</button>
+        <button class="tbtn" id="btnCmt" type="button" aria-pressed="false" title="Click any text to comment on it">💬 Comment</button>
+        <button class="tbtn" id="btnList" type="button" title="Open comments">🗂 <span class="badge" id="cmtCount">0</span></button>
+        <button class="tbtn" id="btnSave" type="button" title="Download this page with your edits and comments saved inside">⬇ Save HTML</button>
+        <button class="tbtn" id="btnTheme" type="button" aria-label="Toggle theme">◐</button>
+      </div>
+    </div>
+    <div class="modebar" id="modebar"></div>
+  </div>
+</div>
+
+<main class="wrap">
+
+<!-- =============== 1 ROADMAP =============== -->
+<section class="panel" id="roadmap" role="tabpanel">
+  <h2>Paper Roadmap</h2>
+  <p class="lead">From the problem to the results and how the model is evaluated. Click a box for details.</p>
+  <div class="flow" id="flow"></div>
+  <div class="card flow-detail" aria-live="polite">
+    <div><div style="font-weight:700" id="fdT"></div><div class="small" id="fdS"></div></div>
+    <button class="gobtn" id="fdGo" type="button"></button>
+  </div>
+</section>
+
+<!-- =============== 2 BACKGROUND =============== -->
+<section class="panel" id="background" role="tabpanel">
+  <h2>Background &amp; Motivation</h2>
+  <p class="lead">Propagation paths help detect fake news — but waiting for them means the damage is already done.</p>
+
+  <div class="grid g4">
+    <div class="card"><span class="tag t-bad">Problem</span><h3 class="mt">Fake news is well-fabricated</h3><ul class="tight small"><li>Text + image look credible</li><li>Content-only models miss it</li></ul></div>
+    <div class="card"><span class="tag t-ok">Useful signal</span><h3 class="mt">How news spreads</h3><ul class="tight small"><li>Fake news paths are wider and deeper</li><li>More bots / automated accounts</li></ul></div>
+    <div class="card"><span class="tag t-warn">Dilemma</span><h3 class="mt">Efficacy vs. social hazard</h3><ul class="tight small"><li>Rich paths exist only after wide spread</li><li>Extra context (profiles, comments) is costly</li></ul></div>
+    <div class="card"><span class="tag t-rl">Idea</span><h3 class="mt">Generate the future path</h3><ul class="tight small"><li>Simulate who would share the news</li><li>From content only, at time ≈ 0</li></ul></div>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between"><h3 style="margin:0">The dilemma, interactively</h3><span class="small">Toy spread · numbers = PolitiFact accuracy from Tables II–III</span></div>
+    <div class="grid g2 mt" style="align-items:center">
+      <div>
+        <svg id="spreadSvg" viewBox="0 0 520 300" style="width:100%" role="img" aria-label="Propagation over time"></svg>
+        <label class="small">Time since posting: <b id="tV"></b></label>
+        <input type="range" id="tSlider" min="0" max="5" step="1" value="0">
+      </div>
+      <div>
+        <div class="small" style="margin-bottom:4px">Social hazard (users already reached)</div>
+        <div class="meter"><i id="harm"></i></div>
+        <div class="mt" id="methods"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt2">
+    <h3>Contributions</h3>
+    <ul class="tight">
+      <li>First to do <b>early</b> fake news detection by <b>generating</b> propagation paths</li>
+      <li><b>RPPG-Fake</b>: RL-based path generation + temporal-aware detection</li>
+      <li>Beats state-of-the-art baselines on 3 real-world datasets</li>
+    </ul>
+  </div>
+</section>
+
+<!-- =============== 3 MODEL =============== -->
+<section class="panel" id="model" role="tabpanel">
+  <h2>Model Overview</h2>
+  <p class="lead">Three modules in sequence. Click a block to see what it does, its inputs/outputs and the matching equation.</p>
+  <div class="formula" style="text-align:center">P(y | n, G) = P(y | n, G′) · P(G′ | G, H) · P(H | P, N, U)</div>
+  <div class="row small" style="justify-content:center;gap:28px;margin-bottom:12px"><span><span class="tag t-det">Temporal-aware detection</span></span><span><span class="tag t-rl">Reinforced generation</span></span><span><span class="tag t-cl">Contrastive learning</span></span></div>
+
+  <div class="split2">
+    <div class="card" style="padding:10px"><svg id="arch" viewBox="0 0 1000 430" style="width:100%" role="img" aria-label="RPPG-Fake architecture"></svg></div>
+    <div class="card" id="archInfo" aria-live="polite"></div>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between">
+      <h3 style="margin:0">Try it: how the RL agent generates a propagation path</h3>
+      <div class="row">
+        <div class="seg" id="k2Seg"><button type="button" data-k="1">K₂=1</button><button type="button" data-k="2" aria-pressed="true">K₂=2</button><button type="button" data-k="3">K₂=3</button></div>
+        <button class="gobtn" id="rlStep" type="button">Step ▶</button>
+        <button class="gobtn" id="rlRun" type="button">Run to T</button>
+        <button class="gobtn" id="rlReset" type="button">Reset</button>
+      </div>
+    </div>
+    <div class="split2 mt">
+      <div>
+        <svg id="rlSvg" viewBox="0 0 520 300" style="width:100%" role="img" aria-label="Path generation toy"></svg>
+        <div class="legend mt"><span><i style="background:var(--news)"></i>news (seed)</span><span><i style="background:var(--user)"></i>user</span><span><i style="background:var(--rl)"></i>generated</span><span><i style="border:2px dashed var(--muted);background:none"></i>candidate action</span><label class="chk" style="display:inline-flex;gap:6px;align-items:center"><input type="checkbox" id="showReal"> show real path</label></div>
+      </div>
+      <div>
+        <div class="small">State s<sub>t</sub> = [subgraph so far ; new users ; news]</div>
+        <div class="big mt" id="rlStepTxt">t = 0</div>
+        <div class="small" id="rlInfo"></div>
+        <div class="mt" id="rlRewards"></div>
+        <p class="small mt">Toy example. Policy = softmax over candidate users scored by similarity to the news; reward = temporal (right user at the right step) + global (looks like a real path). Max users T = 9.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mt2">
+    <h3>Detection: what happens to the generated path</h3>
+    <svg id="detSvg" viewBox="0 0 1000 250" style="width:100%" role="img" aria-label="Temporal-aware detection"></svg>
+  </div>
+
+  <div class="card mt2">
+    <h3>Training setup (paper)</h3>
+    <div class="pipe mt"><span class="p">AdamW</span><span class="p">lr 5e-3</span><span class="p">batch 16</span><span class="p">user embedding 128-d</span><span class="p">split 7:1:2</span><span class="p">5 runs, mean reported</span><span class="p">PyTorch 1.13 · RTX 3090</span></div>
+    <p class="small mt">Key hyper-parameters: τ₁, τ₂ (contrastive temperatures), λ₁ (node vs meta-path loss), λ₂ (temporal vs global reward), K₁ (pos/neg samples), K₂ (users added per action), T (max users). Final values are not stated; only sensitivity plots (Fig. 4).</p>
+  </div>
+</section>
+
+<!-- =============== 4 DATA =============== -->
+<section class="panel" id="data" role="tabpanel">
+  <h2>Data</h2>
+  <p class="lead">Multimodal news + social context. Each news item = <b>text</b> + <b>image</b> + <b>who shared it, from whom, and when</b>.</p>
+
+  <div class="grid g4">
+    <div class="card"><span class="tag t-det">Text</span><p class="small" style="margin:6px 0 0">News article (PolitiFact, GossipCop) or tweet (Pheme)</p></div>
+    <div class="card"><span class="tag t-det">Image</span><p class="small" style="margin:6px 0 0">Image attached to the news (code: text feature is reused if missing)</p></div>
+    <div class="card"><span class="tag t-rl">Propagation</span><p class="small" style="margin:6px 0 0">Engagements (head_user → user, timestamp) = retweet / repost cascade</p></div>
+    <div class="card"><span class="tag t-cl">Social graph H</span><p class="small" style="margin:6px 0 0">Nodes: publisher · news · user. Meta-paths PNU, NUN, UNU</p></div>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between"><h3 style="margin:0">Datasets (Table I)</h3><span class="small">red = fake · green = real</span></div>
+    <div class="tbl-wrap mt">
+      <table>
+        <thead><tr><th>Dataset</th><th>Source</th><th class="num">News</th><th class="num">Fake</th><th class="num">Real</th><th class="num">Words / news</th><th style="width:34%">Class balance</th></tr></thead>
+        <tbody id="dsRows"></tbody>
+      </table>
+    </div>
+    <p class="small mt">PolitiFact &amp; GossipCop come from FakeNewsNet (fact-checking sites + Twitter engagements); Pheme is Twitter rumours.</p>
+  </div>
+
+  <div class="card mt2">
+    <h3>Processing pipeline</h3>
+    <div class="pipe mt">
+      <span class="p">Raw dataset</span><span class="ar">→</span><span class="p">Data cleaning (not described)</span><span class="ar">→</span>
+      <span class="p">Map user IDs → integer index</span><span class="ar">→</span><span class="p">Build heterogeneous graph H</span><span class="ar">→</span>
+      <span class="p">Meta-path neighbours (RWR)</span><span class="ar">→</span><span class="p">Content features (code: CLIP text 77 tokens + image)</span><span class="ar">→</span>
+      <span class="p">Random split 7 : 1 : 2</span><span class="ar">→</span><span class="p">Early stage: keep 3–5 random engagements in test</span>
+    </div>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between">
+      <h3 style="margin:0">Split &amp; validation</h3>
+      <div class="seg" id="splitSeg"><button type="button" data-k="paper" aria-pressed="true">Paper (PolitiFact)</button><button type="button" data-k="code">Code (PolitiFact)</button></div>
+    </div>
+    <div id="splitView" class="mt"></div>
+    <div class="grid g3 mt">
+      <div><span class="tag t-ok">Train</span><p class="small" style="margin:4px 0 0">Fit model weights</p></div>
+      <div><span class="tag t-warn">Validation</span><p class="small" style="margin:4px 0 0">Code: keep checkpoint with best <b>val/acc</b>; LR scheduler on val/loss</p></div>
+      <div><span class="tag t-ok">Test</span><p class="small" style="margin:4px 0 0">Report Acc / Pre / Rec / F1 · mean of 5 runs (no std)</p></div>
+    </div>
+  </div>
+
+  <h3 class="mt2">Detailed audit</h3>
+  <div class="seg" id="audFilter" style="margin-bottom:10px"><button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="ok">✓ Pass</button><button type="button" data-f="warn">! Caution</button><button type="button" data-f="bad">✕ Issue</button></div>
+  <div class="audit" id="audit"></div>
+
+  <div class="card mt2">
+    <h3>Data shipped with the repo (checked file by file)</h3>
+    <p class="small" style="margin:0 0 8px"><code>data/data.zip</code> → PolitiFact only. No Pheme / GossipCop, no images.</p>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Item</th><th>Value</th><th>Note</th></tr></thead>
+        <tbody>
+          <tr><td><code>news_actions_politifact.csv</code></td><td>484 rows · 483 unique IDs</td><td class="small">ID 14940 is duplicated · columns: id, text, label, actions, actions_id, split_actions</td></tr>
+          <tr><td>Labels</td><td>297 fake (0) · 187 real (1)</td><td class="small">Code keeps the first 478 after shuffling (seed 665); paper: 294 / 184</td></tr>
+          <tr><td>Real engagements / news</td><td>median 167 · mean 724 · max 25,180</td><td class="small">Highly skewed cascades</td></tr>
+          <tr><td>Text length</td><td>median 332 words</td><td class="small">CLIP reads 77 tokens → ~83% of articles truncated</td></tr>
+          <tr><td>User graph</td><td>114,516 users</td><td class="small"><code>all_actions_politifact.json</code> (adjacency)</td></tr>
+          <tr><td><code>actions/*.json</code> (generated paths)</td><td>483 files · 4 steps · ≤5 edges/step</td><td class="small">304 of 483 have exactly 20 edges</td></tr>
+          <tr><td>Generated vs real</td><td><b>4.6%</b> of generated users</td><td class="small">appear in that news item's real propagation path</td></tr>
+          <tr><td>Diversity</td><td>405 distinct user-sets / 483 news</td><td class="small">one identical set is shared by 21 news items</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 5 CODE =============== -->
+<section class="panel" id="code" role="tabpanel">
+  <h2>Model Code</h2>
+  <p class="lead">Official repo <a href="https://github.com/LitianD/RPPG-Fake" target="_blank" rel="noopener">LitianD/RPPG-Fake</a> · PyTorch Lightning + Hydra template · two stages run one after the other</p>
+
+  <div class="stage">
+    <div class="card"><span class="tag t-rl">Stage 1 · generate paths</span><div class="formula mt">python src/train_hete_RL.py</div><p class="small" style="margin:0"><code>RlUserModule</code> + <code>RlNet</code> → user embeddings + actor-critic → writes <code>actions/&lt;news_id&gt;.json</code></p></div>
+    <div class="arrow">→</div>
+    <div class="card"><span class="tag t-det">Stage 2 · detect</span><div class="formula mt">python src/train.py</div><p class="small" style="margin:0"><code>RlGraphModule</code> + <code>RlGraph</code> → reads the JSON paths + CLIP text/image → Fake / Real</p></div>
+  </div>
+
+  <div class="files mt2">
+    <div class="flist" id="flist"></div>
+    <div class="card" id="fview" style="min-width:0"></div>
+  </div>
+
+  <div class="card mt2">
+    <h3>Paper vs code</h3>
+    <div class="tbl-wrap"><table><thead><tr><th>Item</th><th>Paper</th><th>Code</th><th></th></tr></thead><tbody id="pvc"></tbody></table></div>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between"><h3 style="margin:0">Must fix before it runs</h3><span class="small" id="issueCount"></span></div>
+    <div id="issues" class="mt"></div>
+  </div>
+</section>
+
+<!-- =============== 6 METRICS =============== -->
+<section class="panel" id="metrics" role="tabpanel">
+  <h2>Evaluation Metrics</h2>
+  <p class="lead">Accuracy, Precision, Recall, F1 (Tables II–IV). The code also logs AUC, but the paper does not report it.</p>
+
+  <div class="why grid g4" id="why"></div>
+
+  <div class="card mt2">
+    <div class="row between">
+      <h3 style="margin:0">Confusion matrix playground</h3>
+      <div class="seg" id="cmPreset">
+        <button type="button" data-p="ex" aria-pressed="true">Example (95 news)</button>
+        <button type="button" data-p="allfake">Predict all Fake</button>
+        <button type="button" data-p="allreal">Predict all Real</button>
+      </div>
+    </div>
+    <div class="grid g2 mt" style="align-items:start">
+      <div>
+        <div class="cm">
+          <div></div><div class="h">Pred: fake</div><div class="h">Pred: real</div>
+          <div class="h">True: fake</div><input type="number" min="0" id="c00" aria-label="fake predicted fake"><input type="number" min="0" id="c01" aria-label="fake predicted real">
+          <div class="h">True: real</div><input type="number" min="0" id="c10" aria-label="real predicted fake"><input type="number" min="0" id="c11" aria-label="real predicted real">
+        </div>
+        <div class="row mt"><span class="small">Positive class</span>
+          <div class="seg" id="posSeg"><button type="button" data-pos="real" aria-pressed="true">Real = 1 (code)</button><button type="button" data-pos="fake">Fake</button></div>
+        </div>
+        <p class="small" id="cmLegend"></p>
+      </div>
+      <div class="mres" id="mres"></div>
+    </div>
+    <div class="note info mt">Labels: <b>y = 0 fake, y = 1 real</b>. The code uses torchmetrics <code>task="binary"</code>, so Precision / Recall / F1 are computed for the <b>real</b> class. The example matrix is illustrative (the paper gives no confusion matrices).</div>
+  </div>
+
+  <div class="card mt2">
+    <h3>How much is "+4.0 %"? Small test sets</h3>
+    <div class="grid g2 mt" style="align-items:center">
+      <div>
+        <div class="seg" id="nSeg"><button type="button" data-n="95" aria-pressed="true">PolitiFact paper (~95)</button><button type="button" data-n="48">PolitiFact code (48)</button><button type="button" data-n="701">Pheme (~701)</button><button type="button" data-n="1105">GossipCop (~1,105)</button></div>
+        <label class="small mt" style="display:block">Accuracy gain (pp): <b id="gV"></b></label>
+        <input type="range" id="gain" min="0.5" max="6" step="0.1" value="4">
+      </div>
+      <div>
+        <div class="big" id="nNews"></div>
+        <div class="small" id="nTxt"></div>
+      </div>
+    </div>
+    <p class="small mt">Each run reports one number; 5-run means without std make it hard to tell real gains from noise on small test sets.</p>
+  </div>
+</section>
+
+<!-- =============== 7 RESULTS =============== -->
+<section class="panel" id="results" role="tabpanel">
+  <h2>Results</h2>
+  <p class="lead">Reported in the paper (mean of 5 runs), and what you get when the code runs.</p>
+
+  <div class="headline">
+    <div class="card"><span class="tag t-det">PolitiFact · early stage</span><div class="row3"><div>Acc<b>0.902</b></div><div>F1<b>0.886</b></div><div>vs best<b>+4.0</b></div></div></div>
+    <div class="card"><span class="tag t-rl">GossipCop · early stage</span><div class="row3"><div>Acc<b>0.873</b></div><div>F1<b>0.913</b></div><div>vs best<b>+4.1</b></div></div></div>
+    <div class="card"><span class="tag t-cl">Pheme · early stage</span><div class="row3"><div>Acc<b>0.829</b></div><div>F1<b>0.867</b></div><div>vs best<b>+2.7</b></div></div></div>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between">
+      <h3 style="margin:0">Comparison with baselines</h3>
+      <div class="row">
+        <div class="seg" id="rsSet"><button type="button" data-s="early" aria-pressed="true">Early stage (Table III)</button><button type="button" data-s="full">Full paths (Table II)</button></div>
+        <div class="seg" id="rsDs"><button type="button" data-d="pol" aria-pressed="true">PolitiFact</button><button type="button" data-d="gos">GossipCop</button><button type="button" data-d="phe">Pheme</button></div>
+        <div class="seg" id="rsM"><button type="button" data-m="0" aria-pressed="true">Acc</button><button type="button" data-m="1">Pre</button><button type="button" data-m="2">Rec</button><button type="button" data-m="3">F1</button></div>
+      </div>
+    </div>
+    <svg class="chart mt" id="rsChart" viewBox="0 0 760 400" style="width:100%"></svg>
+    <p class="small" id="rsNote"></p>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between">
+      <h3 style="margin:0">Ablation (Table IV)</h3>
+      <div class="row">
+        <div class="seg" id="abDs"><button type="button" data-d="pol" aria-pressed="true">PolitiFact</button><button type="button" data-d="gos">GossipCop</button><button type="button" data-d="phe">Pheme</button></div>
+        <div class="seg" id="abM"><button type="button" data-m="0" aria-pressed="true">Acc</button><button type="button" data-m="3">F1</button></div>
+      </div>
+    </div>
+    <svg class="chart mt" id="abChart" viewBox="0 0 760 300" style="width:100%"></svg>
+    <p class="small">Every module helps. Biggest drops: removing all contrastive learning, or replacing RL with random sampling. Note: the "Proposed" row equals Table II (full paths), not the early-stage setting.</p>
+  </div>
+
+  <div class="card mt2">
+    <h3>Other findings</h3>
+    <div class="grid g3 mt">
+      <div><span class="tag t-ok">Fig. 3</span><p class="small" style="margin:4px 0 0">As real paths grow (0 → 400), baselines improve; RPPG-Fake stays almost flat and highest → generated paths behave like real ones</p></div>
+      <div><span class="tag t-ok">Fig. 4</span><p class="small" style="margin:4px 0 0">τ₁, τ₂, λ₁, λ₂, K₁, K₂ all rise then fall (sweet spot); more generated users T helps until it plateaus</p></div>
+      <div><span class="tag t-ok">Fig. 5</span><p class="small" style="margin:4px 0 0">Case study: generated path resembles the real one (same first spreader, frequent users, sub-graph shape)</p></div>
+    </div>
+  </div>
+
+  <h3 class="mt2">What the output looks like when you run the code</h3>
+  <div class="grid g2">
+    <div class="term"><div class="bar">Stage 1 · actions/341.json (real file from the repo)</div><pre>{"action_list": [
+  [[8, 71681], [8, 46900], [8, 2187], [8, 669], [8, 25321]],   <span class="dim">← step 1</span>
+  [[2, 110271], [2, 110275], [2, 2926], [2, 110279], [2, 110285]], <span class="dim">← step 2</span>
+  [[6, 70791], [6, 68782], [6, 669], [6, 32507], [6, 68735]],   <span class="dim">← step 3</span>
+  [[5, 68811], [5, 45507], [5, 68800], [5, 45502], [5, 45464]]   <span class="dim">← step 4</span>
+]}
+<span class="dim"># [head_user, new_user] pairs = generated propagation path</span>
+<span class="gr">→ one JSON per news · read by Stage 2</span></pre></div>
+    <div class="term"><div class="bar">Stage 2 · train.py console (format from the code; values = …)</div><pre>Epoch 3/9 ━━━━━━━━━━━━━━━━ 43/43 train/loss: <span class="hi">…</span> train/acc: <span class="hi">…</span>
+epoch 3 val/acc <span class="hi">…</span> val/pre <span class="hi">…</span> val/rec <span class="hi">…</span> val/f1 <span class="hi">…</span>
+        val/auc <span class="hi">…</span> tp <span class="hi">…</span> fp <span class="hi">…</span> tn <span class="hi">…</span> fn <span class="hi">…</span>
+<span class="dim">  ⋮  (max 10 epochs)</span>
+┏━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Test metric ┃ DataLoader 0 ┃
+┡━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ test/acc    │ <span class="hi">…</span>         │
+│ test/pre    │ <span class="hi">…</span>         │
+│ test/rec    │ <span class="hi">…</span>         │
+│ test/f1     │ <span class="hi">…</span>         │
+│ test/auc    │ <span class="hi">…</span>         │
+└─────────────┴───────────┘
+<span class="gr">→ logs/train/runs/&lt;date&gt;/checkpoints/epoch_XXX.ckpt</span>
+<span class="gr">→ TensorBoard logs</span></pre></div>
+  </div>
+  <p class="small mt">Neither stage runs as shipped (see Code), so no numbers are shown. The paper's Tables II–IV are the only results available.</p>
+
+  <div class="card mt2">
+    <h3>Numbers that don't add up</h3>
+    <ul class="tight small">
+      <li>Table III, PolitiFact Recall: BERT 0.878 &gt; RPPG-Fake 0.853, yet "+0.3" is claimed and the text says it "consistently surpasses all baselines"</li>
+      <li>Table IV, Pheme: "w/o temporal" (0.836) beats "w/o structure" (0.834) — the opposite of the stated conclusion</li>
+      <li>Table II, PolitiFact: CSI and Bi-GCN have identical Pre / Rec / F1 (0.834 / 0.742 / 0.758)</li>
+      <li>Baseline list: LLAMA2 and Detect-GPT are described with CAFE's sentence and citation [4]</li>
+      <li>Dataset sizes in the text (Pheme 478, PolitiFact 5,526, GossipCop 3,506) don't match Table I</li>
+    </ul>
+  </div>
+</section>
+
+<!-- =============== 8 REPRODUCTION =============== -->
+<section class="panel" id="reproduction" role="tabpanel">
+  <h2>Reproduction: Datasets &amp; Results</h2>
+  <p class="lead">What we actually ran with the fixed code (seed 0): the data that went in, what the model generated, and how the results compare with the paper.</p>
+
+  <div class="card">
+    <h3>What was run</h3>
+    <div class="pipe mt">
+      <span class="p">Fixed code (branch runnable)</span><span class="ar">→</span>
+      <span class="p">Stage 1: contrastive + RL generator</span><span class="ar">→</span>
+      <span class="p">Stage 2: temporal-aware detector</span><span class="ar">→</span>
+      <span class="p">early · full · no generated path</span>
+    </div>
+    <div class="grid g3 mt">
+      <div><span class="tag t-cl">Round 1</span><p class="small" style="margin:4px 0 0">Text + propagation, no images</p></div>
+      <div><span class="tag t-rl">Round 2</span><p class="small" style="margin:4px 0 0">Text + image + propagation (article bodies and images added where they could be recovered)</p></div>
+      <div><span class="tag t-warn">Same settings</span><p class="small" style="margin:4px 0 0">Seed 0 · T = 100, RL 3 epochs (PolitiFact authors' data: T = 200, 10 epochs) · only the input changes between rounds</p></div>
+    </div>
+  </div>
+
+  <h3 class="mt2">Datasets used</h3>
+  <div class="seg" id="repDs">
+    <button type="button" data-k="politifact" aria-pressed="true">PolitiFact (authors)</button>
+    <button type="button" data-k="pheme">PHEME</button>
+    <button type="button" data-k="gossipcop">GossipCop</button>
+    <button type="button" data-k="politifact_upfd">PolitiFact-UPFD</button>
+  </div>
+  <div class="grid g2 mt">
+    <div class="card rep-dyn" id="repDsCard"></div>
+    <div class="card rep-dyn" id="repCov"></div>
+  </div>
+
+  <div class="card mt">
+    <h3>Paper components vs. what we had</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Dataset</th><th>News text</th><th>Image</th><th>Propagation path</th><th>Publisher</th><th>Label</th></tr></thead>
+        <tbody>
+          <tr><td><b>PolitiFact (authors)</b></td><td><span class="rep-ok">✓</span> Full article</td><td><span class="rep-bad">✕</span> None in the release</td><td><span class="rep-ok">✓</span> Retweets + time</td><td><span class="rep-bad">✕</span></td><td><span class="rep-ok">✓</span></td></tr>
+          <tr><td><b>PHEME</b></td><td><span class="rep-ok">✓</span> Source tweet</td><td><span class="rep-warn">!</span> 36% (round 2)</td><td><span class="rep-ok">✓</span> Reply threads + time</td><td><span class="rep-warn">!</span> Source author only</td><td><span class="rep-ok">✓</span> Rumour = fake</td></tr>
+          <tr><td><b>GossipCop</b></td><td><span class="rep-warn">!</span> Title (R1) · + body for 67% (R2)</td><td><span class="rep-warn">!</span> 52% (round 2)</td><td><span class="rep-ok">✓</span> Retweet trees + time (UPFD)</td><td><span class="rep-bad">✕</span></td><td><span class="rep-ok">✓</span></td></tr>
+          <tr><td><b>PolitiFact-UPFD</b></td><td><span class="rep-warn">!</span> Title (R1) · + body for 55% (R2)</td><td><span class="rep-warn">!</span> 25% (round 2)</td><td><span class="rep-ok">✓</span> Retweet trees + time (UPFD)</td><td><span class="rep-bad">✕</span></td><td><span class="rep-ok">✓</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small mt">Article text is read by CLIP, which only sees the first 77 tokens (about 60 words). Missing images are a zero vector. Image coverage is similar for fake and real news, so "has an image" is not a shortcut to the label.</p>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between">
+      <h3 style="margin:0">Results vs. paper</h3>
+      <div class="row">
+        <div class="seg" id="repResDs">
+          <button type="button" data-k="politifact" aria-pressed="true">PolitiFact (authors)</button>
+          <button type="button" data-k="pheme">PHEME</button>
+          <button type="button" data-k="gossipcop">GossipCop</button>
+          <button type="button" data-k="politifact_upfd">PolitiFact-UPFD</button>
+        </div>
+        <div class="seg" id="repResSet"><button type="button" data-s="early" aria-pressed="true">Early (Table III)</button><button type="button" data-s="full">Full paths (Table II)</button></div>
+        <div class="seg" id="repResM"><button type="button" data-m="acc" aria-pressed="true">Acc</button><button type="button" data-m="pre">Pre</button><button type="button" data-m="rec">Rec</button><button type="button" data-m="f1">F1</button><button type="button" data-m="auc">AUC</button></div>
+      </div>
+    </div>
+    <svg class="chart mt" id="repResChart" viewBox="0 0 760 150" style="width:100%"></svg>
+    <p class="small rep-dyn" id="repResNote"></p>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between">
+      <h3 style="margin:0">Does the generated path help? (early stage, with vs. without G′)</h3>
+      <div class="seg" id="repAbR"><button type="button" data-r="r1">Round 1</button><button type="button" data-r="r2">Round 2</button><button type="button" data-r="r3" aria-pressed="true">Round 3</button></div>
+    </div>
+    <svg class="chart mt" id="repAbChart" viewBox="0 0 760 200" style="width:100%"></svg>
+    <p class="small">Paper claims +2.7 to +4.1 pp from generated paths at the early stage. Here the difference stays within about ±1 pp (one seed), except on the tiny PolitiFact-UPFD set where one run collapsed.</p>
+  </div>
+
+  <div class="card mt2">
+    <div class="row between">
+      <h3 style="margin:0">Real vs. generated propagation path (anonymised test news)</h3>
+      <div class="row">
+        <div class="seg" id="repPathDs"><button type="button" data-k="gossipcop" aria-pressed="true">GossipCop</button><button type="button" data-k="pheme">PHEME</button><button type="button" data-k="politifact">PolitiFact</button></div>
+        <div class="seg" id="repPathEx"></div>
+      </div>
+    </div>
+    <div class="grid g2 mt">
+      <div><div class="small" style="text-align:center"><b>Real path</b> (first users in time order)</div><svg id="repReal" viewBox="0 0 360 360" style="width:100%"></svg></div>
+      <div><div class="small" style="text-align:center"><b>Generated path G′</b> (step by step)</div><svg id="repGen" viewBox="0 0 360 360" style="width:100%"></svg></div>
+    </div>
+    <label class="small">Generation step: <b id="repStepV"></b></label>
+    <input type="range" id="repStep" min="0" max="10" step="1" value="10">
+    <div class="legend mt"><span><i style="background:var(--news)"></i>news</span><span><i style="background:var(--user)"></i>real user</span><span><i style="background:var(--rl)"></i>generated user</span><span><i style="background:var(--ok)"></i>generated user who really engaged</span><span><i style="background:var(--det)"></i>early-stage real users (given)</span></div>
+    <p class="small rep-dyn" id="repPathInfo"></p>
+  </div>
+
+  <h3 class="mt2">Findings</h3>
+  <div class="grid g4">
+    <div class="card"><span class="tag t-ok">Closest</span><h3 class="mt">PHEME ≈ paper</h3><p class="small" style="margin:0">Within ±1 pp of Table II/III in both rounds; images did not change accuracy.</p></div>
+    <div class="card"><span class="tag t-rl">Images + body help</span><h3 class="mt">GossipCop +1.7 / +2.0 pp</h3><p class="small" style="margin:0">Adding article bodies and images lifted early and full accuracy, still ~9 pp below the paper.</p></div>
+    <div class="card"><span class="tag t-warn">Not reproduced</span><h3 class="mt">Generated path ≈ no gain</h3><p class="small" style="margin:0">With vs. without G′ differs by about ±1 pp; the paper reports +2.7–4.1 pp.</p></div>
+    <div class="card"><span class="tag t-bad">Unstable</span><h3 class="mt">Small sets are noisy</h3><p class="small" style="margin:0">PolitiFact-UPFD has 62 test / 32 val news; one news ≈ 1.6 pp and one run collapsed. Needs 5 seeds.</p></div>
+  </div>
+  <div class="note mt">All numbers are from a single seed. The paper averages 5 runs; mean ± std over 5 seeds is the next step before drawing conclusions.</div>
+</section>
+
+<!-- =============== 9 PROGRESS =============== -->
+<section class="panel" id="progress" role="tabpanel">
+  <h2>Progress: where we are, what is done, what is next</h2>
+  <p class="lead">Work log of the code review and reproduction. Click a step for details.</p>
+
+  <div class="card prog-now">
+    <div class="row between">
+      <div>
+        <span class="tag t-ok">Current status</span>
+        <h3 class="mt">Round 3 done — model runs on datasets with all three components</h3>
+        <p class="small" style="margin:0">Text + image + propagation path · GossipCop 2,827 and PHEME 2,004 news · seed 0</p>
+      </div>
+      <div class="prog-meter" aria-label="overall progress">
+        <div class="big" id="progPct"></div>
+        <div class="small">of planned steps done</div>
+      </div>
+    </div>
+    <div class="meter mt"><i id="progBar" style="background:var(--ok)"></i></div>
+    <p class="small mt" style="margin-bottom:0"><b>Next:</b> run 5 seeds on the complete datasets to get mean ± std, then update the Code tab and prepare the GitHub push (only after your approval).</p>
+  </div>
+
+  <div class="split2 mt2">
+    <div class="card">
+      <div class="row between">
+        <h3 style="margin:0">Work steps</h3>
+        <div class="seg" id="progFilter"><button type="button" data-f="all" aria-pressed="true">All</button><button type="button" data-f="done">Done</button><button type="button" data-f="next">Next</button></div>
+      </div>
+      <ol class="steps mt" id="progSteps"></ol>
+    </div>
+    <div class="card prog-dyn" id="progDetail" aria-live="polite"></div>
+  </div>
+
+  <div class="card mt2">
+    <h3>Timeline</h3>
+    <div class="timeline mt" id="progTimeline"></div>
+  </div>
+
+  <div class="card mt2">
+    <h3>Results so far (Accuracy, early stage, seed 0)</h3>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Dataset</th><th class="num">Paper</th><th class="num">Round 1<br><span class="small">text</span></th><th class="num">Round 2<br><span class="small">text + image, full set</span></th><th class="num">Round 3<br><span class="small">complete items only</span></th><th class="num">G′ effect (R3)</th></tr></thead>
+        <tbody>
+          <tr><td><b>PHEME</b></td><td class="num">0.829</td><td class="num">0.835</td><td class="num">0.833</td><td class="num"><b>0.848</b></td><td class="num"><span class="rep-ok">+1.0 pp</span></td></tr>
+          <tr><td><b>GossipCop</b></td><td class="num">0.873</td><td class="num">0.762</td><td class="num">0.779</td><td class="num"><b>0.788</b></td><td class="num"><span class="rep-ok">+0.6 pp</span></td></tr>
+          <tr><td><b>PolitiFact</b></td><td class="num">0.902</td><td class="num">0.844 <span class="small">(authors' data)</span></td><td class="num">0.645 <span class="small">(UPFD, 62 test)</span></td><td class="num">0.750 <span class="small">(16 test)</span></td><td class="num"><span class="rep-warn">too small</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small mt">Each round uses a different set of news (round 3 keeps only items with text, image and propagation), so rounds are not on the same test set. All numbers are single-seed. Details and charts: Reproduction tab.</p>
+  </div>
+
+  <div class="grid g2 mt2">
+    <div class="card">
+      <h3>Next steps</h3>
+      <ul class="checklist" id="progNext"></ul>
+    </div>
+    <div class="card">
+      <h3>Open issues</h3>
+      <ul class="tight small">
+        <li><b>Generated path gain is small</b> (+0.6 to +1.0 pp) versus the paper's +2.7 to +4.1 pp — needs 5 seeds before concluding.</li>
+        <li><b>GossipCop is ~9 pp below the paper</b> — CLIP reads only ~60 words of each article; UPFD is a balanced 50/50 subset.</li>
+        <li><b>PHEME is above the paper</b> on the image subset — a different, possibly easier test set.</li>
+        <li><b>No publisher information</b> in any dataset (paper's PNU meta-path replaced by UU).</li>
+        <li><b>Nothing pushed yet</b> except Lectures; code folder contains a nested <code>.git</code> that must be handled before pushing.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- =============== 10 SUMMARY =============== -->
+<section class="panel" id="summary" role="tabpanel">
+  <h2>Summary</h2>
+  <div class="card eq">
+    <span class="pill t-det">News text + image</span><span>+</span>
+    <span class="pill t-rl">RL-generated propagation path</span><span>→</span>
+    <span class="pill t-cl">Temporal + structure GNN</span><span>→</span>
+    <span class="pill t-ok">Fake / Real, early</span>
+  </div>
+  <div class="sum-grid mt">
+    <div class="card"><h3>What it does</h3><p style="margin:0">Detects fake news <b>before</b> it spreads by simulating who would share it, then using that simulated path as social context.</p></div>
+    <div class="card"><h3>How</h3><p style="margin:0">Contrastive GNN on a publisher–news–user graph → actor-critic agent generates paths → dynamic GAT + attention fusion → classifier.</p></div>
+    <div class="card"><h3>Data</h3><p style="margin:0">PolitiFact, GossipCop, Pheme · text + image + engagements · random 7:1:2 split · early stage = 3–5 engagements.</p></div>
+    <div class="card"><h3>Results</h3><p style="margin:0">Early-stage Acc 0.902 / 0.873 / 0.829 (+4.0 / +4.1 / +2.7 pp). Best on PolitiFact &amp; Pheme with full paths too.</p></div>
+    <div class="card"><h3>Strengths</h3><ul class="tight" style="margin:0"><li>Clear, important problem framing</li><li>Uses social context without waiting for it</li><li>Ablation + sensitivity + case study</li></ul></div>
+    <div class="card"><h3>Watch out for</h3><ul class="tight" style="margin:0"><li>Code does not run; key parts missing</li><li>Code ≠ paper (rewards, encoder, split)</li><li>Small test sets, no std</li><li>Several inconsistent numbers</li></ul></div>
+  </div>
+  <div class="card mt2">
+    <h3>Next steps for the code review</h3>
+    <ol class="tight">
+      <li>Fix config names, imports and missing modules so Stage 1 and Stage 2 start</li>
+      <li>Restore the 7:1:2 split (test = 20%) and make sure no test news is used to train the generator</li>
+      <li>Re-run Stage 1 → Stage 2 on PolitiFact with fixed seeds, 5 runs, report mean ± std</li>
+      <li>Compare with Table III; then try the early-stage (3–5 engagements) setting</li>
+    </ol>
+  </div>
+</section>
+
+<div class="pager" id="pager"></div>
+</main>
+
+<footer><div class="wrap" id="foot">Summarised from the paper and the official code (commit ce3c5db) · all result numbers come from the paper; the model has not been run · Prepared by Supawit Chaingam</div></footer>
+
+<!-- comments drawer -->
+<aside class="drawer" id="drawer" aria-label="Comments">
+  <header>
+    <b>Comments</b>
+    <div class="row" style="gap:6px">
+      <div class="seg" id="cfSeg"><button type="button" data-f="open" aria-pressed="true">Open</button><button type="button" data-f="res">Resolved</button><button type="button" data-f="all">All</button></div>
+      <button class="tbtn" id="drawerClose" type="button" aria-label="Close">✕</button>
+    </div>
+  </header>
+  <div class="body" id="cmtList"></div>
+  <div style="padding:10px 16px;border-top:1px solid var(--line)" class="row">
+    <button class="tbtn" id="btnExport" type="button">Export JSON</button>
+    <button class="tbtn" id="btnReset" type="button">Reset all edits</button>
+  </div>
+</aside>
+
+<div class="composer" id="composer" role="dialog" aria-modal="true" aria-label="Add comment">
+  <div class="box">
+    <b id="compTitle">Add comment</b>
+    <div class="q small" id="compQuote" style="border-left:3px solid var(--cmt);padding-left:8px;margin:8px 0;max-height:4.8em;overflow:hidden"></div>
+    <input id="compName" placeholder="Your name" aria-label="Your name">
+    <textarea id="compText" class="mt" placeholder="Write a comment…" aria-label="Comment"></textarea>
+    <div class="row mt" style="justify-content:flex-end">
+      <button class="tbtn" id="compCancel" type="button">Cancel</button>
+      <button class="tbtn" id="compSave" type="button" aria-pressed="true">Save</button>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script type="application/json" id="repro-data">{"datasets":{"politifact":{"name":"PolitiFact (authors' data)","source":"data.zip in the official repo","text":"Full article","news":483,"fake":296,"real":187,"split":{"train":338,"val":49,"test":96},"engagements":348544,"users":114226,"median_eng":165.0,"median_span_h":6546.225555555556,"median_words":327.0,"coverage":{"fake":{"n":296,"image":0.0,"fulltext":1.0},"real":{"n":187,"image":0.0,"fulltext":1.0}},"graph_edges":612468},"pheme":{"name":"PHEME","source":"figshare 4010619 (CC BY 4.0) + images from tweet media URLs","text":"Source tweet","news":5802,"fake":1972,"real":3830,"split":{"train":4061,"val":580,"test":1161},"engagements":103212,"users":49345,"median_eng":14.0,"median_span_h":3.075555555555556,"median_words":16.0,"coverage":{"fake":{"n":1972,"image":0.31643002028397565,"fulltext":1.0},"real":{"n":3830,"image":0.3817232375979112,"fulltext":1.0}},"graph_edges":156736},"gossipcop":{"name":"GossipCop","source":"UPFD (propagation) + FakeNewsNet (titles) + crawled article/image","text":"Title (+ article body in round 2)","news":5464,"fake":2732,"real":2732,"split":{"train":3824,"val":546,"test":1094},"engagements":308798,"users":75914,"median_eng":48.0,"median_span_h":214.98527777777778,"median_words":284.5,"coverage":{"fake":{"n":2732,"image":0.5051244509516838,"fulltext":0.6511713030746705},"real":{"n":2732,"image":0.5314787701317716,"fulltext":0.6925329428989752}},"graph_edges":468904},"politifact_upfd":{"name":"PolitiFact-UPFD","source":"UPFD + FakeNewsNet + crawled article/image","text":"Title (+ article body in round 2)","news":314,"fake":157,"real":157,"split":{"train":220,"val":32,"test":62},"engagements":40740,"users":30812,"median_eng":77.5,"median_span_h":5266.043472222222,"median_words":32.0,"coverage":{"fake":{"n":157,"image":0.27388535031847133,"fulltext":0.5605095541401274},"real":{"n":157,"image":0.22929936305732485,"fulltext":0.535031847133758}},"graph_edges":75992}},"results":{"politifact":{"early":{"acc":0.8438,"f1":0.7692,"macro_f1":0.8256,"pre":0.8929,"rec":0.6757,"auc":0.9404},"full":{"acc":0.8646,"f1":0.806,"macro_f1":0.851,"pre":0.9,"rec":0.7297,"auc":0.9528},"early_no_gen":{"acc":0.8333,"f1":0.75,"macro_f1":0.8125,"pre":0.8889,"rec":0.6486,"auc":0.9317}},"pheme":{"early":{"acc":0.8355,"f1":0.8744,"macro_f1":0.818,"pre":0.8808,"rec":0.8681,"auc":0.91},"full":{"acc":0.8355,"f1":0.8736,"macro_f1":0.819,"pre":0.8859,"rec":0.8616,"auc":0.9095},"early_no_gen":{"acc":0.8381,"f1":0.8752,"macro_f1":0.8224,"pre":0.8905,"rec":0.8603,"auc":0.91},"early_mm":{"acc":0.8329,"f1":0.8696,"macro_f1":0.8185,"pre":0.8961,"rec":0.8446,"auc":0.9164},"full_mm":{"acc":0.8295,"f1":0.869,"macro_f1":0.8123,"pre":0.8807,"rec":0.8577,"auc":0.9154},"early_no_gen_mm":{"acc":0.8295,"f1":0.8687,"macro_f1":0.8127,"pre":0.8827,"rec":0.8551,"auc":0.9162},"early_complete":{"acc":0.8483,"f1":0.8935,"macro_f1":0.8147,"pre":0.8797,"rec":0.9078,"auc":0.9115},"full_complete":{"acc":0.8657,"f1":0.9069,"macro_f1":0.8329,"pre":0.8826,"rec":0.9326,"auc":0.9275},"early_no_gen_complete":{"acc":0.8383,"f1":0.8866,"macro_f1":0.8026,"pre":0.8729,"rec":0.9007,"auc":0.9077}},"gossipcop":{"early":{"acc":0.7623,"f1":0.767,"macro_f1":0.7622,"pre":0.7522,"rec":0.7824,"auc":0.8496},"full":{"acc":0.7815,"f1":0.7938,"macro_f1":0.7808,"pre":0.7516,"rec":0.841,"auc":0.8738},"early_no_gen":{"acc":0.7651,"f1":0.7763,"macro_f1":0.7645,"pre":0.7409,"rec":0.8154,"auc":0.8616},"early_mm":{"acc":0.7788,"f1":0.7776,"macro_f1":0.7788,"pre":0.7819,"rec":0.7733,"auc":0.8465},"full_mm":{"acc":0.8016,"f1":0.8166,"macro_f1":0.8003,"pre":0.7594,"rec":0.883,"auc":0.887},"early_no_gen_mm":{"acc":0.7834,"f1":0.7919,"macro_f1":0.783,"pre":0.7618,"rec":0.8245,"auc":0.8527},"early_complete":{"acc":0.7876,"f1":0.7909,"macro_f1":0.7876,"pre":0.7993,"rec":0.7828,"auc":0.8536},"full_complete":{"acc":0.7929,"f1":0.7993,"macro_f1":0.7927,"pre":0.7952,"rec":0.8034,"auc":0.8564},"early_no_gen_complete":{"acc":0.7823,"f1":0.798,"macro_f1":0.781,"pre":0.7618,"rec":0.8379,"auc":0.8541}},"politifact_upfd_title":{"early":{"acc":0.8548,"f1":0.8525,"macro_f1":0.8548,"pre":0.8667,"rec":0.8387,"auc":0.9407},"full":{"acc":0.8548,"f1":0.8696,"macro_f1":0.853,"pre":0.7895,"rec":0.9677,"auc":0.9396},"early_no_gen":{"acc":0.8387,"f1":0.8387,"macro_f1":0.8387,"pre":0.8387,"rec":0.8387,"auc":0.9136}},"politifact_upfd":{"early_mm":{"acc":0.6452,"f1":0.7317,"macro_f1":0.6039,"pre":0.5882,"rec":0.9677,"auc":0.719},"full_mm":{"acc":0.8387,"f1":0.8485,"macro_f1":0.838,"pre":0.8,"rec":0.9032,"auc":0.9261},"early_no_gen_mm":{"acc":0.871,"f1":0.8857,"macro_f1":0.8688,"pre":0.7949,"rec":1.0,"auc":0.9084},"early_complete":{"acc":0.75,"f1":0.6,"macro_f1":0.7091,"pre":1.0,"rec":0.4286,"auc":0.9206},"full_complete":{"acc":0.8125,"f1":0.8235,"macro_f1":0.8118,"pre":0.7,"rec":1.0,"auc":0.9683},"early_no_gen_complete":{"acc":1.0,"f1":1.0,"macro_f1":1.0,"pre":1.0,"rec":1.0,"auc":1.0}}},"stage1":{"politifact":{"r1":{"hit_rate":{"train":0.004503486813368879,"val":0.0056144728633811605,"test":0.005092568033526073},"avg_users":200.3271221532091,"epochs":10}},"pheme":{"r1":{"hit_rate":{"train":0.0007041301314121126,"val":0.0009465807004697184,"test":0.000874469072348931},"avg_users":100.22595656670114,"epochs":3},"r2":{"hit_rate":{"train":0.0008112658809122915,"val":0.0009287206872533086,"test":0.0008210400435508197},"avg_users":100.22457773181661,"epochs":3}},"gossipcop":{"r1":{"hit_rate":{"train":0.017363244401189627,"val":0.018415890609228894,"test":0.018191668329959224},"avg_users":100.16178623718888,"epochs":3},"r2":{"hit_rate":{"train":0.030916403599795205,"val":0.030051991087242186,"test":0.030347960803322784},"avg_users":99.6853953147877,"epochs":3}},"politifact_upfd":{"r2":{"hit_rate":{"train":0.006184790792728837,"val":0.010731707317073172,"test":0.02108433734939759},"avg_users":92.01273885350318,"epochs":3}}},"examples":{"gossipcop":[{"label":"fake","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[0,19],[0,20],[0,21],[0,22],[0,23],[0,24],[0,25],[0,26],[0,27],[0,28],[0,29],[0,30],[0,31],[0,32],[0,33],[0,34],[0,35],[33,36],[0,37],[0,38],[0,39],[0,40],[0,41],[0,42],[0,43],[0,44]],"real_total":44,"generated":[[[0,1,1],[0,2,1],[0,3,1]],[[0,4,0],[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0]],[[0,14,0],[0,15,0],[0,16,0],[0,17,0],[6,18,0],[0,19,0],[0,20,0],[0,21,0],[0,22,0],[0,23,0]],[[0,24,0],[12,25,0],[19,26,0],[0,27,0],[0,28,0],[0,29,0],[0,30,0],[0,31,0],[0,32,0],[0,33,0]],[[28,34,0],[0,35,0],[11,36,0],[8,37,0],[9,38,0],[0,39,0],[0,40,0],[1,41,0],[0,42,0],[33,43,0]],[[0,44,0],[24,45,0],[28,46,0],[0,47,0],[0,48,0],[38,49,0],[19,50,0],[21,51,0],[0,52,0],[41,53,0]],[[28,54,0],[21,55,0],[24,56,0],[28,57,0],[33,58,0],[50,59,0],[32,60,0],[2,61,0],[44,62,0],[35,63,0]],[[43,64,0],[19,65,0],[3,66,0],[6,67,0],[58,68,0],[0,69,0],[41,70,0],[0,71,0],[18,72,0],[58,73,0]],[[65,74,0],[65,75,0],[65,76,0],[12,77,0],[1,78,0],[62,79,0],[56,80,0],[59,81,0],[0,82,0],[11,83,0]],[[77,84,0],[21,85,0],[0,86,0],[52,87,0],[25,88,0],[0,89,0],[55,90,0],[48,91,0],[10,92,0],[25,93,0]],[[67,94,0],[30,95,0],[89,96,0],[14,97,0],[0,98,0],[60,99,0],[0,100,0]]]},{"label":"real","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[0,19],[0,20],[0,21],[0,22],[0,23],[0,24],[0,25],[0,26],[0,27],[0,28],[0,29],[0,30],[0,31],[0,32],[0,33],[0,34],[0,35],[0,36],[0,37],[0,38],[0,39],[0,40],[0,41],[0,42],[0,43],[0,44],[0,45],[0,46],[0,47],[0,48],[0,49],[0,50],[0,51],[0,52],[0,53],[51,54],[53,55],[53,56],[53,57],[53,58],[53,59],[53,60],[0,61]],"real_total":61,"generated":[[[0,1,1],[0,2,1],[0,3,1],[0,4,1],[0,5,1]],[[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0],[0,14,0],[0,15,0]],[[0,16,0],[0,17,0],[4,18,0],[0,19,0],[0,20,0],[0,21,0],[0,22,0],[0,23,0],[0,24,0],[9,25,0]],[[0,26,0],[0,27,0],[0,28,0],[18,29,0],[17,30,0],[0,31,0],[2,32,0],[0,33,0],[23,34,0],[0,35,0]],[[0,36,0],[0,37,0],[18,38,0],[0,39,0],[0,40,0],[0,41,0],[27,42,0],[0,43,0],[9,44,0],[0,45,0]],[[28,46,0],[1,47,0],[0,48,0],[24,49,0],[2,50,0],[0,51,0],[5,52,0],[16,53,1],[18,54,0],[0,55,0]],[[0,56,0],[32,57,0],[42,58,0],[12,59,0],[10,60,0],[2,61,0],[0,62,0],[0,63,0],[21,64,0],[8,65,0]],[[4,66,0],[2,67,0],[35,68,0],[30,69,0],[36,70,0],[35,71,0],[4,72,0],[33,73,0],[23,74,0],[65,75,0]],[[0,76,0],[23,77,0],[0,78,0],[1,79,0],[72,80,0],[36,81,0],[45,82,1],[67,83,0],[51,84,0],[60,85,0]],[[84,86,0],[85,87,0],[48,88,0],[0,89,0],[16,90,0],[0,91,0],[0,92,0],[0,93,0],[69,94,0],[85,95,0]],[[10,96,0],[59,97,0],[0,98,0],[0,99,0],[42,100,0]]]},{"label":"fake","real":[[0,1],[0,2],[0,3],[0,4],[3,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[3,13],[0,14],[0,15],[1,16],[0,17],[0,18],[0,19],[0,20],[0,21],[0,22],[0,23],[0,24],[1,25],[0,26],[0,27],[0,28],[0,29],[0,30],[3,31],[3,32],[3,33],[3,34],[3,35],[4,36],[1,37],[1,38],[3,39],[3,40],[38,41],[3,42],[0,43],[0,44],[37,45],[41,46],[0,47],[0,48],[0,49],[0,50],[0,51],[14,52],[14,53],[14,54],[0,55],[14,56],[14,57],[14,58],[0,59],[0,60],[14,61],[59,62],[0,63],[59,64],[0,65],[59,66],[0,67],[0,68],[0,69],[0,70],[0,71],[0,72],[0,73],[0,74],[0,75],[0,76],[0,77],[0,78],[0,79],[0,80]],"real_total":80,"generated":[[[0,1,1],[0,2,1],[0,3,1]],[[3,4,0],[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0]],[[0,14,0],[0,15,0],[0,16,0],[0,17,0],[0,18,0],[0,19,0],[9,20,0],[0,21,0],[0,22,0],[0,23,0]],[[0,24,0],[0,25,0],[17,26,0],[0,27,0],[0,28,0],[0,29,0],[12,30,0],[0,31,0],[9,32,0],[15,33,0]],[[0,34,0],[17,35,0],[27,36,0],[0,37,0],[0,38,0],[15,39,0],[12,40,0],[0,41,0],[0,42,0],[17,43,0]],[[26,44,0],[20,45,0],[0,46,0],[0,47,0],[33,48,0],[0,49,0],[37,50,0],[6,51,0],[23,52,0],[0,53,0]],[[6,54,0],[24,55,0],[0,56,0],[0,57,0],[50,58,0],[16,59,0],[0,60,0],[16,61,0],[0,62,0],[10,63,0]],[[11,64,0],[61,65,0],[0,66,0],[20,67,0],[0,68,0],[7,69,0],[29,70,0],[30,71,0],[43,72,0],[36,73,0]],[[59,74,0],[2,75,0],[0,76,0],[34,77,0],[0,78,0],[36,79,0],[19,80,0],[19,81,0],[20,82,0],[24,83,0]],[[69,84,0],[4,85,0],[51,86,0],[71,87,0],[50,88,0],[69,89,0],[18,90,0],[0,91,0],[11,92,0],[77,93,0]],[[1,94,0],[0,95,0],[51,96,0],[31,97,0],[6,98,0],[49,99,0],[7,100,0]]]},{"label":"real","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[0,19],[0,20],[0,21],[0,22],[0,23],[0,24],[0,25],[0,26],[0,27],[0,28],[0,29],[0,30],[0,31],[0,32],[0,33],[0,34],[0,35],[0,36],[0,37],[0,38],[0,39],[0,40],[36,41],[0,42],[0,43],[0,44]],"real_total":44,"generated":[[[0,1,1],[0,2,1],[0,3,1],[0,4,1]],[[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0],[0,14,0]],[[0,15,0],[0,16,0],[0,17,0],[0,18,0],[0,19,0],[5,20,0],[0,21,0],[7,22,0],[0,23,0],[0,24,0]],[[0,25,0],[0,26,0],[21,27,0],[0,28,0],[0,29,0],[0,30,0],[0,31,0],[12,32,0],[10,33,0],[0,34,0]],[[8,35,0],[8,36,0],[4,37,1],[3,38,0],[2,39,0],[0,40,0],[0,41,0],[0,42,0],[0,43,0],[24,44,0]],[[0,45,0],[14,46,0],[0,47,0],[0,48,0],[0,49,0],[5,50,0],[0,51,0],[35,52,0],[9,53,0],[35,54,1]],[[50,55,0],[0,56,0],[17,57,0],[17,58,0],[53,59,0],[19,60,0],[30,61,0],[16,62,0],[0,63,0]],[[34,64,0],[0,65,0],[0,66,0],[21,67,0],[0,68,0],[19,69,0],[0,70,0],[16,71,0],[9,72,0],[2,73,0]],[[12,74,0],[70,75,0],[0,76,0],[0,77,0],[57,78,0],[34,79,0],[0,80,0],[0,81,0],[0,82,0],[23,83,0]],[[60,84,0],[49,85,0],[28,86,0],[0,87,0],[12,88,0],[33,89,0],[54,90,0],[75,91,0],[0,92,0],[25,93,0]],[[0,94,0],[0,95,0],[0,96,0],[35,97,0],[0,98,0],[0,99,0],[20,100,0]]]}],"pheme":[{"label":"fake","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[6,11],[0,12],[0,13],[0,14],[0,15],[13,16],[7,17],[8,18],[2,19],[9,20],[11,21],[10,22],[5,23],[9,24],[4,25],[3,26],[1,27],[1,28],[1,29]],"real_total":30,"generated":[[[0,1,1],[0,2,1],[0,3,1],[0,4,1],[0,5,1]],[[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0],[0,14,0],[0,15,0]],[[0,16,0],[13,17,0],[0,18,0],[0,19,0],[0,20,0],[0,21,0],[0,22,0],[0,23,0],[1,24,0],[0,25,0]],[[0,26,0],[5,27,0],[18,28,0],[0,29,0],[21,30,0],[12,31,0],[0,32,0],[0,33,0],[10,34,0],[1,35,0]],[[0,36,0],[33,37,0],[21,38,0],[1,39,0],[12,40,0],[33,41,0],[12,42,0],[13,43,0],[13,44,0],[0,45,0]],[[7,46,0],[19,47,0],[29,48,0],[14,49,0],[21,50,0],[6,51,0],[9,52,0],[0,53,0],[5,54,0],[9,55,0]],[[10,56,0],[24,57,0],[11,58,0],[5,59,0],[18,60,0],[27,61,0],[55,62,0],[21,63,0],[12,64,0],[10,65,0]],[[5,66,0],[48,67,0],[9,68,0],[65,69,0],[35,70,0],[37,71,0],[26,72,0],[16,73,0],[58,74,0],[11,75,0]],[[0,76,0],[51,77,0],[74,78,0],[43,79,0],[33,80,0],[33,81,0],[69,82,0],[60,83,0],[35,84,0],[34,85,0]],[[42,86,0],[68,87,0],[84,88,0],[74,89,0],[57,90,0],[56,91,0],[74,92,0],[0,93,0],[57,94,0],[72,95,0]],[[66,96,0],[33,97,0],[67,98,0],[0,99,0],[0,100,0]]]},{"label":"real","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[6,16],[0,17],[15,18],[15,19],[8,20],[14,21],[21,22],[15,23],[23,24],[6,25],[23,26],[14,27],[24,28],[23,29],[6,30],[5,31],[23,32],[5,33],[23,34],[33,35],[34,36],[32,37]],"real_total":38,"generated":[[[0,1,1],[0,2,1],[0,3,1],[0,4,1]],[[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0],[0,14,0]],[[0,15,0],[0,16,0],[0,17,0],[0,18,0],[0,19,0],[14,20,0],[0,21,0],[0,22,0],[0,23,0],[0,24,0]],[[1,25,0],[0,26,0],[4,27,0],[0,28,0],[9,29,0],[0,30,0],[0,31,0],[10,32,0],[20,33,0],[0,34,0]],[[0,35,0],[6,36,0],[0,37,0],[18,38,0],[29,39,0],[0,40,0],[0,41,0],[12,42,0],[15,43,0],[19,44,0]],[[28,45,0],[15,46,0],[19,47,0],[9,48,0],[5,49,0],[17,50,0],[9,51,0],[18,52,0],[36,53,0],[41,54,0]],[[0,55,0],[6,56,0],[9,57,0],[4,58,0],[40,59,0],[12,60,0],[21,61,0],[18,62,0],[27,63,0],[45,64,0]],[[47,65,0],[0,66,0],[41,67,0],[61,68,0],[53,69,0],[0,70,0],[43,71,0],[36,72,0],[1,73,0],[62,74,0]],[[58,75,0],[50,76,0],[72,77,0],[10,78,0],[46,79,0],[27,80,0],[46,81,0],[27,82,0],[0,83,0],[54,84,0]],[[0,85,0],[12,86,0],[77,87,0],[8,88,0],[52,89,0],[75,90,0],[26,91,0],[41,92,0],[50,93,0],[62,94,0]],[[56,95,0],[37,96,0],[14,97,0],[14,98,0],[10,99,0],[14,100,0]]]},{"label":"fake","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[6,14],[0,15],[0,16],[15,17],[0,18],[0,19],[3,20],[18,21],[0,22],[4,23],[0,24],[22,25],[0,26],[0,27],[0,28],[0,29],[29,30],[0,31],[25,32],[0,33]],"real_total":33,"generated":[[[0,1,1],[0,2,1],[0,3,1]],[[0,4,0],[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0]],[[0,14,0],[13,15,0],[0,16,0],[2,17,0],[4,18,0],[1,19,0],[0,20,0],[5,21,0],[0,22,0],[7,23,0]],[[14,24,0],[0,25,0],[19,26,0],[0,27,0],[0,28,0],[0,29,0],[17,30,0],[2,31,0],[5,32,0],[0,33,0]],[[0,34,0],[24,35,0],[0,36,0],[21,37,0],[0,38,0],[0,39,0],[0,40,0],[3,41,0],[15,42,0],[2,43,0]],[[6,44,0],[0,45,0],[18,46,0],[0,47,0],[36,48,0],[4,49,0],[1,50,0],[0,51,0],[24,52,0],[0,53,0]],[[0,54,0],[0,55,0],[28,56,0],[7,57,0],[50,58,0],[39,59,0],[0,60,0],[35,61,0],[42,62,0],[20,63,0]],[[22,64,0],[63,65,0],[62,66,0],[3,67,0],[17,68,0],[26,69,0],[30,70,0],[13,71,0],[30,72,0],[26,73,0]],[[49,74,0],[65,75,0],[1,76,0],[58,77,0],[34,78,0],[48,79,0],[31,80,0],[0,81,0],[3,82,0],[49,83,0]],[[14,84,0],[55,85,0],[77,86,0],[41,87,0],[43,88,0],[80,89,0],[17,90,0],[54,91,0],[62,92,0],[5,93,0]],[[86,94,0],[0,95,0],[50,96,0],[69,97,0],[50,98,0],[75,99,0],[69,100,0]]]},{"label":"real","real":[[0,1],[0,2],[0,3],[3,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[12,19],[0,20],[17,21],[21,22],[3,23],[5,24],[21,25],[21,26],[26,27],[27,28],[26,29],[21,30],[27,31],[21,32]],"real_total":32,"generated":[[[0,1,1],[0,2,1],[0,3,1],[3,4,1],[0,5,1]],[[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[2,12,0],[0,13,0],[0,14,0],[0,15,0]],[[0,16,0],[0,17,0],[7,18,0],[0,19,0],[14,20,0],[0,21,0],[0,22,0],[0,23,0],[0,24,0],[0,25,0]],[[8,26,0],[0,27,0],[0,28,0],[0,29,0],[0,30,0],[0,31,0],[0,32,0],[0,33,0],[0,34,0],[24,35,0]],[[25,36,0],[0,37,0],[19,38,0],[14,39,0],[6,40,0],[8,41,0],[0,42,0],[0,43,0],[0,44,0],[19,45,0]],[[29,46,0],[6,47,0],[0,48,0],[2,49,0],[9,50,0],[31,51,0],[26,52,0],[19,53,0],[0,54,0],[42,55,0]],[[43,56,0],[53,57,0],[13,58,0],[9,59,0],[43,60,0],[10,61,0],[0,62,0],[53,63,0],[23,64,0],[52,65,0]],[[46,66,0],[47,67,0],[49,68,0],[44,69,0],[44,70,0],[36,71,0],[6,72,0],[25,73,0],[12,74,0],[60,75,0]],[[7,76,0],[13,77,0],[32,78,0],[56,79,0],[47,80,0],[65,81,0],[64,82,0],[11,83,0],[52,84,0],[52,85,0]],[[36,86,0],[73,87,0],[28,88,0],[67,89,0],[43,90,0],[24,91,0],[57,92,0],[82,93,0],[81,94,0],[25,95,0]],[[53,96,0],[68,97,0],[69,98,0],[64,99,0],[92,100,0]]]}],"politifact":[{"label":"fake","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[8,13],[0,14],[0,15],[4,16],[0,17],[0,18],[8,19],[8,20],[8,21],[8,22],[22,23],[23,24],[8,25],[23,26],[20,27],[27,28],[8,29],[8,30],[8,31],[8,32],[27,33],[32,34],[8,35],[0,36],[0,37],[22,38],[8,39],[37,40],[0,41],[0,42],[37,43],[0,44],[0,45],[0,46],[0,47],[0,48],[0,49],[0,50],[0,51],[0,52],[0,53],[53,54],[53,55],[55,56],[0,57],[53,58]],"real_total":58,"generated":[[[0,1,1],[0,2,1],[0,3,1],[0,4,1]],[[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0],[0,14,0]],[[0,15,0],[0,16,0],[0,17,0],[0,18,0],[0,19,0],[0,20,0],[0,21,0],[0,22,0],[10,23,0],[0,24,0]],[[0,25,0],[0,26,0],[0,27,0],[0,28,0],[0,29,0],[15,30,0],[0,31,0],[0,32,0],[0,33,0],[0,34,0]],[[0,35,0],[12,36,0],[0,37,0],[27,38,0],[0,39,0],[0,40,0],[0,41,0],[0,42,0],[0,43,0],[0,44,0]],[[0,45,0],[44,46,0],[0,47,0],[41,48,0],[0,49,0],[0,50,0],[0,51,0],[0,52,0],[0,53,0],[24,54,0]],[[0,55,0],[29,56,0],[0,57,0],[0,58,0],[7,59,0],[0,60,0],[6,61,0],[50,62,0],[0,63,0],[48,64,0]],[[0,65,0],[0,66,0],[58,67,0],[15,68,0],[0,69,0],[36,70,0],[16,71,0],[23,72,0],[3,73,0],[62,74,0]],[[32,75,0],[0,76,0],[13,77,0],[12,78,0],[0,79,0],[47,80,0],[8,81,0],[31,82,0],[0,83,0],[0,84,0]],[[12,85,0],[50,86,0],[0,87,0],[12,88,0],[8,89,0],[24,90,0],[48,91,0],[78,92,0],[19,93,0],[0,94,0]],[[63,95,0],[30,96,0],[0,97,0],[66,98,0],[44,99,0],[33,100,0],[94,101,0],[31,102,0],[21,103,0],[36,104,0]],[[46,105,0],[21,106,0],[14,107,0],[0,108,0],[50,109,0],[82,110,0],[33,111,0],[0,112,0],[22,113,0],[21,114,0]],[[88,115,0],[105,116,0],[8,117,0],[28,118,0],[10,119,0],[43,120,0],[29,121,0],[87,122,0],[33,123,0],[0,124,0]],[[112,125,0],[69,126,0],[123,127,0],[0,128,0],[18,129,0],[29,130,0],[112,131,0],[44,132,0],[124,133,0],[87,134,0]],[[26,135,0],[8,136,0],[126,137,0],[100,138,0],[17,139,0],[112,140,0],[57,141,0],[131,142,0],[130,143,0],[8,144,0]],[[0,145,0],[40,146,0],[11,147,0],[1,148,0],[44,149,0],[67,150,0],[108,151,0],[39,152,0],[136,153,0],[32,154,0]],[[35,155,0],[0,156,0],[124,157,0],[6,158,0],[16,159,0],[57,160,0],[2,161,0],[57,162,0],[15,163,0],[149,164,0]],[[111,165,0],[32,166,0],[93,167,0],[43,168,0],[17,169,0],[91,170,0],[117,171,0],[103,172,0],[24,173,0],[22,174,0]],[[66,175,0],[44,176,0],[87,177,0],[43,178,0],[13,179,0],[43,180,0],[44,181,0],[19,182,0],[78,183,0],[78,184,0]],[[164,185,0],[41,186,0],[30,187,0],[105,188,0],[52,189,0],[11,190,0],[12,191,0],[45,192,0],[119,193,0],[162,194,0]],[[7,195,0],[129,196,0],[7,197,0],[118,198,0],[14,199,0],[94,200,0]]]},{"label":"real","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[0,19],[0,20],[0,21],[0,22],[0,23],[0,24],[0,25],[0,26],[26,27],[26,28]],"real_total":28,"generated":[[[0,1,1],[0,2,1],[0,3,1]],[[0,4,0],[0,5,0],[0,6,0],[2,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0],[0,13,0]],[[0,14,0],[0,15,0],[0,16,0],[0,17,0],[0,18,0],[2,19,0],[0,20,0],[0,21,0],[0,22,0],[0,23,0]],[[0,24,0],[0,25,0],[0,26,0],[0,27,0],[0,28,0],[0,29,0],[9,30,0],[0,31,0],[0,32,0],[0,33,0]],[[0,34,0],[0,35,0],[9,36,0],[0,37,0],[0,38,0],[0,39,0],[6,40,0],[0,41,0],[14,42,0],[0,43,0]],[[0,44,0],[29,45,0],[12,46,0],[0,47,0],[2,48,0],[0,49,0],[0,50,0],[0,51,0],[0,52,0],[5,53,0]],[[29,54,0],[52,55,0],[49,56,0],[44,57,0],[0,58,0],[0,59,0],[0,60,0],[0,61,0],[31,62,0],[39,63,0]],[[37,64,0],[0,65,0],[0,66,0],[0,67,0],[0,68,0],[0,69,0],[0,70,0],[24,71,0],[0,72,0],[0,73,0]],[[58,74,0],[25,75,0],[0,76,0],[0,77,0],[31,78,0],[44,79,0],[0,80,0],[36,81,0],[0,82,0],[0,83,0]],[[83,84,0],[0,85,0],[24,86,0],[0,87,0],[33,88,0],[14,89,0],[22,90,0],[0,91,0],[35,92,0],[14,93,0]],[[18,94,0],[50,95,0],[77,96,0],[41,97,0],[0,98,0],[35,99,0],[27,100,0],[0,101,0],[21,102,0],[30,103,0]],[[91,104,0],[0,105,0],[103,106,0],[59,107,0],[43,108,0],[19,109,0],[92,110,0],[5,111,0],[57,112,0],[32,113,0]],[[65,114,0],[91,115,0],[81,116,0],[89,117,0],[75,118,0],[17,119,0],[93,120,0],[67,121,0],[65,122,0],[89,123,0]],[[91,124,0],[76,125,0],[71,126,0],[43,127,0],[34,128,0],[106,129,0],[109,130,0],[0,131,0],[110,132,0],[70,133,0]],[[51,134,0],[70,135,0],[94,136,0],[22,137,0],[99,138,0],[80,139,0],[75,140,0],[105,141,0],[48,142,0],[3,143,0]],[[23,144,0],[62,145,0],[44,146,0],[10,147,0],[100,148,0],[104,149,0],[27,150,0],[105,151,0],[90,152,0],[17,153,0]],[[33,154,0],[78,155,0],[18,156,0],[11,157,0],[47,158,0],[85,159,0],[88,160,0],[29,161,0],[100,162,0],[67,163,0]],[[97,164,0],[152,165,0],[34,166,0],[103,167,0],[117,168,0],[105,169,0],[128,170,0],[96,171,0],[73,172,0],[97,173,0]],[[14,174,0],[162,175,0],[11,176,0],[119,177,0],[40,178,0],[122,179,0],[81,180,0],[123,181,0],[28,182,0],[59,183,0]],[[140,184,0],[125,185,0],[49,186,0],[91,187,0],[119,188,0],[108,189,0],[174,190,0],[130,191,0],[43,192,0],[177,193,0]],[[184,194,0],[184,195,0],[185,196,0],[182,197,0],[185,198,0],[65,199,0],[86,200,0]]]},{"label":"fake","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[0,14],[0,15],[0,16],[0,17],[0,18],[0,19],[19,20],[0,21],[0,22],[0,23],[23,24],[23,25],[23,26],[23,27],[23,28]],"real_total":28,"generated":[[[0,1,1],[0,2,1]],[[0,3,0],[0,4,0],[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0]],[[0,13,0],[0,14,0],[0,15,0],[0,16,0],[0,17,0],[0,18,0],[0,19,0],[6,20,0],[0,21,0],[0,22,0]],[[10,23,0],[0,24,0],[0,25,0],[0,26,0],[0,27,0],[0,28,0],[0,29,0],[0,30,0],[0,31,0],[0,32,0]],[[0,33,0],[3,34,0],[0,35,0],[31,36,0],[0,37,0],[6,38,0],[1,39,0],[0,40,0],[0,41,0],[21,42,0]],[[0,43,0],[4,44,0],[0,45,0],[0,46,0],[24,47,0],[6,48,0],[26,49,0],[25,50,0],[13,51,0],[0,52,0]],[[0,53,0],[0,54,0],[0,55,0],[15,56,0],[5,57,0],[6,58,0],[12,59,0],[21,60,0],[0,61,0],[0,62,0]],[[0,63,0],[5,64,0],[0,65,0],[18,66,0],[0,67,0],[0,68,0],[0,69,0],[11,70,0],[13,71,0],[32,72,0]],[[0,73,0],[0,74,0],[8,75,0],[0,76,0],[0,77,0],[0,78,0],[41,79,0],[0,80,0],[3,81,0],[33,82,0]],[[0,83,0],[0,84,0],[0,85,0],[32,86,0],[0,87,0],[4,88,0],[0,89,0],[0,90,0],[20,91,0],[5,92,0]],[[7,93,0],[10,94,0],[61,95,0],[0,96,0],[68,97,0],[7,98,0],[47,99,0],[17,100,0],[45,101,0],[18,102,0]],[[0,103,0],[32,104,0],[69,105,0],[16,106,0],[28,107,0],[34,108,0],[8,109,0],[41,110,0],[7,111,0],[80,112,0]],[[76,113,0],[93,114,0],[95,115,0],[63,116,0],[104,117,0],[76,118,0],[84,119,0],[56,120,0],[54,121,0],[73,122,0]],[[15,123,0],[35,124,0],[16,125,0],[87,126,0],[0,127,0],[119,128,0],[23,129,0],[37,130,0],[34,131,0],[11,132,0]],[[0,133,0],[76,134,0],[103,135,0],[13,136,0],[68,137,0],[40,138,0],[71,139,0],[21,140,0],[76,141,0],[47,142,0]],[[52,143,0],[78,144,0],[54,145,0],[55,146,0],[65,147,0],[54,148,0],[0,149,0],[69,150,0],[67,151,0],[41,152,0]],[[65,153,0],[21,154,0],[147,155,0],[67,156,0],[132,157,0],[93,158,0],[72,159,0],[50,160,0],[31,161,0],[60,162,0]],[[119,163,0],[142,164,0],[60,165,0],[82,166,0],[65,167,0],[26,168,0],[59,169,0],[36,170,0],[68,171,0],[151,172,0]],[[103,173,0],[9,174,0],[73,175,0],[100,176,0],[28,177,0],[113,178,0],[103,179,0],[147,180,0],[21,181,0],[25,182,0]],[[25,183,0],[12,184,0],[67,185,0],[55,186,0],[11,187,0],[149,188,0],[169,189,0],[56,190,0],[25,191,0],[6,192,0]],[[129,193,0],[187,194,0],[167,195,0],[138,196,0],[53,197,0],[77,198,0],[103,199,0],[104,200,0]]]},{"label":"real","real":[[0,1],[0,2],[0,3],[0,4],[0,5],[0,6],[0,7],[0,8],[0,9],[0,10],[0,11],[0,12],[0,13],[5,14],[0,15],[0,16],[0,17],[0,18],[0,19],[0,20],[0,21],[0,22],[0,23],[0,24],[0,25],[0,26]],"real_total":26,"generated":[[[0,1,1],[0,2,1]],[[0,3,0],[0,4,0],[0,5,0],[0,6,0],[0,7,0],[0,8,0],[0,9,0],[0,10,0],[0,11,0],[0,12,0]],[[0,13,0],[5,14,0],[0,15,0],[0,16,0],[0,17,0],[0,18,0],[0,19,0],[0,20,0],[0,21,0],[0,22,0]],[[0,23,0],[0,24,0],[0,25,0],[0,26,0],[0,27,0],[0,28,0],[0,29,0],[0,30,0],[0,31,0],[0,32,0]],[[0,33,0],[0,34,0],[29,35,0],[0,36,0],[0,37,0],[25,38,0],[0,39,0],[0,40,0],[12,41,0],[0,42,0]],[[30,43,0],[0,44,0],[33,45,0],[8,46,0],[23,47,0],[26,48,0],[0,49,0],[0,50,0],[0,51,0],[0,52,0]],[[0,53,0],[8,54,0],[0,55,0],[6,56,0],[0,57,0],[0,58,0],[0,59,0],[15,60,0],[0,61,0],[28,62,0]],[[40,63,0],[0,64,0],[23,65,0],[0,66,0],[0,67,0],[49,68,0],[20,69,0],[52,70,0],[13,71,0],[30,72,0]],[[0,73,0],[0,74,0],[0,75,0],[0,76,0],[10,77,0],[9,78,0],[24,79,0],[30,80,0],[30,81,0],[0,82,0]],[[28,83,0],[0,84,0],[39,85,0],[75,86,0],[76,87,0],[8,88,0],[0,89,0],[36,90,0],[9,91,0],[0,92,0]],[[12,93,0],[0,94,0],[45,95,0],[92,96,0],[81,97,0],[58,98,0],[20,99,0],[61,100,0],[69,101,0],[24,102,0]],[[0,103,0],[35,104,0],[100,105,0],[37,106,0],[41,107,0],[8,108,0],[85,109,0],[37,110,0],[100,111,0],[55,112,0]],[[8,113,0],[61,114,0],[106,115,0],[97,116,0],[44,117,0],[69,118,0],[6,119,0],[16,120,0],[25,121,0],[109,122,0]],[[0,123,0],[18,124,0],[67,125,0],[42,126,0],[38,127,0],[98,128,0],[10,129,0],[13,130,0],[31,131,0],[49,132,0]],[[0,133,0],[3,134,0],[13,135,0],[44,136,0],[71,137,0],[89,138,0],[105,139,0],[17,140,0],[69,141,0],[9,142,0]],[[109,143,0],[34,144,0],[22,145,0],[84,146,0],[61,147,0],[0,148,0],[17,149,0],[91,150,0],[61,151,0],[105,152,0]],[[29,153,0],[21,154,0],[6,155,0],[123,156,0],[31,157,0],[119,158,0],[33,159,0],[49,160,0],[94,161,0],[31,162,0]],[[148,163,0],[33,164,0],[0,165,0],[29,166,0],[55,167,0],[57,168,0],[113,169,0],[57,170,0],[53,171,0],[129,172,0]],[[10,173,0],[9,174,0],[10,175,0],[145,176,0],[133,177,0],[28,178,0],[28,179,0],[165,180,0],[28,181,0],[151,182,0]],[[170,183,0],[3,184,0],[98,185,0],[103,186,0],[20,187,0],[22,188,0],[39,189,0],[20,190,0],[73,191,0],[89,192,0]],[[157,193,0],[12,194,0],[166,195,0],[91,196,0],[6,197,0],[111,198,0],[79,199,0],[37,200,0]]]}]}}</script>
+<script type="application/json" id="baked-state">{"edits":{},"comments":[],"updated":0}</script>
+<script>
+(function(){
+"use strict";
+/* Capture the untouched page before anything changes, so "Save HTML" can write it back with the state baked in. */
+const PRISTINE = "<!doctype html>\n" + document.documentElement.outerHTML;
+
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const mk=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;if(tag==="button")e.type="button";return e;};
+function seg(sel,cb){const box=$(sel);box.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||b.disabled)return;box.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));cb(b.dataset);});}
+function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove("on"),1800);}
+
+/* ---------------- theme ---------------- */
+try{const t=localStorage.getItem("rppg-theme"); if(t) document.documentElement.dataset.theme=t;}catch(e){}
+$("#btnTheme").onclick=()=>{
+  const cur=document.documentElement.dataset.theme||(matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");
+  const nx=cur==="dark"?"light":"dark";document.documentElement.dataset.theme=nx;
+  try{localStorage.setItem("rppg-theme",nx)}catch(e){}
+  redraw();
+};
+
+/* ---------------- tabs ---------------- */
+const TABS=[["roadmap","Roadmap"],["background","Background"],["model","Model"],["data","Data"],["code","Code"],["metrics","Metrics"],["results","Results"],["reproduction","Reproduction"],["progress","Progress"],["summary","Summary"]];
+TABS.forEach(([id,name],i)=>{
+  const b=mk("button","tab");b.setAttribute("role","tab");b.dataset.id=id;b.id="tab-"+id;
+  b.innerHTML=`<span class="n">${i+1}</span>${name}<span class="cc" id="cc-${id}"></span>`;
+  b.onclick=()=>show(id,true);$("#tablist").appendChild(b);
+});
+$("#tablist").addEventListener("keydown",e=>{
+  if(!["ArrowRight","ArrowLeft"].includes(e.key))return;
+  const ids=TABS.map(t=>t[0]),cur=ids.indexOf(curTab);
+  const nx=ids[(cur+(e.key==="ArrowRight"?1:-1)+ids.length)%ids.length];show(nx,true);$("#tab-"+nx).focus();
+});
+let curTab="roadmap";
+function show(id,push){
+  if(!TABS.find(t=>t[0]===id))id="roadmap";
+  curTab=id;
+  $$(".tab").forEach(t=>{const on=t.dataset.id===id;t.setAttribute("aria-selected",on);t.tabIndex=on?0:-1;});
+  $$("section.panel").forEach(p=>p.classList.toggle("on",p.id===id));
+  if(push)history.replaceState(null,"","#"+id);
+  const i=TABS.findIndex(t=>t[0]===id),pg=$("#pager");pg.innerHTML="";
+  if(i>0){const b=mk("button","gobtn","← "+TABS[i-1][1]);b.onclick=()=>{show(TABS[i-1][0],true);scrollTo({top:0})};pg.appendChild(b);}else pg.appendChild(mk("span"));
+  if(i<TABS.length-1){const b=mk("button","gobtn",TABS[i+1][1]+" →");b.onclick=()=>{show(TABS[i+1][0],true);scrollTo({top:0})};pg.appendChild(b);}
+  redraw();
+}
+window.addEventListener("hashchange",()=>show(location.hash.slice(1),false));
+
+/* =================== 1. ROADMAP =================== */
+const FLOW=[
+ {ph:"Problem",nodes:[
+  {t:"Multimodal fake news",s:"Text + image, well-fabricated",k:"prob",d:"Fake news on social media is carefully crafted, so models that only read the text/image miss it.",go:"background"},
+  {t:"Efficacy vs. hazard",s:"Paths help, but only after spread",k:"prob",d:"Propagation paths make detection strong, but by the time they exist the fake news has already reached many users.",go:"background"}]},
+ {ph:"Idea",nodes:[
+  {t:"Generate the path",s:"Simulate spread from content",k:"rl",d:"Instead of waiting, predict who would share the news (a generated propagation path) and use it as extra social context.",go:"model"}]},
+ {ph:"Method",nodes:[
+  {t:"① Contrastive learning",s:"User embeddings on graph H",k:"cl",d:"Heterogeneous graph (publisher–news–user). Node-view + meta-path-view contrastive learning with a GAT encoder learn user embeddings.",go:"model"},
+  {t:"② RL generation",s:"Actor-critic picks next users",k:"rl",d:"MDP: state = current subgraph + new users + news; action = add K₂ users; reward = temporal + global (discriminator).",go:"model"},
+  {t:"③ Temporal-aware detection",s:"Dynamic GAT + attention",k:"det",d:"Snapshots G₀…G_T → GAT → temporal sequence; full graph → structure; self/cross-attention fusion; concat with text+image → sigmoid.",go:"model"}]},
+ {ph:"Data",nodes:[
+  {t:"3 datasets",s:"PolitiFact · GossipCop · Pheme",k:"",d:"478 / 5,526 / 3,506 news (Table I). Text, image and user engagements with timestamps.",go:"data"},
+  {t:"Split 7:1:2",s:"+ early stage: 3–5 engagements",k:"",d:"Random train/val/test split. Early-stage test: keep 3–5 random engagements per news.",go:"data"}]},
+ {ph:"Train",nodes:[
+  {t:"Training",s:"AdamW · lr 5e-3 · batch 16",k:"",d:"Hidden size 128, PyTorch 1.13, RTX 3090. Each model run 5 times, mean reported.",go:"code"}]},
+ {ph:"Evaluate",nodes:[
+  {t:"Acc · Pre · Rec · F1",s:"vs 10 baselines",k:"",d:"Content-based (BERT, MVAE, EANN, CAFE, LLAMA2, Detect-GPT) and propagation-enhanced (CSI, Bi-GCN, UPFD, MFAN).",go:"metrics"},
+  {t:"Ablation & sensitivity",s:"Table IV · Fig. 3–5",k:"",d:"Remove each module, vary hyper-parameters and number of generated users, case study on GossipCop.",go:"results"}]},
+ {ph:"Results",nodes:[
+  {t:"Best at early stage",s:"Acc .902 / .873 / .829",k:"res",d:"+4.0 / +4.1 / +2.7 pp accuracy over the best baseline on PolitiFact / GossipCop / Pheme (Table III).",go:"results"},
+  {t:"Takeaway",s:"Simulated context ≈ real context",k:"res",d:"Generated paths give social context early, reducing the hazard of waiting for real spread.",go:"summary"}]}
+];
+(function(){
+  const f=$("#flow");let first=null;
+  FLOW.forEach((p,pi)=>{
+    const col=mk("div","phase");col.innerHTML=`<div class="phase-h"><b>${pi+1}</b><span>${p.ph}</span></div>`;
+    p.nodes.forEach(n=>{
+      const b=mk("button","node"+(n.k?" k-"+n.k:""));
+      b.innerHTML=`<span class="nt">${n.t}</span><span class="ns">${n.s}</span>`;
+      b.onclick=()=>pick(b,n);col.appendChild(b);if(!first)first=[b,n];
+    });
+    f.appendChild(col);
+  });
+  function pick(b,n){
+    if(document.body.classList.contains("editing")||document.body.classList.contains("commenting"))return;
+    $$(".node").forEach(x=>x.classList.toggle("sel",x===b));
+    $("#fdT").textContent=n.t;$("#fdS").textContent=n.d;
+    const g=$("#fdGo");g.textContent="Go to "+TABS.find(t=>t[0]===n.go)[1]+" →";g.onclick=()=>{show(n.go,true);scrollTo({top:0})};
+  }
+  $$(".node").forEach(x=>x.classList.remove("sel"));first[0].classList.add("sel");
+  $("#fdT").textContent=first[1].t;$("#fdS").textContent=first[1].d;
+  const g=$("#fdGo");g.textContent="Go to Background →";g.onclick=()=>{show("background",true);scrollTo({top:0})};
+})();
+
+/* =================== toy graph (shared by Background + Model) =================== */
+const GN={N:[40,150]};
+[[1,130,60],[2,130,120],[3,130,180],[4,130,240],[5,220,40],[6,220,100],[7,220,160],[8,220,220],[9,220,280],[10,310,60],[11,310,120],[12,310,180],[13,310,240],[14,400,80],[15,400,150],[16,400,220],[17,475,110],[18,475,200]].forEach(([i,x,y])=>GN[i]=[x,y]);
+const ADJ={N:[1,2,3,4],1:[5,6],2:[6,7],3:[7,8],4:[8,9],5:[10],6:[10,11],7:[11,12],8:[12,13],9:[13],10:[14],11:[14,15],12:[15,16],13:[16],14:[17],15:[17,18],16:[18],17:[],18:[]};
+const LAYER={1:1,2:1,3:1,4:1,5:2,6:2,7:2,8:2,9:2,10:3,11:3,12:3,13:3,14:4,15:4,16:4,17:5,18:5};
+const REAL=[["N",2],["N",3],[2,7],[3,8],[7,11],[8,13],[11,15],[13,16],[15,18]];
+const REALSET=new Set(REAL.map(e=>e[1]));
+const SCORE={1:.2,2:.8,3:.7,4:.3,5:.1,6:.4,7:.9,8:.6,9:.2,10:.2,11:.7,12:.5,13:.6,14:.3,15:.8,16:.4,17:.3,18:.7};
+function baseGraph(){
+  let g="";const mu=css("--line");
+  Object.keys(ADJ).forEach(a=>ADJ[a].forEach(b=>{const p=GN[a],q=GN[b];g+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${mu}" stroke-width="1.2"/>`;}));
+  return g;
+}
+
+/* =================== 2. BACKGROUND spread =================== */
+const SPREAD=[["N",2],["N",3],["N",1],[2,7],[3,8],[1,6],[7,11],[8,13],[6,10],[8,12],[11,15],[13,16],[10,14],[12,15],[15,18],[16,18],[14,17],[15,17],[4,9],["N",4],[6,11],[3,7]];
+const SPREAD_T={1:3,2:6,3:9,4:13,5:17};
+const METHODS=[
+ {n:"Content-only (CAFE)",need:0,acc:[.848,.848,.848,.848,.848,.848]},
+ {n:"Propagation (UPFD)",need:1,acc:[null,.862,.874,.886,.895,.904]},
+ {n:"RPPG-Fake",need:0,acc:[.902,.902,.906,.912,.918,.924]}
+];
+function drawSpread(){
+  const t=+$("#tSlider").value,k=t?SPREAD_T[t]:0,edges=SPREAD.slice(0,k);
+  const reached=new Set(["N"]);edges.forEach(e=>reached.add(e[1]));
+  let g=baseGraph();
+  edges.forEach(([a,b])=>{const p=GN[a],q=GN[b];g+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${css("--news")}" stroke-width="2.4"/>`;});
+  Object.keys(GN).forEach(id=>{const [x,y]=GN[id],isN=id==="N",on=reached.has(isN?"N":+id);
+    g+=`<circle cx="${x}" cy="${y}" r="${isN?14:9}" fill="${isN?css("--news"):on?css("--news"):css("--surface")}" stroke="${isN?css("--news"):css("--user")}" stroke-width="2" opacity="${on||isN?1:.9}"/>`;
+    if(isN)g+=`<text x="${x}" y="${y+4}" text-anchor="middle" style="fill:#fff;font-size:11px;font-weight:700">N</text>`;});
+  $("#spreadSvg").innerHTML=g;
+  $("#tV").textContent=["just posted","early","spreading","wide","very wide","fully spread"][t];
+  $("#harm").style.width=((reached.size-1)/18*100)+"%";
+  $("#methods").innerHTML=METHODS.map(m=>{const a=m.acc[t];const usable=a!=null;
+    return `<div class="mrow"><span>${m.n}</span><span class="st" style="color:${usable?css("--ok"):css("--bad")}">${usable?(t===0&&m.n.startsWith("RPPG")?"usable now (generated path)":"usable"):"not usable yet — no path"}</span><span class="mono">${usable?a.toFixed(3):"—"}</span></div>`;}).join("")
+    +`<p class="small" style="margin:8px 0 0">Endpoints from the paper: t = early → Table III, t = full → Table II (PolitiFact). In-between values are interpolated for illustration.</p>`;
+}
+$("#tSlider").oninput=drawSpread;
+
+/* =================== 3. MODEL architecture =================== */
+const ARCH={
+ graph:{t:"Heterogeneous social graph H",tag:"t-cl",lab:"Module 1",in:"Publishers P, news N, users U + engagements",out:"H = (V, E, U)",what:"One global graph of who published / shared what, across all news.",eq:"H = (V, E, U)"},
+ node:{t:"Node-view contrastive learning",tag:"t-cl",lab:"Module 1",in:"User features + PGD perturbation δ",out:"û_i (GAT embedding)",what:"Positives = top-K₁ most similar nodes, negatives = K₁ least similar. GAT encoder, InfoNCE-style loss with temperature τ₁.",eq:"L_node = −log Σ_pos exp(sim/τ₁) / Σ_neg exp(sim/τ₁)"},
+ meta:{t:"Meta-path-view contrastive learning",tag:"t-cl",lab:"Module 1",in:"Meta-paths PNU, NUN, UNU (random walk with restart)",out:"ĥ_i^l per meta-path",what:"Same node under two meta-paths = positive pair; other nodes = negatives. Temperature τ₂.",eq:"L_CL = Σ λ₁·L_node + (1−λ₁)·L_meta"},
+ state:{t:"State s_t",tag:"t-rl",lab:"Module 2",in:"Subgraph so far, newly added users, news embedding",out:"s_t = [Π_t ; v_t ; n]",what:"Attention-pooled subgraph embedding + mean of new users + news content.",eq:"s_t = ([Π_t; v_t; n])"},
+ policy:{t:"Policy network (actor)",tag:"t-rl",lab:"Module 2",in:"s_t and candidate actions a_i = r_i + u_i",out:"π(s_t, a_i)",what:"Softmax over neighbours of the current subgraph; adds K₂ users per step (+ self-loop = no interaction). Stops at T users.",eq:"π = softmax(W₂·ReLU(W₃[s_t; a_i]))"},
+ reward:{t:"Rewards",tag:"t-rl",lab:"Module 2",in:"Chosen users, real path, discriminator D",out:"R_C",what:"Temporal reward: cosine to users truly active at step t. Global reward: a discriminator judges real vs generated path.",eq:"R_C = λ₂·R_T + (1−λ₂)·R_G"},
+ critic:{t:"Critic + actor-critic update",tag:"t-rl",lab:"Module 2",in:"s_t, a_t, R_C",out:"Q(s,a), policy gradient",what:"Critic trained with TD error; actor follows ∇log π · Q.",eq:"L_critic = (Q(s_t,a_t) − q_t)² , q_t = R_C + γ·Q(s_{t+1},a)"},
+ path:{t:"Generated path G′",tag:"t-rl",lab:"Output of 2",in:"T steps",out:"G′ = {G₀ … G_T}",what:"A growing sequence of user subgraphs — the simulated spread of this news.",eq:"G′ = {G₀, …, G_T}"},
+ temporal:{t:"Dynamic graph encoder",tag:"t-det",lab:"Module 3",in:"Each snapshot G_t",out:"h_t + p_t (position)",what:"GAT on every snapshot, mean-pool → one vector per time step.",eq:"h_t = readout(GAT(U_t, E_t))"},
+ fusion:{t:"Temporal-structure fusion",tag:"t-det",lab:"Module 3",in:"Temporal sequence Ĥ, final graph Û_T",out:"H* (fused)",what:"Self-attention over time, cross-attention with the final graph structure, LayerNorm + feed-forward.",eq:"H* = LN(FFN(CrossAttn(Û_T, LN(SelfAttn(Ĥ)+Ĥ))))"},
+ content:{t:"News content",tag:"t-det",lab:"Input",in:"Text n_T + image n_V",out:"n = [n_T ; n_V]",what:"Paper cites [28]; the code uses frozen CLIP ViT-B/32 (text truncated to 77 tokens).",eq:"n = [n_T ; n_V]"},
+ cls:{t:"Classifier",tag:"t-ok",lab:"Output",in:"[h* ; n]",out:"P(y) — fake (0) / real (1)",what:"Mean-pool H*, concatenate with content, sigmoid; binary cross-entropy.",eq:"P(y|n,G) = σ(W_P[h*; n] + b)"}
+};
+let curArch="policy";
+function drawArch(){
+  const C={cl:css("--cl"),cls:css("--cl-soft"),rl:css("--rl"),rls:css("--rl-soft"),det:css("--det"),dets:css("--det-soft"),sf:css("--surface"),mut:css("--muted"),ok:css("--ok"),oks:css("--ok-soft")};
+  const B=(k,x,y,w,h,l1,l2,st)=>`<g class="blk" data-k="${k}" tabindex="0" role="button" aria-label="${l1}"><rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="${C.sf}" stroke="${st}" stroke-width="1.6"/><text x="${x+w/2}" y="${y+h/2-(l2?3:-4)}" text-anchor="middle" style="font-size:13px;font-weight:600">${l1}</text>${l2?`<text class="mono mut" x="${x+w/2}" y="${y+h/2+13}" text-anchor="middle" style="font-size:10.5px">${l2}</text>`:""}</g>`;
+  const E=d=>`<path d="${d}" fill="none" stroke="${C.mut}" stroke-width="1.6" opacity=".75" marker-end="url(#ah)"/>`;
+  let g=`<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${C.mut}"/></marker></defs>`;
+  g+=`<rect x="10" y="10" width="300" height="410" rx="14" fill="${C.cls}" opacity=".5"/><text x="24" y="32" style="font-size:11px;font-weight:700;fill:${C.cl}">① HETEROGENEOUS GRAPH CONTRASTIVE LEARNING</text>`;
+  g+=`<rect x="340" y="10" width="300" height="410" rx="14" fill="${C.rls}" opacity=".5"/><text x="354" y="32" style="font-size:11px;font-weight:700;fill:${C.rl}">② REINFORCED PATH GENERATION</text>`;
+  g+=`<rect x="670" y="10" width="320" height="410" rx="14" fill="${C.dets}" opacity=".5"/><text x="684" y="32" style="font-size:11px;font-weight:700;fill:${C.det}">③ TEMPORAL-AWARE DETECTION</text>`;
+  // module 1 mini graph
+  const pts=[[60,80,"pub"],[60,130,"pub"],[130,70,"news"],[130,120,"news"],[130,170,"news"],[210,60,"user"],[210,105,"user"],[210,150,"user"],[210,195,"user"],[260,125,"user"]];
+  const lk=[[0,2],[0,3],[1,4],[2,5],[2,6],[3,6],[3,7],[4,7],[4,8],[6,9],[7,9]];
+  let mg="";lk.forEach(([a,b])=>mg+=`<line x1="${pts[a][0]}" y1="${pts[a][1]}" x2="${pts[b][0]}" y2="${pts[b][1]}" stroke="${C.mut}" stroke-width="1" opacity=".6"/>`);
+  pts.forEach(p=>mg+=`<circle cx="${p[0]}" cy="${p[1]}" r="8" fill="${css("--"+p[2])}"/>`);
+  g+=`<g class="blk" data-k="graph" tabindex="0" role="button" aria-label="Heterogeneous graph"><rect x="30" y="45" width="260" height="170" rx="9" fill="${C.sf}" stroke="${C.cl}" stroke-width="1.6"/>${mg}<text x="160" y="232" text-anchor="middle" class="mut" style="font-size:10.5px">● publisher  ● news  ● user</text></g>`;
+  g+=E("M100,240 L100,262")+E("M220,240 L220,262");
+  g+=B("node",30,265,140,55,"Node view","GAT + PGD · τ₁",C.cl)+B("meta",180,265,110,55,"Meta-path view","PNU·NUN·UNU",C.cl);
+  g+=`<text x="160" y="350" text-anchor="middle" class="mono mut" style="font-size:11px">L_CL = λ₁·L_node + (1−λ₁)·L_meta</text>`;
+  g+=`<text x="160" y="385" text-anchor="middle" style="font-size:12px;font-weight:600;fill:${C.cl}">→ user embeddings u_i</text>`;
+  g+=E("M290,380 L345,120");
+  // module 2
+  g+=B("state",360,60,120,55,"State s_t","[Π_t ; v_t ; n]",C.rl)+B("policy",500,60,125,55,"Policy π","pick K₂ users",C.rl);
+  g+=E("M480,88 L498,88");
+  g+=B("reward",500,160,125,55,"Reward R_C","λ₂·R_T + (1−λ₂)·R_G",C.rl)+B("critic",360,160,120,55,"Critic Q","TD error",C.rl);
+  g+=E("M562,115 L562,158")+E("M500,188 L482,188")+E("M420,160 L420,117");
+  g+=`<text x="490" y="245" text-anchor="middle" class="mut" style="font-size:11px">repeat until |V_t| = T</text>`;
+  g+=B("path",380,265,230,60,"Generated path G′","G₀ → G₁ → … → G_T",C.rl);
+  g+=E("M562,215 L520,263");
+  g+=E("M610,295 L690,150");
+  // module 3
+  g+=B("temporal",690,60,135,55,"Dynamic GAT","h_t + p_t",C.det)+B("fusion",840,60,135,55,"Fusion","Self/Cross-Attn",C.det);
+  g+=E("M825,88 L838,88");
+  g+=B("content",690,175,135,55,"News content","text + image",C.det)+B("cls",840,175,135,55,"Classifier","σ(W[h*; n] + b)",C.ok);
+  g+=E("M907,115 L907,173")+E("M825,203 L838,203");
+  g+=`<g><rect x="760" y="280" width="90" height="40" rx="20" fill="${C.oks}" stroke="${C.ok}"/><text x="805" y="305" text-anchor="middle" style="font-size:13px;font-weight:700;fill:${C.ok}">FAKE</text><rect x="870" y="280" width="90" height="40" rx="20" fill="${C.oks}" stroke="${C.ok}"/><text x="915" y="305" text-anchor="middle" style="font-size:13px;font-weight:700;fill:${C.ok}">REAL</text></g>`;
+  g+=E("M907,230 L860,278")+E("M907,230 L912,278");
+  g+=`<text x="830" y="372" text-anchor="middle" class="mono mut" style="font-size:11px">loss = binary cross-entropy</text>`;
+  $("#arch").innerHTML=g;
+  $$("#arch .blk").forEach(el=>{el.onclick=()=>pickArch(el.dataset.k);el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pickArch(el.dataset.k);}};});
+  pickArch(curArch);
+}
+function pickArch(k){
+  curArch=k;const a=ARCH[k];
+  $$("#arch .blk").forEach(el=>el.classList.toggle("sel",el.dataset.k===k));
+  $("#archInfo").innerHTML=`<span class="tag ${a.tag}">${a.lab}</span><h3 class="mt">${a.t}</h3><p class="small" style="margin:0">${a.what}</p>
+   <div class="info-k">Input</div><div class="info-v">${esc(a.in)}</div><div class="info-k">Output</div><div class="info-v">${esc(a.out)}</div><div class="info-k">Equation</div><div class="info-v">${esc(a.eq)}</div>`;
+}
+
+/* =================== 3. MODEL RL toy =================== */
+const T_MAX=9;let K2=2,rl;
+function rlReset(){rl={t:0,sel:new Set(),order:[],edges:[],rewards:[],cand:cands(new Set()),seed:7};drawRL();}
+function cands(sel){const c=new Map();["N",...sel].forEach(a=>(ADJ[a]||[]).forEach(b=>{if(!sel.has(b)&&!c.has(b))c.set(b,a);}));return c;}
+function rnd(){rl.seed=(rl.seed*16807)%2147483647;return rl.seed/2147483647;}
+function rlStep(){
+  if(rl.sel.size>=T_MAX||rl.cand.size===0)return false;
+  rl.t++;
+  const ids=[...rl.cand.keys()],w=ids.map(i=>Math.exp(4*SCORE[i]+0.6*rnd())),Z=w.reduce((a,b)=>a+b,0);
+  const ranked=ids.map((i,j)=>({i,p:w[j]/Z})).sort((a,b)=>b.p-a.p).slice(0,Math.min(K2,T_MAX-rl.sel.size));
+  const step=[];
+  ranked.forEach(({i,p})=>{const from=rl.cand.get(i);rl.sel.add(i);rl.order.push([i,rl.t]);rl.edges.push([from,i,rl.t]);
+    const rt=REALSET.has(i)?(LAYER[i]===rl.t?1:.5):0,rg=REAL.some(e=>String(e[0])===String(from)&&e[1]===i)?1:(REALSET.has(i)?.5:.1);
+    step.push({i,p,rt,rg,rc:.5*rt+.5*rg});});
+  rl.rewards.push(step);rl.cand=cands(rl.sel);drawRL();return true;
+}
+function drawRL(){
+  let g=baseGraph();const rlc=css("--rl"),user=css("--user");
+  if($("#showReal").checked)REAL.forEach(([a,b])=>{const p=GN[a],q=GN[b];g+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${css("--ok")}" stroke-width="5" opacity=".35"/>`;});
+  rl.edges.forEach(([a,b,t])=>{const p=GN[a],q=GN[b];g+=`<line x1="${p[0]}" y1="${p[1]}" x2="${q[0]}" y2="${q[1]}" stroke="${rlc}" stroke-width="2.6"/>`;});
+  Object.keys(GN).forEach(id=>{const [x,y]=GN[id];
+    if(id==="N"){g+=`<circle cx="${x}" cy="${y}" r="14" fill="${css("--news")}"/><text x="${x}" y="${y+4}" text-anchor="middle" style="fill:#fff;font-size:11px;font-weight:700">N</text>`;return;}
+    const n=+id,on=rl.sel.has(n),c=rl.cand.has(n);
+    g+=`<circle cx="${x}" cy="${y}" r="10" fill="${on?rlc:css("--surface")}" stroke="${on?rlc:user}" stroke-width="${c?2.4:1.6}" ${c?'stroke-dasharray="3 2"':""}/>`;
+    const st=rl.order.find(o=>o[0]===n);if(st)g+=`<text x="${x}" y="${y+4}" text-anchor="middle" style="fill:#fff;font-size:10px;font-weight:700">${st[1]}</text>`;
+  });
+  $("#rlSvg").innerHTML=g;
+  $("#rlStepTxt").textContent=`t = ${rl.t} · ${rl.sel.size}/${T_MAX} users`;
+  $("#rlInfo").textContent=rl.sel.size>=T_MAX?"Reached T — path complete.":`${rl.cand.size} candidate actions (dashed). Next: pick top-${K2} by π.`;
+  const last=rl.rewards[rl.rewards.length-1];
+  $("#rlRewards").innerHTML=last?`<table><thead><tr><th>user</th><th class="num">π</th><th class="num">R_T</th><th class="num">R_G</th><th class="num">R_C</th></tr></thead><tbody>${last.map(r=>`<tr><td>u${r.i}</td><td class="num">${r.p.toFixed(2)}</td><td class="num">${r.rt.toFixed(1)}</td><td class="num">${r.rg.toFixed(1)}</td><td class="num"><b>${r.rc.toFixed(2)}</b></td></tr>`).join("")}</tbody></table>`:`<p class="small">Press Step to let the agent add users.</p>`;
+}
+seg("#k2Seg",d=>{K2=+d.k;rlReset();});
+$("#rlStep").onclick=()=>rlStep();
+$("#rlRun").onclick=()=>{let i=0;while(rlStep()&&i<20)i++;};
+$("#rlReset").onclick=rlReset;$("#showReal").onchange=drawRL;
+
+/* detection pipeline */
+function drawDet(){
+  const C={det:css("--det"),sf:css("--surface"),mut:css("--muted"),rl:css("--rl"),ok:css("--ok")};
+  const snap=(x,k)=>{const nodes=[[0,0],[-14,-12],[-14,12],[14,-16],[14,0],[14,16]].slice(0,k+2);let s=`<rect x="${x-30}" y="40" width="60" height="60" rx="8" fill="${C.sf}" stroke="${C.rl}"/>`;nodes.forEach((n,i)=>{if(i)s+=`<line x1="${x+nodes[0][0]-10}" y1="${70}" x2="${x+n[0]}" y2="${70+n[1]}" stroke="${C.rl}" stroke-width="1.2"/>`;});nodes.forEach((n,i)=>s+=`<circle cx="${i?x+n[0]:x-10}" cy="${70+(i?n[1]:0)}" r="${i?4:5}" fill="${i?C.rl:css("--news")}"/>`);return s;};
+  const box=(x,y,w,h,l1,l2,c)=>`<rect x="${x}" y="${y}" width="${w}" height="${h}" rx="9" fill="${C.sf}" stroke="${c}" stroke-width="1.6"/><text x="${x+w/2}" y="${y+h/2-(l2?3:-4)}" text-anchor="middle" style="font-size:12.5px;font-weight:600">${l1}</text>${l2?`<text class="mono mut" x="${x+w/2}" y="${y+h/2+13}" text-anchor="middle" style="font-size:10px">${l2}</text>`:""}`;
+  const E=d=>`<path d="${d}" fill="none" stroke="${C.mut}" stroke-width="1.5" opacity=".75" marker-end="url(#ah2)"/>`;
+  let g=`<defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="${C.mut}"/></marker></defs>`;
+  [60,140,220,300].forEach((x,i)=>g+=snap(x,i));
+  ["G₀","G₁","G₂","G_T"].forEach((l,i)=>g+=`<text x="${[60,140,220,300][i]}" y="118" text-anchor="middle" class="mono" style="font-size:11px">${l}</text>`);
+  g+=`<text x="180" y="25" text-anchor="middle" class="mut" style="font-size:11px">generated snapshots over time</text>`;
+  g+=E("M180,125 L180,150");
+  g+=box(110,152,140,48,"GAT per snapshot","mean-pool → h_t + p_t",C.det);
+  g+=E("M250,176 L300,176")+box(302,152,120,48,"Self-Attn","over time",C.det);
+  g+=E("M330,70 L470,70")+box(472,46,130,48,"GAT on G_T","structure Û_T",C.det);
+  g+=E("M422,176 L470,176")+box(472,152,130,48,"Cross-Attn","+ LN + FFN",C.det);
+  g+=E("M537,94 L537,150");
+  g+=E("M602,176 L640,176")+box(642,152,110,48,"Mean-pool","h*",C.det);
+  g+=box(642,46,110,48,"CLIP text+image","n = [n_T; n_V]",C.det);
+  g+=E("M752,176 L790,150")+E("M752,70 L790,110");
+  g+=box(792,104,110,48,"[h* ; n]","→ σ(W·+b)",C.ok);
+  g+=E("M902,128 L930,128")+`<text x="962" y="124" text-anchor="middle" style="font-size:12px;font-weight:700;fill:${C.ok}">fake</text><text x="962" y="140" text-anchor="middle" style="font-size:12px;font-weight:700;fill:${C.ok}">real</text>`;
+  g+=`<text x="500" y="238" text-anchor="middle" class="mut" style="font-size:11px">Code differs: a custom causal attention block is reused for both steps, no LayerNorm / FFN / position embedding.</text>`;
+  $("#detSvg").innerHTML=g;
+}
+
+/* =================== 4. DATA =================== */
+const DS=[["Pheme","Twitter rumours",3506,1142,2364,13.8],["PolitiFact","FakeNewsNet (fact-check + Twitter)",478,294,184,1545.8],["GossipCop","FakeNewsNet (fact-check + Twitter)",5526,1935,3591,578.6]];
+$("#dsRows").innerHTML=DS.map(d=>`<tr><td><b>${d[0]}</b></td><td class="small">${d[1]}</td><td class="num">${d[2].toLocaleString("en-US")}</td><td class="num">${d[3].toLocaleString("en-US")}</td><td class="num">${d[4].toLocaleString("en-US")}</td><td class="num">${d[5]}</td><td><div class="bars2"><div class="b-fake" style="width:${d[3]/d[2]*100}%">${Math.round(d[3]/d[2]*100)}%</div><div class="b-real" style="width:${d[4]/d[2]*100}%">${Math.round(d[4]/d[2]*100)}%</div></div></td></tr>`).join("");
+const SPL={paper:{parts:[["Train",335],["Val",48],["Test",95]],note:"Random 7 : 1 : 2 of 478 news, re-split per run (5 runs). ≈ 95 test news."},
+           code:{parts:[["Train",338],["Test",48],["Val",92]],note:"Fixed order after shuffle(seed 665): rows 0–337 train, 338–385 <b>test</b>, 386–477 <b>val</b>. Val and test are swapped → test is only 48 news (10%)."}};
+function drawSplit(k){const s=SPL[k],tot=s.parts.reduce((a,b)=>a+b[1],0),cls={Train:"s-tr",Val:"s-va",Test:"s-te"};
+  $("#splitView").innerHTML=`<div class="bars2" style="height:26px">${s.parts.map(p=>`<div class="${cls[p[0]]}" style="width:${p[1]/tot*100}%">${p[0]} ${p[1]} (${Math.round(p[1]/tot*100)}%)</div>`).join("")}</div><p class="small" style="margin:6px 0 0">${s.note}</p>`;}
+seg("#splitSeg",d=>drawSplit(d.k));drawSplit("paper");
+const AUDIT=[
+ ["ok","Three public benchmarks, two kinds of text","Long articles (PolitiFact, GossipCop) and short tweets (Pheme)"],
+ ["ok","Separate train / validation / test","7 : 1 : 2 split; results averaged over 5 runs"],
+ ["ok","Early-stage scenario is simulated","Test news keep only 3–5 random engagements (Table III)"],
+ ["bad","Code: validation and test are swapped","PolitiFact test = 48 news (10%), val = 92 (20%); split order fixed by seed 665, not re-randomised per run"],
+ ["bad","Code: possible test leakage into the generator","The RL generator is rewarded with each news item's real path and its \"test\" set is the whole dataset (range(484)); rows follow a different order than the detection split, so detection-test news can be in generator training"],
+ ["bad","Dataset sizes contradict each other","Text: Pheme 478, PolitiFact 5,526, GossipCop 3,506 · Table I: Pheme 3,506, PolitiFact 478, GossipCop 5,526"],
+ ["warn","Very small test sets","PolitiFact ≈ 95 test news: one news ≈ 1 pp accuracy; +4.0 pp ≈ 4 news"],
+ ["warn","No variance or significance tests","Only the mean of 5 runs; no std, no confidence intervals"],
+ ["warn","Cleaning and graph construction not described","How users, publishers and images were filtered is not stated"],
+ ["warn","Early-stage setting only on test","Training uses full paths; how the generator is used at test time isn't specified in detail"],
+ ["warn","Class imbalance","PolitiFact 62% fake, Pheme 67% real, GossipCop 65% real → accuracy alone can mislead"],
+ ["warn","Only PolitiFact data is released","No processed Pheme / GossipCop data and no images in the repo; Pheme config split (1500/400/314 = 2,214) ≠ 3,506"],
+ ["warn","Generated paths look weakly tied to the news","In the released files only 4.6% of generated users appear in that news item's real path; many start from the same low-ID users"]
+];
+function drawAudit(f){const ic={ok:"✓",warn:"!",bad:"✕"};$("#audit").innerHTML=AUDIT.map((a,i)=>`<div class="aud" data-sev="${a[0]}" style="${f==="all"||a[0]===f?"":"display:none"}"><span class="ic ${a[0]}">${ic[a[0]]}</span><div><b>${a[1]}</b><p>${a[2]}</p></div></div>`).join("");}
+drawAudit("all");
+seg("#audFilter",d=>$$("#audit .aud").forEach(el=>el.style.display=d.f==="all"||el.dataset.sev===d.f?"":"none"));
+
+/* =================== 5. CODE =================== */
+const FILES=[
+ {n:"hete_reinforcement.py",d:"Stage 1 · RlNet",h:`<p class="small" style="margin:0">User embeddings, contrastive loss and the path-generation loop</p>
+<pre class="code">self.model, _ = clip.load("ViT-B/32", device="cuda")     <span class="c"># frozen CLIP text encoder</span>
+self.user_embeddings = nn.Embedding(114516+1, 128)
+self.MAX_DEPTH = 4;  self.MAX_ACTION = 50
+
+def forward(self, id, text, actions, split_actions):
+    padded, neg = self.get_node_view_node_sample(actions)
+    padded, neg = self.<mark>get_meta_view_node_sample</mark>(...)   <span class="c"># not defined</span>
+    con_loss_1 = self.cal_cl_loss(padded, neg)
+    ...
+    action_id = [1..10]                    <span class="c"># same first candidates for every news</span>
+    while depth &lt; self.MAX_DEPTH:           <span class="c"># 4 steps</span>
+        act_probs, values = self.policy_net(state, action_emb)
+        sel = Categorical(act_probs).sample([5])   <span class="c"># top_k = 5 per step</span>
+        reward = self.get_reward(actions, sel)
+    return ..., con_loss_1, con_loss_2     <span class="c"># 7 values; caller unpacks <mark>6</mark></span>
+
+def get_reward(self, actions, select_nodes):
+    <span class="c"># 1.0 if the chosen user is in this news item's REAL path, else 0</span>
+    <span class="c"># → no cosine temporal reward, no discriminator (paper Eq. 12–14)</span></pre>`},
+ {n:"hete_reinforcement_module.py",d:"Stage 1 · Lightning",h:`<pre class="code">self.save_users_id_path = '<mark>/data/zlt/python_code/.../actions/</mark>'
+def actor_critic_loss(...):
+    td_error = r_t + 1.0 * V(s_{t+1}) - V(s_t)        <span class="c"># γ = 1.0</span>
+    actor_loss  = -log π · td_error.detach()
+    critic_loss = td_error ** 2
+all_loss = actor_losses + critic_losses + con_loss
+def test_step(...):
+    self.save_users_id(id, action_list)     <span class="c"># writes actions/&lt;id&gt;.json</span></pre>`},
+ {n:"detect_temporal_graph.py",d:"Stage 2 · RlGraph",h:`<pre class="code">from src.models.components.<mark>diffusion</mark> import Diffusion        <span class="c"># file missing</span>
+from src.models.<mark>reinforcement_module</mark> import RlUserModule    <span class="c"># file missing</span>
+self.mh_attn_1 = MultiHeadAttention(<mark>hidden_size, hidden_size, num_heads, dropout</mark>)  <span class="c"># undefined</span>
+self.classifier = classifier(input_size=<mark>1280</mark>)      <span class="c"># 512 text + 512 image + 128 path = 1152</span>
+
+def forward(self, text, image_path, user_path):
+    text_f  = CLIP.encode_text(tokenize(text, 77, truncate=True))
+    image_f = CLIP.encode_image(img)  or  text_f   <span class="c"># if no image</span>
+    for each snapshot: GAT → mean → temporal sequence
+    temporal = self.mh_attn_1(temporal, temporal)        <span class="c"># self-attention</span>
+    out      = self.mh_attn_1(temporal, structure)       <span class="c"># same block reused as "cross"</span>
+    logits = sigmoid(classifier(cat(text_f, image_f, out)))  <span class="c"># sigmoid twice</span></pre>`},
+ {n:"detect_graph_module.py",d:"Stage 2 · Lightning",h:`<pre class="code">self.criterion = torch.nn.CrossEntropyLoss()      <span class="c"># on sigmoid outputs + one-hot y</span>
+self.test_pre = Precision(task="binary", ...)      <span class="c"># positive class = 1 = real</span>
+self.test_auc = AUROC(task="binary")
+...
+self.test_auc(<mark>argmax(preds)</mark>, argmax(targets))      <span class="c"># AUC on hard labels</span>
+print("epoch", ..., "val/acc", ..., "tp", ..., "fp", ..., "tn", ..., "fn", ...)</pre>`},
+ {n:"rl_politifiact_datamodule.py",d:"Stage 2 · data",h:`<pre class="code">df = pd.read_csv(data_dir).sample(frac=1, random_state=665)[:478]
+idx = [338, 48, 92]
+self.data_train = Subset(ds, range(0, 338))
+self.data_test  = Subset(ds, range(338, 386))     <span class="c"># <mark>48 news</mark></span>
+self.data_val   = Subset(ds, range(386, 478))     <span class="c"># <mark>92 news</mark></span>
+<span class="c"># path file = actions/&lt;id&gt;.json from Stage 1, '-1' if missing</span></pre>`},
+ {n:"rl_user_datamodule.py",d:"Stage 1 · data",h:`<pre class="code">idx = [340, 50, 94]
+self.data_train = Subset(ds, range(340))
+self.data_val   = Subset(ds, range(340, 390))
+self.data_test  = Subset(ds, <mark>range(340+50+94)</mark>)    <span class="c"># = whole dataset</span></pre>`},
+ {n:"configs/",d:"Hydra",h:`<pre class="code">src/train.py           → config_name="<mark>train_RL_graph.yaml</mark>"  <span class="c"># exists as train_detection_graph.yaml</span>
+src/train_hete_RL.py   → config_name="<mark>train_RL.yaml</mark>"        <span class="c"># exists as train_Hete_RL.yaml</span>
+train_detection_graph  → model: <mark>rl_graph.yaml</mark>          <span class="c"># missing</span>
+train_Hete_RL          → model: <mark>reinforcement.yaml</mark>     <span class="c"># missing</span>
+model/detection_graph  → _target_: src.models.<mark>detct</mark>_graph_module ...
+optimizer: Adam lr=3.54e-4 · ReduceLROnPlateau · max_epochs 10 · seed null
+checkpoint + early stop: monitor val/acc (patience 100)</pre>`}
+];
+(function(){const fl=$("#flist");
+  FILES.forEach((f,i)=>{const b=mk("button","fbtn");b.innerHTML=`<span class="mono">${f.n}</span><small>${f.d}</small>`;b.setAttribute("aria-pressed",i===0);
+    b.onclick=()=>{fl.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#fview").innerHTML=`<h3 class="mono">${f.n}</h3>`+f.h;};fl.appendChild(b);});
+  $("#fview").innerHTML=`<h3 class="mono">${FILES[0].n}</h3>`+FILES[0].h;})();
+const PVC=[
+ ["Labels","y = 0 fake, y = 1 real","Same (one-hot, class 1 = real)","ok"],
+ ["Steps","Contrastive → RL → detection","Stage 1 (RL + embeddings) → Stage 2 (detection)","ok"],
+ ["Content encoder","Text + image features [28]","Frozen CLIP ViT-B/32; text cut at 77 tokens","warn"],
+ ["User embedding","Dual-view contrastive GAT (PGD, meta-paths)","Contrastive code incomplete; detection uses the raw nn.Embedding","bad"],
+ ["Temporal reward","Cosine to users active at step t","Binary hit: user is in the real path","warn"],
+ ["Global reward","Discriminator D (real vs generated)","Not implemented","bad"],
+ ["Path size","Up to T users (Fig. 4g: 50–400)","4 steps × 5 users ≈ 20 users","warn"],
+ ["Start of path","Seed node of the news","Fixed candidates user 1–10 for every news","warn"],
+ ["Fusion","Self-Attn + Cross-Attn + LN + FFN + position emb.","One causal attention block reused; no LN / FFN / position","warn"],
+ ["Classifier / loss","σ(W[h*; n] + b), binary cross-entropy","Linear → Linear → Sigmoid → Sigmoid, CrossEntropyLoss","warn"],
+ ["Optimiser","AdamW, lr 5e-3, batch 16","Adam, lr 3.5e-4, batch 8 / 4, ReduceLROnPlateau","warn"],
+ ["Split","Random 7:1:2, 5 runs","Fixed 338 / 48 test / 92 val, seed null","bad"]
+];
+$("#pvc").innerHTML=PVC.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td><span class="tag t-${r[3]}">${r[3]==="ok"?"Match":r[3]==="warn"?"Differs":"Mismatch"}</span></td></tr>`).join("");
+const ISSUES=[
+ ["bad","src/train.py · src/train_hete_RL.py","Config files not found","<code>train_RL_graph.yaml</code> / <code>train_RL.yaml</code> don't exist; model configs <code>rl_graph.yaml</code>, <code>reinforcement.yaml</code> missing; typo <code>detct_graph_module</code>"],
+ ["bad","src/models/components/","Source files missing","<code>reinforcement.py</code>, <code>diffusion.py</code>, <code>con_graph_image_user_gat.py</code>, <code>reinforcement_module.py</code> exist only as <code>.pyc</code> in <code>__pycache__</code>"],
+ ["bad","hete_reinforcement.py","Undefined names","<code>GAT</code>, <code>gData</code>, <code>Batch</code>, <code>to_dense_batch</code> not imported; <code>get_meta_view_node_sample</code>, <code>self.gnn</code>, <code>actions</code>, <code>all_node</code>, <code>loss</code> undefined"],
+ ["bad","hete_reinforcement.py → module","Return / unpack mismatch","<code>forward</code> returns 7 values, <code>model_step</code> unpacks 6"],
+ ["bad","hete_reinforcement.py:330","PGD crashes","<code>node_vector.grad</code> is <code>None</code> for an embedding output → <code>torch.sign(None)</code>"],
+ ["bad","detect_temporal_graph.py","Undefined sizes + shape error","<code>hidden_size</code>, <code>num_heads</code>, <code>dropout</code> undefined; classifier expects 1280 but features are 1152"],
+ ["bad","detect_temporal_graph.py:188","Missing path file","If a news has no JSON (<code>'-1'</code>), <code>action_list</code> is undefined or silently reused from the previous news"],
+ ["bad","everywhere","Hard-coded machine paths","<code>/data/zlt/python_code/...</code> and <code>.to('cuda')</code> throughout"],
+ ["warn","hete_reinforcement.py:191","Negatives = positives","Negative nodes are taken with the <b>max</b>-similarity indices"],
+ ["warn","rl_politifiact_datamodule.py","Val / test swapped","Test = 48 news, val = 92"],
+ ["warn","rl_user_datamodule.py","Test = whole dataset","<code>range(340+50+94)</code> starts at 0"],
+ ["warn","detect_graph_module.py","AUC on hard labels","AUROC is fed argmax predictions, not probabilities"],
+ ["warn","requirements.txt","Dependencies missing","<code>clip</code>, <code>torch_geometric</code>, <code>transformers</code>, <code>pandas</code> not listed; <code>seed: null</code>"]
+];
+$("#issues").innerHTML=ISSUES.map(i=>`<div class="issue"><span class="tag t-${i[0]}">${i[0]==="bad"?"Breaks":"Should fix"}</span><div><b>${i[2]}</b> <span class="loc">${i[1]}</span><div class="small">${i[3]}</div></div></div>`).join("");
+$("#issueCount").textContent=`${ISSUES.filter(i=>i[0]==="bad").length} stop it from running · ${ISSUES.filter(i=>i[0]==="warn").length} should be fixed`;
+
+/* =================== 6. METRICS =================== */
+const WHY=[
+ ["Accuracy","(TP+TN) / all","% of news classified correctly","Headline number; but with 62% fake news (PolitiFact) a model that says \"fake\" always already gets 62%"],
+ ["Precision","TP / (TP+FP)","Of the news called positive, % correct","Controls false alarms — labelling real news as fake (or vice versa) has a cost"],
+ ["Recall","TP / (TP+FN)","% of positives found","Controls misses — fake news that slips through keeps spreading"],
+ ["F1-score","2·P·R / (P+R)","Balance of precision and recall","One number that stays honest under class imbalance"]
+];
+$("#why").innerHTML=WHY.map(w=>`<div class="card"><h3>${w[0]}</h3><div class="formula">${w[1]}</div><div class="small"><b>Measures:</b> ${w[2]}</div><div class="small" style="margin-top:4px"><b>Why:</b> ${w[3]}</div></div>`).join("");
+const PRE={ex:[55,4,4,32],allfake:[59,0,36,0],allreal:[0,59,0,36]};let pos="real";
+function setCM(a){["c00","c01","c10","c11"].forEach((id,i)=>$("#"+id).value=a[i]);calcCM();}
+function calcCM(){
+  const [ff,fr,rf,rr]=["c00","c01","c10","c11"].map(id=>Math.max(0,+$("#"+id).value||0));
+  let TP,FP,FN,TN;if(pos==="real"){TP=rr;FN=rf;FP=fr;TN=ff;}else{TP=ff;FN=fr;FP=rf;TN=rr;}
+  const n=TP+TN+FP+FN,acc=n?(TP+TN)/n:0,P=TP+FP?TP/(TP+FP):0,R=TP+FN?TP/(TP+FN):0,F=P+R?2*P*R/(P+R):0;
+  $("#mres").innerHTML=[["Accuracy",acc],["Precision",P],["Recall",R],["F1-score",F]].map(m=>`<div class="card"><div class="small">${m[0]}</div><div class="v">${(m[1]*100).toFixed(1)}%</div><div class="mbar"><i style="width:${m[1]*100}%"></i></div></div>`).join("");
+  $("#cmLegend").innerHTML=pos==="real"?"TP = real→real · FP = <b>fake accepted as real</b> · FN = real flagged as fake":"TP = fake caught · FP = real flagged as fake · FN = <b>fake missed</b>";
+}
+seg("#cmPreset",d=>setCM(PRE[d.p]));seg("#posSeg",d=>{pos=d.pos;calcCM();});
+["c00","c01","c10","c11"].forEach(id=>$("#"+id).addEventListener("input",calcCM));setCM(PRE.ex);
+let nTest=95;
+function drawGain(){const g=+$("#gain").value;$("#gV").textContent=g.toFixed(1);const k=g/100*nTest;
+  $("#nNews").textContent=`≈ ${k.toFixed(1)} news`;$("#nTxt").textContent=`out of ${nTest} test news · 1 news = ${(100/nTest).toFixed(2)} pp`;}
+seg("#nSeg",d=>{nTest=+d.n;drawGain();});$("#gain").oninput=drawGain;drawGain();
+
+/* =================== 7. RESULTS =================== */
+const M3=["BERT","MVAE","EANN","CAFE","LLAMA2","Detect-GPT","CSI","Bi-GCN","UPFD","MFAN","RPPG-Fake"];
+const T3={pol:[[.781,.766,.878,.818],[.812,.803,.835,.819],[.804,.808,.794,.781],[.848,.857,.850,.853],[.848,.865,.780,.820],[.858,.888,.780,.831],[.734,.774,.571,.658],[.745,.696,.762,.727],[.862,.892,.786,.835],[.840,.846,.787,.815],[.902,.921,.853,.886]],
+ gos:[[.759,.787,.764,.775],[.782,.802,.751,.776],[.796,.812,.765,.788],[.832,.804,.903,.851],[.825,.811,.872,.840],[.831,.833,.884,.858],[.753,.748,.764,.756],[.826,.871,.881,.876],[.822,.860,.891,.875],[.822,.861,.888,.875],[.873,.904,.921,.913]],
+ phe:[[.768,.704,.778,.739],[.776,.734,.722,.728],[.771,.714,.701,.704],null,null,null,[.754,.799,.839,.819],[.771,.825,.831,.828],null,[.802,.853,.846,.850],[.829,.881,.854,.867]]};
+const M2=["CSI","Bi-GCN","UPFD","MFAN","RPPG-Fake"];
+const T2={pol:[[.753,.834,.742,.758],[.788,.834,.742,.758],[.904,.923,.857,.889],[.872,.841,.881,.860],[.924,.925,.902,.914]],
+ gos:[[.782,.823,.783,.808],[.890,.928,.848,.890],[.879,.906,.931,.918],[.862,.903,.910,.906],[.891,.911,.940,.925]],
+ phe:[[.771,.825,.831,.828],[.827,.840,.834,.835],null,[.823,.878,.847,.862],[.844,.891,.868,.879]]};
+let rsS="early",rsD="pol",rsMi=0;
+function hbar(svg,names,vals,groups,opt){
+  const L=150,R=660,top=8,rowH=opt.rowH||30,valid=vals.filter(v=>v!=null),mn=Math.min(...valid),lo=Math.floor((mn-.02)*20)/20,hi=1;
+  const sx=v=>L+(v-lo)/(hi-lo)*(R-L),best=Math.max(...valid);let g="";
+  for(let i=0;i<=5;i++){const v=lo+(hi-lo)*i/5,x=sx(v);g+=`<line x1="${x}" x2="${x}" y1="${top}" y2="${top+rowH*names.length}" stroke="${css("--line")}"/><text class="ax" x="${x}" y="${top+rowH*names.length+14}" text-anchor="middle">${v.toFixed(2)}</text>`;}
+  names.forEach((n,i)=>{const v=vals[i],y=top+i*rowH,ours=n.startsWith("RPPG")||n==="Proposed",col=ours?css("--rl"):groups[i]==="c"?css("--det"):groups[i]==="p"?css("--cl"):css("--muted");
+    g+=`<text x="${L-10}" y="${y+rowH/2+4}" text-anchor="end" style="font-weight:${ours?700:400}">${n}</text>`;
+    if(v==null){g+=`<text class="ax" x="${L+6}" y="${y+rowH/2+4}">not reported</text>`;return;}
+    g+=`<rect x="${L}" y="${y+6}" width="${Math.max(2,sx(v)-L)}" height="${rowH-12}" rx="4" fill="${col}" opacity="${ours?1:.55}"/><text class="val" x="${sx(v)+6}" y="${y+rowH/2+4}" style="font-weight:${v===best?700:400}">${v.toFixed(3)}${v===best?" ★":""}</text>`;});
+  svg.setAttribute("viewBox",`0 0 760 ${top+rowH*names.length+24}`);svg.innerHTML=g;return lo;
+}
+function drawRS(){
+  const names=rsS==="early"?M3:M2,data=(rsS==="early"?T3:T2)[rsD],vals=data.map(r=>r?r[rsMi]:null);
+  const groups=rsS==="early"?names.map((n,i)=>i<6?"c":i<10?"p":"o"):names.map((n,i)=>i<4?"p":"o");
+  const lo=hbar($("#rsChart"),names,vals,groups,{});
+  let note=`Axis starts at ${lo.toFixed(2)}. Orange = content-based, teal = propagation-enhanced, purple = RPPG-Fake. ★ = best.`;
+  if(rsS==="early"&&rsD==="pol"&&rsMi===2)note+=" BERT (0.878) beats RPPG-Fake (0.853) on recall, but the paper claims +0.3.";
+  if(rsS==="full"&&rsD==="gos")note+=" With full paths, Bi-GCN/UPFD win several GossipCop metrics.";
+  $("#rsNote").textContent=note;
+}
+seg("#rsSet",d=>{rsS=d.s;drawRS();});seg("#rsDs",d=>{rsD=d.d;drawRS();});seg("#rsM",d=>{rsMi=+d.m;drawRS();});
+const AB_N=["Proposed","w/o all CL","w/o node-view CL","w/o meta-path CL","Random sample","Node similarity","w/o structure","w/o temporal"];
+const AB={pol:[[.924,.925,.902,.914],[.891,.919,.829,.872],[.902,.921,.854,.886],[.913,.902,.902,.902],[.891,.897,.854,.875],[.902,.921,.854,.886],[.913,.923,.878,.900],[.902,.900,.878,.889]],
+ gos:[[.891,.911,.940,.925],[.874,.910,.921,.915],[.876,.905,.924,.914],[.885,.907,.936,.921],[.872,.907,.917,.912],[.873,.905,.921,.913],[.886,.908,.937,.922],[.884,.906,.935,.920]],
+ phe:[[.844,.891,.868,.879],[.827,.879,.852,.867],[.828,.881,.852,.867],[.831,.883,.856,.869],[.824,.879,.849,.864],[.826,.881,.850,.865],[.834,.885,.858,.871],[.836,.887,.859,.873]]};
+let abD="pol",abMi=0;
+function drawAB(){hbar($("#abChart"),AB_N,AB[abD].map(r=>r[abMi]),["o","c","c","c","p","p","r","r"].map(x=>x==="c"?"p":x==="p"?"c":"o"),{rowH:30});}
+seg("#abDs",d=>{abD=d.d;drawAB();});seg("#abM",d=>{abMi=+d.m;drawAB();});
+
+
+/* =================== 8. REPRODUCTION =================== */
+const REP=JSON.parse($("#repro-data").textContent);
+const REP_PAPER={pol:{early:[.902,.921,.853,.886],full:[.924,.925,.902,.914]},gos:{early:[.873,.904,.921,.913],full:[.891,.911,.940,.925]},phe:{early:[.829,.881,.854,.867],full:[.844,.891,.868,.879]}};
+const REP_SPEC={politifact:{paper:"pol",r1:["politifact",""],r2:null,r3:null},pheme:{paper:"phe",r1:["pheme",""],r2:["pheme","_mm"],r3:["pheme","_complete"]},
+  gossipcop:{paper:"gos",r1:["gossipcop",""],r2:["gossipcop","_mm"],r3:["gossipcop","_complete"]},politifact_upfd:{paper:"pol",r1:["politifact_upfd_title",""],r2:["politifact_upfd","_mm"],r3:["politifact_upfd","_complete"]}};
+const REP_MI={acc:0,pre:1,rec:2,f1:3};
+const fmtN=n=>Number(n).toLocaleString("en-US");
+function repGet(spec,setting,m){if(!spec)return null;const r=(REP.results[spec[0]]||{})[setting+spec[1]];return r&&r[m]!=null?r[m]:null;}
+let repDs="politifact",repResDs="politifact",repSet="early",repM="acc",repAbR="r3",repPDs="gossipcop",repPEx=0;
+
+function drawRepDs(){
+  const d=REP.datasets[repDs],s=d.split,tot=s.train+s.val+s.test;
+  $("#repDsCard").innerHTML=`<h3>${esc(d.name)}</h3><p class="small" style="margin:0 0 10px">${esc(d.source)}</p>
+   <div class="bars2" style="height:24px"><div class="b-fake" style="width:${d.fake/d.news*100}%">fake ${fmtN(d.fake)}</div><div class="b-real" style="width:${d.real/d.news*100}%">real ${fmtN(d.real)}</div></div>
+   <div class="bars2 mt" style="height:22px"><div class="s-tr" style="width:${s.train/tot*100}%">train ${s.train}</div><div class="s-va" style="width:${s.val/tot*100}%">val ${s.val}</div><div class="s-te" style="width:${s.test/tot*100}%">test ${s.test}</div></div>
+   <div class="statgrid mt"><div class="stat">news<b>${fmtN(d.news)}</b></div><div class="stat">engagements<b>${fmtN(d.engagements)}</b></div><div class="stat">users<b>${fmtN(d.users)}</b></div>
+   <div class="stat">median engagements / news<b>${d.median_eng}</b></div><div class="stat">median words / news<b>${d.median_words}</b></div><div class="stat">median cascade span<b>${d.median_span_h<48?d.median_span_h.toFixed(1)+" h":(d.median_span_h/24).toFixed(0)+" d"}</b></div></div>`;
+  const c=d.coverage,bar=(v,col)=>`<div class="covbar"><i style="width:${v*100}%;background:${col}"></i><span>${Math.round(v*100)}%</span></div>`;
+  const st=REP.stage1[repDs]||{},r=st.r2||st.r1;
+  $("#repCov").innerHTML=`<h3>What each news item carries</h3>
+   <div class="covrow small"><span></span><b>fake</b><b>real</b></div>
+   <div class="covrow"><span>News text (${esc(d.text)})</span>${bar(c.fake.fulltext,css("--det"))}${bar(c.real.fulltext,css("--det"))}</div>
+   <div class="covrow"><span>Image</span>${bar(c.fake.image,css("--rl"))}${bar(c.real.image,css("--rl"))}</div>
+   <div class="covrow"><span>Propagation path</span>${bar(1,css("--cl"))}${bar(1,css("--cl"))}</div>
+   <p class="small" style="margin:10px 0 0">Text bar = share with the full body (titles/tweets are always present). Graph H (training news only): ${fmtN(d.graph_edges)} edges.${r?` Stage 1 generated ${r.avg_users.toFixed(0)} users per news; ${(r.hit_rate.test*100).toFixed(1)}% of them really engaged (test).`:""}</p>`;
+}
+
+function drawRepRes(){
+  const sp=REP_SPEC[repResDs],paper=repM==="auc"?null:REP_PAPER[sp.paper][repSet][REP_MI[repM]];
+  const rows=[["Paper"+(repResDs==="politifact_upfd"?" (PolitiFact, other subset)":""),paper,css("--muted")],
+              ["Round 1 · text"+(repResDs==="politifact_upfd"||repResDs==="gossipcop"?" (title)":""),repGet(sp.r1,repSet,repM),css("--cl")],
+              ["Round 2 · text + image",repGet(sp.r2,repSet,repM),css("--rl")],
+              ["Round 3 · complete items only",repGet(sp.r3,repSet,repM),css("--ok")]];
+  const L=230,R=690,top=8,h=40,n=rows.length,vals=rows.map(r=>r[1]).filter(v=>v!=null),lo=Math.max(0,Math.floor((Math.min(...vals)-.05)*20)/20),sx=v=>L+(v-lo)/(1-lo)*(R-L);
+  let g="";
+  for(let i=0;i<=5;i++){const v=lo+(1-lo)*i/5,x=sx(v);g+=`<line x1="${x}" x2="${x}" y1="${top}" y2="${top+h*n}" stroke="${css("--line")}"/><text class="ax" x="${x}" y="${top+h*n+14}" text-anchor="middle">${v.toFixed(2)}</text>`;}
+  rows.forEach(([n,v,col],i)=>{const y=top+i*h;g+=`<text x="${L-10}" y="${y+h/2+4}" text-anchor="end">${n}</text>`;
+    g+=v==null?`<text class="ax" x="${L+6}" y="${y+h/2+4}">${i===0&&repM==="auc"?"not reported in the paper":"not run"}</text>`:
+      `<rect x="${L}" y="${y+8}" width="${Math.max(2,sx(v)-L)}" height="${h-16}" rx="4" fill="${col}"/><text class="val" x="${sx(v)+6}" y="${y+h/2+4}">${v.toFixed(3)}</text>`;});
+  $("#repResChart").setAttribute("viewBox",`0 0 760 ${top+h*n+22}`);$("#repResChart").innerHTML=g;
+  const r1=rows[1][1],r2=rows[3][1]!=null?rows[3][1]:rows[2][1];
+  let note=`Axis starts at ${lo.toFixed(2)}. Positive class = real.`;
+  if(r1!=null&&r2!=null)note+=` Latest round vs round 1: ${((r2-r1)*100>=0?"+":"")}${((r2-r1)*100).toFixed(1)} pp.`;
+  if(paper!=null&&r2!=null)note+=` Latest round vs paper: ${((r2-paper)*100>=0?"+":"")}${((r2-paper)*100).toFixed(1)} pp.`;
+  else if(paper!=null&&r1!=null)note+=` Round 1 vs paper: ${((r1-paper)*100>=0?"+":"")}${((r1-paper)*100).toFixed(1)} pp.`;
+  $("#repResNote").textContent=note;
+}
+
+function drawRepAb(){
+  const names={politifact:"PolitiFact (authors)",pheme:"PHEME",gossipcop:"GossipCop",politifact_upfd:"PolitiFact-UPFD"};
+  const rows=Object.keys(REP_SPEC).map(k=>{const sp=REP_SPEC[k][repAbR];return [names[k],repGet(sp,"early","acc"),repGet(sp,"early_no_gen","acc")];});
+  const L=200,R=640,top=10,h=42,vals=rows.flatMap(r=>[r[1],r[2]]).filter(v=>v!=null),lo=Math.floor((Math.min(...vals,.8)-.03)*20)/20,hi=Math.min(1,Math.ceil((Math.max(...vals)+.02)*20)/20),sx=v=>L+(v-lo)/(hi-lo)*(R-L);
+  let g="";
+  for(let i=0;i<=4;i++){const v=lo+(hi-lo)*i/4,x=sx(v);g+=`<line x1="${x}" x2="${x}" y1="${top}" y2="${top+h*rows.length}" stroke="${css("--line")}"/><text class="ax" x="${x}" y="${top+h*rows.length+14}" text-anchor="middle">${v.toFixed(2)}</text>`;}
+  rows.forEach(([n,w,wo],i)=>{const y=top+i*h+h/2;g+=`<text x="${L-12}" y="${y+4}" text-anchor="end">${n}</text>`;
+    if(w==null||wo==null){g+=`<text class="ax" x="${L+6}" y="${y+4}">not run in this round</text>`;return;}
+    const dlt=(w-wo)*100;
+    g+=`<line x1="${sx(wo)}" x2="${sx(w)}" y1="${y}" y2="${y}" stroke="${css("--muted")}" stroke-width="3" opacity=".5"/>
+      <circle cx="${sx(wo)}" cy="${y}" r="7" fill="${css("--muted")}"/><circle cx="${sx(w)}" cy="${y}" r="7" fill="${css("--rl")}"/>
+      <text class="val" x="${R+12}" y="${y+4}" style="font-weight:700;fill:${dlt>=0?css("--ok"):css("--bad")}">${dlt>=0?"+":""}${dlt.toFixed(1)} pp</text>`;});
+  g+=`<text class="ax" x="${L}" y="${top+h*rows.length+30}" style="fill:${css("--rl")}">● with generated path</text><text class="ax" x="${L+170}" y="${top+h*rows.length+30}">● without (early real users only)</text>`;
+  $("#repAbChart").setAttribute("viewBox",`0 0 760 ${top+h*rows.length+38}`);$("#repAbChart").innerHTML=g;
+}
+
+function radial(edges){
+  // edges: [parent, child] with local ids, 0 = news. Returns positions by depth rings.
+  const parent={0:-1},depth={0:0},kids={0:[]};
+  edges.forEach(([p,c])=>{if(!(p in depth))p=0;parent[c]=p;depth[c]=depth[p]+1;(kids[p]=kids[p]||[]).push(c);kids[c]=kids[c]||[];});
+  const pos={0:[180,180]},ang={0:0};
+  const order=[0],seen=new Set([0]);
+  for(let i=0;i<order.length;i++){(kids[order[i]]||[]).forEach(k=>{if(!seen.has(k)){seen.add(k);order.push(k);}});}
+  const byDepth={};order.slice(1).forEach(n=>(byDepth[depth[n]]=byDepth[depth[n]]||[]).push(n));
+  Object.entries(byDepth).forEach(([d,ns])=>{const r=Math.min(165,45+(+d-1)*52);ns.forEach((n,i)=>{const a=(i/ns.length)*2*Math.PI-Math.PI/2;ang[n]=a;pos[n]=[180+r*Math.cos(a),180+r*Math.sin(a)];});});
+  return {pos,parent};
+}
+function drawRepPath(){
+  const exs=REP.examples[repPDs]||[];
+  const box=$("#repPathEx");
+  if(box.dataset.for!==repPDs){box.dataset.for=repPDs;box.innerHTML=exs.map((e,i)=>`<button type="button" data-i="${i}" aria-pressed="${i===repPEx}">#${i+1} ${e.label}</button>`).join("");}
+  const ex=exs[repPEx];if(!ex)return;
+  const steps=ex.generated,maxS=steps.length-1,sl=$("#repStep");sl.max=maxS;if(+sl.value>maxS)sl.value=maxS;
+  const t=+sl.value;$("#repStepV").textContent=t===0?"0 (early real users only)":`${t} / ${maxS}`;
+  const genEdges=[],nodeInfo={};
+  steps.slice(0,t+1).forEach((st,si)=>st.forEach(([p,c,hit])=>{genEdges.push([p,c]);nodeInfo[c]={step:si,hit};}));
+  const nShown=Object.keys(nodeInfo).length;
+  const realEdges=ex.real.slice(0,Math.max(nShown,1));
+  const draw=(svg,edges,colorOf)=>{const {pos,parent}=radial(edges);let g="";
+    Object.keys(pos).forEach(n=>{if(+n&&pos[parent[n]]){const a=pos[parent[n]],b=pos[n];g+=`<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${css("--line")}" stroke-width="1.2"/>`;}});
+    Object.keys(pos).forEach(n=>{const [x,y]=pos[n];g+=+n===0?`<circle cx="${x}" cy="${y}" r="11" fill="${css("--news")}"/><text x="${x}" y="${y+4}" text-anchor="middle" style="fill:#fff;font-size:10px;font-weight:700">N</text>`:`<circle cx="${x}" cy="${y}" r="5" fill="${colorOf(+n)}"/>`;});
+    $(svg).innerHTML=g;};
+  draw("#repReal",realEdges,()=>css("--user"));
+  draw("#repGen",genEdges,n=>{const i=nodeInfo[n];return !i?css("--muted"):i.step===0?css("--det"):i.hit?css("--ok"):css("--rl");});
+  const genOnly=Object.values(nodeInfo).filter(i=>i.step>0),hits=genOnly.filter(i=>i.hit).length;
+  $("#repPathInfo").textContent=`This ${ex.label} news item really reached ${ex.real_total} users (left: the first ${realEdges.length}). Generated so far: ${genOnly.length} users, of which ${hits} (${genOnly.length?(hits/genOnly.length*100).toFixed(1):0}%) really engaged with it. User ids are replaced by numbers.`;
+}
+seg("#repDs",d=>{repDs=d.k;drawRepDs();});
+seg("#repResDs",d=>{repResDs=d.k;drawRepRes();});seg("#repResSet",d=>{repSet=d.s;drawRepRes();});seg("#repResM",d=>{repM=d.m;drawRepRes();});
+seg("#repAbR",d=>{repAbR=d.r;drawRepAb();});
+seg("#repPathDs",d=>{repPDs=d.k;repPEx=0;$("#repStep").value=99;drawRepPath();});
+$("#repPathEx").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;repPEx=+b.dataset.i;$$("#repPathEx button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#repStep").value=99;drawRepPath();});
+$("#repStep").oninput=drawRepPath;
+
+
+/* =================== 9. PROGRESS =================== */
+const STEPS=[
+ {s:"done",d:"2026-10-08",t:"Lectures uploaded to GitHub",sub:"Lectures 06–12 renamed and pushed",what:"Renamed the new lecture PDFs to the repo convention and added them to Lectures/README.md.",out:["commit 458dd9e on main"]},
+ {s:"done",d:"2026-10-08",t:"Paper summary (this page)",sub:"8 tabs, English, Edit + Comment",what:"Interactive summary of RPPG-Fake: roadmap, background, model, data, code, metrics, results, summary.",out:["Paper-Based/Paper_Summary_RPPG-Fake.html"]},
+ {s:"done",d:"2026-10-08",t:"Official code reviewed",sub:"Does not run as published",what:"Missing config/source files, undefined names, val/test swapped, rewards and discriminator not as in the paper.",out:["Code tab: Paper vs code, Must fix list"]},
+ {s:"done",d:"2026-10-08",t:"Code rewritten to run",sub:"Modules 1–3 following Eq. 1–22",what:"New implementation of contrastive learning, RL path generation (actor-critic + discriminator) and temporal-aware detection; PyTorch 2.11 + CUDA 12.8 on RTX 5050.",out:["Code_RPPG-Fake (branch runnable)","RUNNING.md"]},
+ {s:"done",d:"2026-10-08",t:"Algorithm audited against the paper",sub:"2 audits, 9 fixes",what:"Checked every equation; fixed GAT form (Eq. 2), Λ(t), R_G (Eq. 13), discriminator on prefixes, directed actions, Eq. 21 residual, leakage through content candidates.",out:["RUNNING.md §5 (deviations)"]},
+ {s:"done",d:"2026-10-09",t:"Datasets downloaded",sub:"PHEME, UPFD, FakeNewsNet",what:"PHEME (figshare), UPFD propagation trees + time/user mappings, FakeNewsNet titles; converted to one format.",out:["scripts/convert_pheme.py","scripts/convert_upfd.py"]},
+ {s:"done",d:"2026-10-09",t:"Round 1 — text + propagation",sub:"PolitiFact, PHEME, GossipCop",what:"PHEME within ±1 pp of the paper; PolitiFact −6 pp; GossipCop −11 pp (titles only). Generated path gave no gain.",out:["logs/results_summary_*.md"]},
+ {s:"done",d:"2026-10-10",t:"Datasets completed with images and articles",sub:"Images + article bodies recovered",what:"PHEME tweet images (2,086); GossipCop / PolitiFact article bodies and lead images from live sites or the Wayback Machine.",out:["scripts/fetch_pheme_images.py","scripts/fetch_fnn_articles.py"]},
+ {s:"done",d:"2026-10-10",t:"Round 2 — text + image (full sets)",sub:"Missing images = zeros",what:"GossipCop +1.7 / +2.0 pp over round 1; PHEME unchanged; PolitiFact-UPFD unstable (62 test news).",out:["Reproduction tab","HANDOFF.md"]},
+ {s:"done",d:"2026-10-10",t:"Kept only complete news items",sub:"Text + image + propagation",what:"GossipCop 2,827 and PHEME 2,004 news kept; everything else archived and moved to the Recycle Bin on request.",out:["scripts/keep_complete.py","data/{gossipcop,pheme,politifact_upfd}/"]},
+ {s:"now",d:"2026-10-12",t:"Round 3 — complete datasets",sub:"Seed 0 done",what:"PHEME 0.848 early / 0.866 full (above the paper); GossipCop 0.788 / 0.793; generated path +1.0 / +0.6 pp.",out:["logs/results_summary_*.md (tag _complete)"]},
+ {s:"next",d:"",t:"5 seeds on the complete datasets",sub:"Mean ± std like the paper",what:"Run seeds 0–4 for GossipCop and PHEME to see whether the small gains are real.",out:["~3–4 hours"]},
+ {s:"next",d:"",t:"Update the Code tab",sub:"Describe the runnable code",what:"The Code tab still describes the authors' original code; add the rewritten modules and how to run them.",out:["this page"]},
+ {s:"next",d:"",t:"Push to GitHub (after approval)",sub:"HTML + code, no data",what:"Decide how to include Code_RPPG-Fake (remove nested .git or use a submodule); never push data/, .venv/ or logs/.",out:["needs your go-ahead"]}
+];
+const NEXT=[["Run 5 seeds on GossipCop + PHEME (complete items)","~3–4 h"],["Add 5-seed mean ± std to the Reproduction tab","~15 min"],["Update the Code tab with the runnable implementation","~30 min"],["(Optional) longer text encoder than CLIP's 77 tokens","~2 h + runs"],["Prepare the GitHub push: HTML + code, no data (after your approval)","~15 min"]];
+let progSel=STEPS.findIndex(s=>s.s==="now"),progF="all";
+function drawProgress(){
+  const done=STEPS.filter(s=>s.s==="done"||s.s==="now").length,pct=Math.round(done/STEPS.length*100);
+  $("#progPct").textContent=pct+"%";$("#progBar").style.width=pct+"%";
+  $("#progSteps").innerHTML=STEPS.map((s,i)=>({s,i})).filter(({s})=>progF==="all"||(progF==="done"?s.s!=="next":s.s==="next")).map(({s,i})=>
+    `<li class="${s.s}${i===progSel?" sel":""}" data-i="${i}" tabindex="0"><span class="dot">${s.s==="next"?"·":s.s==="now"?"▶":"✓"}</span><span><span class="st-t">${i+1}. ${esc(s.t)}</span><br><span class="st-s">${esc(s.sub)}</span></span><span class="small mono">${s.d?s.d.slice(5):"next"}</span></li>`).join("");
+  const s=STEPS[progSel];
+  $("#progDetail").innerHTML=`<span class="tag ${s.s==="next"?"t-warn":s.s==="now"?"t-rl":"t-ok"}">${s.s==="next"?"Next":s.s==="now"?"Current":"Done"}${s.d?" · "+s.d:""}</span>
+    <h3 class="mt">${esc(s.t)}</h3><p class="small" style="margin:0">${esc(s.what)}</p>
+    <div class="info-k">Outputs</div>${s.out.map(o=>`<div class="info-v">${esc(o)}</div>`).join("")}`;
+  const days={};STEPS.forEach(x=>{const k=x.d||"Next";(days[k]=days[k]||[]).push(x.t);});
+  $("#progTimeline").innerHTML=Object.entries(days).map(([d,ts])=>`<div class="tl-day" style="${d==="Next"?"border-color:var(--warn)":""}"><b>${d}</b><ul>${ts.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>`).join("");
+  $("#progNext").innerHTML=NEXT.map(([t,e])=>`<li><span class="box"></span><span>${esc(t)}</span><span class="eta">${e}</span></li>`).join("");
+}
+$("#progSteps").addEventListener("click",e=>{const li=e.target.closest("li");if(!li)return;progSel=+li.dataset.i;drawProgress();});
+$("#progSteps").addEventListener("keydown",e=>{if(e.key!=="Enter")return;const li=e.target.closest("li");if(li){progSel=+li.dataset.i;drawProgress();}});
+seg("#progFilter",d=>{progF=d.f;drawProgress();});
+
+/* =================== redraw =================== */
+function redraw(){
+  if(curTab==="background")drawSpread();
+  if(curTab==="model"){drawArch();drawRL();drawDet();}
+  if(curTab==="results"){drawRS();drawAB();}
+  if(curTab==="reproduction"){drawRepDs();drawRepRes();drawRepAb();drawRepPath();}
+  if(curTab==="progress")drawProgress();
+}
+rlReset();
+matchMedia("(prefers-color-scheme: dark)").addEventListener("change",redraw);
+
+/* =================================================================
+   EDIT + COMMENT
+   Every text block gets a stable key (data-ek). Edits and comments are
+   kept in localStorage and can be baked into the file with "Save HTML".
+================================================================= */
+const LS="rppg-summary-state-v1";
+const EDITABLE="header.top h1, header.top .sub, header.top .chip, #foot, main h2, main h3, main p, main li, main td, main th, main .phase-h span, main .nt, main .ns, main .tag, main .pill, main .k";
+const SKIP="svg, pre, .term, .seg, #fview, #archInfo, .flow-detail, #mres, #rlRewards, #rlInfo, #methods, #splitView, .cm, #nTxt, #rsNote, button.gobtn, .tablist, .rep-dyn, #repPathEx, .prog-dyn, #progSteps, #progTimeline, #progNext, .prog-meter";
+let state={edits:{},comments:[],updated:0};
+try{state=Object.assign(state,JSON.parse($("#baked-state").textContent||"{}"));}catch(e){}
+try{const s=JSON.parse(localStorage.getItem(LS)||"null");if(s&&(s.updated||0)>=(state.updated||0))state=Object.assign({edits:{},comments:[]},s);}catch(e){}
+function persist(){state.updated=Date.now();try{localStorage.setItem(LS,JSON.stringify(state));}catch(e){}}
+
+const ORIG={};
+(function assignKeys(){
+  const counters={};
+  const cand=$$(EDITABLE).filter(el=>!el.closest(SKIP)&&!el.querySelector("h1,h2,h3,p,li,td,th,table,ul,ol,.nt,.ns"));
+  const set=new Set(cand);
+  cand.forEach(el=>{
+    for(let p=el.parentElement;p;p=p.parentElement)if(set.has(p))return;   // keep the outer block only
+    const sec=el.closest("section.panel"),scope=sec?sec.id:(el.closest("header")?"header":"footer");
+    counters[scope]=(counters[scope]||0)+1;
+    const key=scope+":"+counters[scope];
+    el.dataset.ek=key;ORIG[key]=el.innerHTML;
+    if(state.edits[key]!=null){el.innerHTML=state.edits[key];el.classList.add("edited");}
+  });
+})();
+function blockOf(key){return document.querySelector(`[data-ek="${CSS.escape(key)}"]`);}
+function sectionOf(key){return key.split(":")[0];}
+
+/* modes */
+let mode="";
+function setMode(m){
+  mode=mode===m?"":m;
+  document.body.classList.toggle("editing",mode==="edit");
+  document.body.classList.toggle("commenting",mode==="comment");
+  $("#btnEdit").setAttribute("aria-pressed",mode==="edit");$("#btnCmt").setAttribute("aria-pressed",mode==="comment");
+  $$("[data-ek]").forEach(el=>{if(mode==="edit")el.setAttribute("contenteditable","true");else el.removeAttribute("contenteditable");});
+  const mb=$("#modebar");mb.classList.toggle("on",!!mode);
+  mb.innerHTML=mode==="edit"?"<b>Edit mode</b> — click any outlined text and type. Changes save automatically in this browser. Use <b>Save HTML</b> to keep them in the file.":
+               mode==="comment"?"<b>Comment mode</b> — click any text (or select part of it) to leave a comment.":"";
+}
+$("#btnEdit").onclick=()=>setMode("edit");
+$("#btnCmt").onclick=()=>setMode("comment");
+document.addEventListener("input",e=>{const el=e.target.closest&&e.target.closest("[data-ek]");if(!el||mode!=="edit")return;
+  const k=el.dataset.ek;if(el.innerHTML===ORIG[k]){delete state.edits[k];el.classList.remove("edited");}else{state.edits[k]=el.innerHTML;el.classList.add("edited");}persist();});
+document.addEventListener("keydown",e=>{if(mode==="edit"&&e.key==="Enter"&&e.target.closest&&e.target.closest("[data-ek]")&&!e.shiftKey){e.preventDefault();}});
+document.addEventListener("click",e=>{
+  if(mode==="edit"){const n=e.target.closest(".node, .tag");if(n&&e.target.closest("[data-ek]"))e.preventDefault();return;}
+  if(mode!=="comment")return;
+  const el=e.target.closest("[data-ek]");if(!el)return;
+  e.preventDefault();e.stopPropagation();
+  const sel=String(getSelection()||"").trim();
+  openComposer({key:el.dataset.ek,quote:(sel&&el.textContent.includes(sel)?sel:el.textContent.trim()).slice(0,240)});
+},true);
+
+/* composer */
+let pending=null;
+function openComposer(p){pending=p;$("#compTitle").textContent=p.replyTo?"Reply":"Add comment";$("#compQuote").textContent=p.quote||"";
+  try{$("#compName").value=localStorage.getItem("rppg-author")||"";}catch(e){}
+  $("#compText").value="";$("#composer").classList.add("on");setTimeout(()=>($("#compName").value?$("#compText"):$("#compName")).focus(),30);}
+function closeComposer(){$("#composer").classList.remove("on");pending=null;}
+$("#compCancel").onclick=closeComposer;
+$("#composer").addEventListener("click",e=>{if(e.target.id==="composer")closeComposer();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"){closeComposer();$("#drawer").classList.remove("on");}});
+$("#compSave").onclick=()=>{
+  const txt=$("#compText").value.trim();if(!txt||!pending)return;
+  const author=$("#compName").value.trim()||"Anonymous";try{localStorage.setItem("rppg-author",author);}catch(e){}
+  const now=new Date().toISOString();
+  if(pending.replyTo){const c=state.comments.find(c=>c.id===pending.replyTo);if(c)c.replies.push({author,text:txt,time:now});}
+  else state.comments.push({id:"c"+Date.now().toString(36)+Math.random().toString(36).slice(2,6),key:pending.key,section:sectionOf(pending.key),quote:pending.quote,text:txt,author,time:now,resolved:false,replies:[]});
+  persist();closeComposer();renderComments();toast("Comment saved");
+};
+
+/* drawer */
+let cf="open";
+$("#btnList").onclick=()=>{$("#drawer").classList.add("on");renderComments();};
+$("#drawerClose").onclick=()=>$("#drawer").classList.remove("on");
+seg("#cfSeg",d=>{cf=d.f;renderComments();});
+function renderComments(){
+  const open=state.comments.filter(c=>!c.resolved);
+  $("#cmtCount").textContent=open.length;
+  TABS.forEach(([id])=>{const n=open.filter(c=>c.section===id).length,b=$("#cc-"+id);b.textContent=n;b.classList.toggle("on",n>0);});
+  $$("[data-ek]").forEach(el=>{const n=open.filter(c=>c.key===el.dataset.ek).length;el.classList.toggle("has-cmt",n>0);if(n)el.dataset.cc=n;else delete el.dataset.cc;});
+  const list=state.comments.filter(c=>cf==="all"||(cf==="open"?!c.resolved:c.resolved));
+  const secName=id=>(TABS.find(t=>t[0]===id)||[0,id==="header"?"Header":"Footer"])[1];
+  $("#cmtList").innerHTML=list.length?list.map(c=>`<div class="cmt${c.resolved?" res":""}" data-id="${c.id}">
+    <div class="meta"><span class="tag t-rl">${esc(secName(c.section))}</span><span>${new Date(c.time).toLocaleString()}</span></div>
+    <div class="q">${esc(c.quote)}</div><div class="txt"><b>${esc(c.author)}:</b> ${esc(c.text)}</div>
+    ${c.replies.map(r=>`<div class="rep"><b>${esc(r.author)}:</b> ${esc(r.text)}</div>`).join("")}
+    <div class="acts"><button data-a="go">Go to</button><button data-a="reply">Reply</button><button data-a="res">${c.resolved?"Reopen":"Resolve"}</button><button data-a="del">Delete</button></div></div>`).join("")
+    :`<p class="small">${cf==="open"?"No open comments. Turn on 💬 Comment and click any text.":"Nothing here."}</p>`;
+}
+$("#cmtList").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-a]");if(!b)return;const id=b.closest(".cmt").dataset.id,c=state.comments.find(x=>x.id===id);if(!c)return;
+  if(b.dataset.a==="go"){const sec=c.section;if(TABS.find(t=>t[0]===sec))show(sec,true);const el=blockOf(c.key);if(el){el.scrollIntoView({block:"center",behavior:"smooth"});el.classList.remove("flash");void el.offsetWidth;el.classList.add("flash");}if(innerWidth<800)$("#drawer").classList.remove("on");}
+  if(b.dataset.a==="reply")openComposer({replyTo:id,quote:c.text});
+  if(b.dataset.a==="res"){c.resolved=!c.resolved;persist();renderComments();}
+  if(b.dataset.a==="del"&&confirm("Delete this comment?")){state.comments=state.comments.filter(x=>x.id!==id);persist();renderComments();}
+});
+
+/* save / export / reset */
+function download(name,text,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},500);}
+$("#btnSave").onclick=()=>{
+  persist();
+  const json=JSON.stringify(state).replace(/</g,"\\u003c");
+  const out=PRISTINE.replace(/(<script type="application\/json" id="baked-state">)[\s\S]*?(<\/script>)/,(m,a,b)=>a+json+b);
+  const name=decodeURIComponent((location.pathname.split("/").pop()||"Paper_Summary_RPPG-Fake.html"))||"Paper_Summary_RPPG-Fake.html";
+  download(name.endsWith(".html")?name:"Paper_Summary_RPPG-Fake.html",out,"text/html");
+  toast("Saved — replace the old file with the downloaded one");
+};
+$("#btnExport").onclick=()=>download("RPPG-Fake_comments.json",JSON.stringify(state,null,2),"application/json");
+$("#btnReset").onclick=()=>{if(!confirm("Remove all text edits? Comments are kept."))return;
+  Object.keys(state.edits).forEach(k=>{const el=blockOf(k);if(el){el.innerHTML=ORIG[k];el.classList.remove("edited");}});state.edits={};persist();toast("Edits reset");};
+
+renderComments();
+show(location.hash.slice(1)||"roadmap",false);
+})();
+</script>
+</body>
+</html>

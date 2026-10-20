@@ -1,0 +1,22 @@
+<section id="w-m3" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">03 · ตัวอย่างจริงทีละขั้น · Module 3</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">ข่าวเดียวกัน: 23 snapshot → P(real) = 0.996</h2>
+<div style="background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:10px">
+<p style="font-size:24px;color:#4F5D6B">จำนวน node ในแต่ละ snapshot (ข่าว + user) · สีน้ำเงิน = จริง (early) · สีส้ม = ที่สร้าง</p>
+<div style="display:flex;align-items:flex-end;gap:8px;height:240px">
+<div style="flex:1;height:4px;background:#2950B8"></div><div style="flex:1;height:5px;background:#2950B8"></div><div style="flex:1;height:6px;background:#2950B8"></div><div style="flex:1;height:17px;background:#C9650E"></div><div style="flex:1;height:29px;background:#C9650E"></div><div style="flex:1;height:41px;background:#C9650E"></div><div style="flex:1;height:53px;background:#C9650E"></div><div style="flex:1;height:65px;background:#C9650E"></div><div style="flex:1;height:77px;background:#C9650E"></div><div style="flex:1;height:89px;background:#C9650E"></div><div style="flex:1;height:101px;background:#C9650E"></div><div style="flex:1;height:113px;background:#C9650E"></div><div style="flex:1;height:125px;background:#C9650E"></div><div style="flex:1;height:137px;background:#C9650E"></div><div style="flex:1;height:149px;background:#C9650E"></div><div style="flex:1;height:161px;background:#C9650E"></div><div style="flex:1;height:173px;background:#C9650E"></div><div style="flex:1;height:185px;background:#C9650E"></div><div style="flex:1;height:197px;background:#C9650E"></div><div style="flex:1;height:209px;background:#C9650E"></div><div style="flex:1;height:221px;background:#C9650E"></div><div style="flex:1;height:233px;background:#C9650E"></div><div style="flex:1;height:240px;background:#C9650E"></div>
+</div>
+<div style="display:flex;justify-content:space-between"><p style="font-size:24px;color:#4F5D6B">G₀ = 2 node</p><p style="font-size:24px;color:#4F5D6B">G₂₂ = 201 node</p></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<p style="flex:1;font-size:24px;font-weight:600;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px;text-align:center">GAT ทีละ snapshot → 23 เวกเตอร์</p>
+<x-shape kind="arrow-right" style="width:40px;height:24px;background:#9AA6B2"></x-shape>
+<p style="flex:1;font-size:24px;font-weight:600;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px;text-align:center">Attention + โครงสร้าง G₂₂</p>
+<x-shape kind="arrow-right" style="width:40px;height:24px;background:#9AA6B2"></x-shape>
+<p style="flex:1;font-size:24px;font-weight:600;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px;text-align:center">+ ข้อความ + ภาพ (CLIP)</p>
+<x-shape kind="arrow-right" style="width:40px;height:24px;background:#9AA6B2"></x-shape>
+<p style="flex:1;font-size:26px;font-weight:600;background:#14202C;color:#EEF2F6;border-radius:12px;padding:16px;text-align:center">P(real) 0.996 → real ✓</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">ผลจริงจาก logs/predict_pheme_test_seed2_early_fix_seed2.csv · ข่าวนี้ label จริง = real</p>
+<aside>ต่อจากสไลด์ก่อน ข่าวเดียวกันถูกจัดเป็น snapshot 23 ชุด สามชุดแรกมาจากการแชร์จริงช่วง early (2, 3, 4 node รวมตัวข่าว) จากนั้นแต่ละ step ของ generator เพิ่ม 10 คน (14, 24, … จนถึง 201 node) detector ใช้ GAT อ่านแต่ละ snapshot ได้ 23 เวกเตอร์เรียงตามเวลา แล้วใช้ attention รวมกับโครงสร้างของกราฟสุดท้าย และต่อกับ feature ข้อความและภาพจาก CLIP ได้ P(real) = 0.996 จึงทายว่าเป็นข่าวจริง ซึ่งถูกต้อง ความสูงของแท่งแสดงจำนวน node จริงแบบมาตราส่วน</aside>
+</section>

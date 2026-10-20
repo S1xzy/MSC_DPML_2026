@@ -1,0 +1,28 @@
+<section id="e-output" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">04 · การทดลอง · ผลลัพธ์หน้าตาแบบนี้</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">Demo A: ใส่ข่าว test 402 ชิ้น → ได้ P(real) ทีละข่าว</h2>
+<div style="display:flex;gap:32px;align-items:flex-start">
+<table style="font-size:24px;width:1080px">
+<tr><th style="width:61%">ข้อความ (PHEME)</th><th style="width:14%">จริง</th><th style="width:13%">ทาย</th><th style="width:12%;text-align:right">P(real)</th></tr>
+<tr><td>Soldier killed in #OttawaShooting identified as Cpl. Nathan Cirillo …</td><td>rumour</td><td>fake</td><td style="text-align:right">0.004</td></tr>
+<tr><td>Soldier killed at war memorial identified as Nathan Cirillo #OttawaShooting …</td><td>rumour</td><td>fake</td><td style="text-align:right">0.017</td></tr>
+<tr><td>In case YouTube vid disappears, here’s childhood friend … #Ferguson</td><td>rumour</td><td style="color:#A8330C">real ✗</td><td style="text-align:right">0.944</td></tr>
+<tr><td>I’m so very proud of you America. Every young, senior, veteran …</td><td>real</td><td>real</td><td style="text-align:right">0.999</td></tr>
+<tr><td>Newsrooms around the world show their support for #CharlieHebdo</td><td>real</td><td>real</td><td style="text-align:right">0.999</td></tr>
+</table>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<div style="display:grid;grid-template-columns:140px 1fr 1fr;gap:8px">
+<p style="font-size:24px"></p><p style="font-size:24px;color:#4F5D6B;text-align:center">ทาย real</p><p style="font-size:24px;color:#4F5D6B;text-align:center">ทาย fake</p>
+<p style="font-size:24px;color:#4F5D6B">จริง real</p><p style="font-size:32px;font-weight:600;background:#E3EAFB;color:#1E3F94;border-radius:8px;padding:14px;text-align:center">257</p><p style="font-size:32px;font-weight:600;background:#E8ECF1;color:#4F5D6B;border-radius:8px;padding:14px;text-align:center">25</p>
+<p style="font-size:24px;color:#4F5D6B">จริง fake</p><p style="font-size:32px;font-weight:600;background:#E8ECF1;color:#4F5D6B;border-radius:8px;padding:14px;text-align:center">46</p><p style="font-size:32px;font-weight:600;background:#E3EAFB;color:#1E3F94;border-radius:8px;padding:14px;text-align:center">74</p>
+</div>
+<div style="display:flex;gap:12px">
+<div style="flex:1;background:#14202C;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;color:#BFCBD8">Acc</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:44px;font-weight:700;color:#EEF2F6">0.823</p></div>
+<div style="flex:1;background:#14202C;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;color:#BFCBD8">F1</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:44px;font-weight:700;color:#EEF2F6">0.879</p></div>
+<div style="flex:1;background:#14202C;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:2px"><p style="font-size:24px;color:#BFCBD8">AUC</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:44px;font-weight:700;color:#EEF2F6">0.906</p></div>
+</div>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">PHEME model รอบ 8 seed 2 · ตรงกับ test ตอน train · output: logs/predict_pheme_test_seed2_early_fix_seed2.csv</p>
+<aside>นี่คือสิ่งที่ model ให้ออกมา: แต่ละข่าวได้ความน่าจะเป็นว่าเป็นข่าวจริง P(real) ถ้าเกิน 0.5 ทายว่า real ตัวอย่างนี้คือข่าวทั้งหมดใน test split ที่ model ไม่เคยเห็นตอน train (402 ข่าว) ใช้ model รอบ 8 ได้ Acc 0.823, F1 0.879, AUC 0.906 ตรงกับตัวเลข test ตอน train ซึ่งยืนยันว่า script predict ถูกต้อง ใน PHEME label 0 คือ rumour (ข่าวลือที่ยังไม่ยืนยันในตอนนั้น) ซึ่ง paper นับเป็น fake</aside>
+</section>

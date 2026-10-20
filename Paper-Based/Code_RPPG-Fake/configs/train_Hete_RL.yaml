@@ -1,0 +1,70 @@
+# @package _global_
+
+# Stage 1 of RPPG-Fake: Module 1 (contrastive user embeddings) + Module 2 (RL path generation).
+#   python src/train_hete_RL.py seed=0
+# Defaults follow the paper where it gives a value (Sec. IV-A3, Fig. 4 sweet spots); values the paper
+# does not state are marked "not in paper".
+
+defaults:
+  - _self_
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
+
+task_name: "stage1_generate"
+tags: ["rppg", "stage1"]
+seed: 0
+device: cuda
+dataset: gossipcop        # gossipcop | pheme | politifact_upfd (folder under data/; complete items only)
+
+data:
+  raw_dir: ${paths.root_dir}/data/${dataset}
+  processed_dir: ${paths.root_dir}/data/${dataset}/processed
+  image_dir: ${paths.root_dir}/data/${dataset}/images   # <news_id>.jpg; missing folder -> image feature = zeros
+  n_slots: 20              # time steps of the temporal user list Lambda(t) (= T / K2)
+  slot_mode: time          # paper: divide the propagation time evenly ("rank" = equal engagements per step)
+  text_chunks: 1           # 1 = CLIP's first 77 tokens; >1 = average of word windows (not in paper)
+
+contrastive:               # Module 1 (Sec. III-A)
+  dim: 128                 # hidden size of user embedding (paper)
+  heads: 4                 # not in paper
+  dropout: 0.2             # not in paper
+  tau1: 0.4                # node-view temperature (Fig. 4a peak)
+  tau2: 0.3                # meta-path temperature (Fig. 4b peak)
+  lambda1: 0.4             # weight of node view in L_CL (Fig. 4c)
+  k1: 8                    # top-K1 positive / negative nodes (Fig. 4e peak)
+  pos_neg: structure       # V^p / V^n from fixed neighbourhood similarity in H (embedding = rounds 1-6, collapsed)
+  pgd_eps: 0.05            # PGD perturbation budget (not in paper)
+  pgd_steps: 2             # not in paper
+  steps: 300               # not in paper
+  lr: 5e-3                 # paper learning rate
+  weight_decay: 0.0
+  batch_centres: 1024
+  pool: 4096
+  meta_batch: 1024
+  log_every: 50
+
+generator:                 # Module 2 (Sec. III-B, III-C)
+  dim: 128
+  T: 200                   # max engaged users per news (Fig. 4g: accuracy plateaus after ~200)
+  K2: 10                   # users absorbed per action step (Fig. 4f peak)
+  max_steps: 40
+  lambda2: 0.4             # temporal vs global reward (Fig. 4d peak)
+  gamma: 0.9               # TD decay factor (not in paper)
+  global_reward: eq13      # R_G = -log(1 - D(G'_t)) (Eq. 13);  "scaled" = 2*D - 1
+  hit_weight: 0.0          # extra reward for picking a real engager of the training news (NOT in paper; 0 = off)
+  standardize: true        # z-score Module 1 embeddings before Eq. 7 (fix for collapsed user embeddings; false = rounds 1-6)
+  mode: rl                 # rl | random ("Random Sample", Table IV) | similarity ("Node Similarity", Table IV)
+  init_from: null          # generator.ckpt to load when mode != rl (keeps the user embeddings of that run)
+  epochs: 10               # not in paper
+  batch_size: 16           # paper batch size
+  lr: 5e-3                 # paper learning rate
+  disc_lr: 1e-3            # discriminator learning rate (not in paper)
+  content_topk: 64         # content-similar fallback candidates per news
+  max_sources: 64          # path users sampled to expand per step
+  max_repost: 8
+  max_coengage: 6
+  max_actions: 256
+
+# Stage 2 reads its inputs from here (one folder per seed)
+output_dir: ${paths.root_dir}/data/${dataset}/generated/seed${seed}

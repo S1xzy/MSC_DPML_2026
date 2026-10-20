@@ -1,0 +1,25 @@
+<section id="e-leak" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">04 · การทดลอง · ตรวจ data leakage</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">ผลดีขึ้นมาก จึงตรวจว่าไม่ได้ “โกง”</h2>
+<div style="display:flex;gap:24px">
+<div style="flex:1;display:flex;flex-direction:column;gap:12px">
+<div style="background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px 22px"><p style="font-size:24px"><b style="color:#1F6B47">✓</b> กราฟ H ไม่มีเส้นหรือ node จากข่าว val / test</p></div>
+<div style="background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px 22px"><p style="font-size:24px"><b style="color:#1F6B47">✓</b> early = 3–5 การแชร์แรกตามเวลา ไม่มีข้อมูลอนาคต</p></div>
+<div style="background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px 22px"><p style="font-size:24px"><b style="color:#1F6B47">✓</b> ตอน test model เห็นแค่ early + G′</p></div>
+<div style="background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px 22px"><p style="font-size:24px"><b style="color:#B7790A">!</b> ข่าว test ที่ข้อความ / ภาพซ้ำ train: 4–5% / 10–17%</p></div>
+</div>
+<div style="width:820px;background:#14202C;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:12px">
+<p style="font-size:26px;font-weight:600;color:#8FB0FF">ทดสอบชี้ขาด: สลับ label ของ train แบบสุ่ม</p>
+<table style="font-size:24px;width:764px;color:#EEF2F6">
+<tr><th style="width:34%;color:#BFCBD8">Dataset</th><th style="width:22%;text-align:right;color:#BFCBD8">model จริง</th><th style="width:22%;text-align:right;color:#BFCBD8">label สุ่ม</th><th style="width:22%;text-align:right;color:#BFCBD8">เดาคลาสใหญ่</th></tr>
+<tr><td>GossipCop</td><td style="text-align:right">0.878</td><td style="text-align:right;color:#F0A35E">0.506</td><td style="text-align:right">0.51</td></tr>
+<tr><td>PHEME</td><td style="text-align:right">0.837</td><td style="text-align:right;color:#F0A35E">0.701</td><td style="text-align:right">0.70</td></tr>
+<tr><td>PolitiFact</td><td style="text-align:right">0.826</td><td style="text-align:right;color:#F0A35E">0.604</td><td style="text-align:right">0.60</td></tr>
+</table>
+<p style="font-size:24px;color:#BFCBD8">label สุ่ม → ได้แค่ระดับเดา = ไม่มีข้อมูลรั่ว</p>
+</div>
+</div>
+<p style="font-size:26px;color:#4F5D6B;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px 24px">ที่มาของผลดี: user ที่แชร์ข่าว fake มักแชร์ fake ซ้ำ · แค่ดู label ของข่าวที่ user ช่วงแรกเคยแชร์ ก็ถูก 92% (GossipCop) / 69% (PHEME)</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">tag early_fix_shuffled · GossipCop สลับ 3 แบบ: acc 0.47–0.52 · AUC 0.35–0.53 (ทิศสุ่ม)</p>
+<aside>หลังแก้ bug ผลของ GossipCop ขึ้นมาก เราจึงตรวจ data leakage สี่ข้อโครงสร้างผ่านทั้งหมด ยกเว้นมีข่าวซ้ำระหว่าง train และ test บางส่วน ซึ่งเป็นลักษณะของ dataset ทดสอบชี้ขาดคือสลับ label ของ train แบบสุ่มแล้ว train detector ใหม่ ถ้า model โกงด้วยข้อมูลที่รั่ว ผลจะยังสูง แต่ผลที่ได้ตกเหลือระดับเดาคลาสส่วนใหญ่ทุก dataset ผลดีจึงมาจากสัญญาณจริงใน dataset: user ที่แชร์ข่าว fake มักแชร์ fake ซ้ำหลายข่าว กฎง่าย ๆ ที่ดู label ของข่าวที่ user ช่วงแรกเคยแชร์ ได้ถูก 92% บน GossipCop AUC ของ model ที่ train ด้วย label สุ่มห่างจาก 0.5 ได้ทั้งสองทาง เพราะ input มีข้อมูล label อยู่แล้ว ทิศคะแนนจึงสุ่ม แต่ accuracy ไม่เคยสูงกว่าการเดา</aside>
+</section>

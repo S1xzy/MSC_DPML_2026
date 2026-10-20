@@ -1,0 +1,602 @@
+<title>RPPG-Fake Tracker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: lab-notebook dashboard — header with a phase-segmented progress rail, tab strip, panels in a responsive grid */
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --sunk:#E8ECF1; --ink:#14202C; --muted:#5A6977; --line:#D8DFE6;
+  --accent:#2950B8; --accent-2:#7F9BE0; --accent-soft:#E3EAFB;
+  --real:#1F8A5B; --fake:#C23E4A; --warn:#B7790A; --warn-soft:#FBF0D9; --ok-soft:#DDF2E7; --bad-soft:#F8E0E2;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E141A; --surface:#161F28; --sunk:#1D2833; --ink:#E4EBF2; --muted:#93A2B1; --line:#283543;
+  --accent:#7D9DFF; --accent-2:#3F5A9E; --accent-soft:#1E2B47;
+  --real:#4CC38A; --fake:#F07A84; --warn:#F0B54A; --warn-soft:#3A2E14; --ok-soft:#173226; --bad-soft:#3A1D21; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E141A; --surface:#161F28; --sunk:#1D2833; --ink:#E4EBF2; --muted:#93A2B1; --line:#283543;
+  --accent:#7D9DFF; --accent-2:#3F5A9E; --accent-soft:#1E2B47;
+  --real:#4CC38A; --fake:#F07A84; --warn:#F0B54A; --warn-soft:#3A2E14; --ok-soft:#173226; --bad-soft:#3A1D21; color-scheme:dark}
+
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:20px 48px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.005em}
+h1{font-size:1.75rem;font-weight:700}
+h2{font-size:1.15rem;font-weight:600}
+h3{font-size:.98rem;font-weight:600}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.label{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+/* header */
+header{display:grid;gap:14px}
+.head-top{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:flex-end;justify-content:space-between}
+.cite{font-size:.82rem;color:var(--muted);max-width:62ch}
+.pct{font-family:var(--f-display);font-size:2.4rem;font-weight:700;line-height:1;color:var(--accent)}
+.pct small{font-size:.9rem;color:var(--muted);font-weight:500;margin-left:6px}
+.rail{display:flex;gap:4px}
+.rail .seg{flex:1;min-width:0;display:grid;gap:5px}
+.rail .bar{height:10px;border-radius:3px;background:var(--sunk);overflow:hidden}
+.rail .fill{height:100%;background:var(--accent);transition:width .5s ease}
+.rail .seg.full .fill{background:var(--real)}
+.rail .nm{font-size:.72rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rail .nm b{color:var(--ink);font-weight:600}
+.pills{display:flex;flex-wrap:wrap;gap:6px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:.78rem;padding:3px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}
+.pill.ok i{background:var(--real)} .pill.run i{background:var(--accent)} .pill.wait i{background:var(--warn)}
+
+/* tabs */
+nav.tabs{display:flex;gap:2px;margin-top:22px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+nav.tabs button{background:none;border:0;padding:10px 14px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+nav.tabs button:hover{color:var(--ink)}
+section.tab{padding-top:20px;display:grid;gap:16px}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;min-width:0}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(260px,1fr))}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.kpi{background:var(--surface);padding:12px 14px;display:grid;gap:2px}
+.kpi .v{font-family:var(--f-display);font-size:1.5rem;font-weight:700}
+.kpi .s{font-size:.75rem;color:var(--muted)}
+.row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+
+/* segmented control */
+.segc{display:inline-flex;background:var(--sunk);border-radius:7px;padding:3px;gap:2px;flex-wrap:wrap}
+.segc button{border:0;background:none;padding:5px 11px;border-radius:5px;cursor:pointer;font-size:.82rem;color:var(--muted)}
+.segc button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgb(0 0 0 / .08)}
+
+/* checklist */
+.phase{display:grid;gap:8px}
+.phase-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.phase-head .num{font-size:.8rem;color:var(--muted)}
+.mini{height:4px;background:var(--sunk);border-radius:2px;overflow:hidden}
+.mini div{height:100%;background:var(--accent);transition:width .4s}
+.phase.full .mini div{background:var(--real)}
+ul.checks{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+ul.checks li label{display:grid;grid-template-columns:20px 1fr auto;gap:8px;align-items:start;padding:6px 6px;border-radius:5px;cursor:pointer}
+ul.checks li label:hover{background:var(--sunk)}
+ul.checks input{appearance:none;width:16px;height:16px;margin:2px 0 0;border:1.5px solid var(--muted);border-radius:4px;display:grid;place-items:center;cursor:pointer;background:var(--surface)}
+ul.checks input:checked{background:var(--real);border-color:var(--real)}
+ul.checks input:checked::after{content:"";width:4px;height:8px;border:solid var(--surface);border-width:0 2px 2px 0;transform:translateY(-1px) rotate(45deg)}
+ul.checks .t{font-size:.88rem}
+ul.checks input:checked + .t{color:var(--muted)}
+ul.checks .d{font-family:var(--f-mono);font-size:.7rem;color:var(--muted);white-space:nowrap}
+ul.checks li.now .t::before{content:"กำลังทำ";font-size:.66rem;font-weight:600;color:var(--accent);background:var(--accent-soft);padding:1px 6px;border-radius:3px;margin-right:6px}
+ul.checks li.opt .t::after{content:" (ทางเลือก)";color:var(--muted);font-size:.75rem}
+.linkbtn{background:none;border:0;padding:0;color:var(--accent);cursor:pointer;font-size:.8rem;text-decoration:underline;text-underline-offset:2px}
+
+/* timeline */
+.tl{display:flex;gap:0;overflow-x:auto;padding-bottom:4px}
+.tl .d{flex:1;min-width:120px;border-top:3px solid var(--real);padding:8px 10px 0 0;position:relative}
+.tl .d.next{border-top-color:var(--warn);border-top-style:dashed}
+.tl .d::before{content:"";position:absolute;top:-7px;left:0;width:11px;height:11px;border-radius:50%;background:var(--surface);border:3px solid var(--real)}
+.tl .d.next::before{border-color:var(--warn)}
+.tl .d b{font-family:var(--f-mono);font-size:.78rem}
+.tl .d ul{margin:4px 0 0;padding-left:14px;font-size:.78rem;color:var(--muted)}
+
+/* datasets */
+.ds-card{display:grid;gap:12px;align-content:start}
+.ds-card .top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.ds-card .n{font-family:var(--f-display);font-size:1.8rem;font-weight:700;line-height:1}
+.ds-card .src{font-size:.75rem;color:var(--muted)}
+.bal{display:flex;height:22px;border-radius:4px;overflow:hidden;font-size:.7rem;font-family:var(--f-mono);font-weight:600}
+.bal div{display:flex;align-items:center;padding:0 6px;color:#fff;white-space:nowrap;overflow:hidden;min-width:0}
+.bal .f{background:var(--fake)} .bal .r{background:var(--real);justify-content:flex-end}
+.bal.unk{background:var(--sunk);color:var(--muted);align-items:center;justify-content:center;font-weight:400}
+.cov{display:flex;gap:6px;flex-wrap:wrap}
+.cov span{font-size:.74rem;padding:2px 8px;border-radius:4px;background:var(--ok-soft);color:var(--real);font-weight:500}
+.cov span.part{background:var(--warn-soft);color:var(--warn)}
+.cov span.no{background:var(--bad-soft);color:var(--fake);text-decoration:line-through}
+dl.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:0;font-size:.82rem}
+dl.kv dt{color:var(--muted)}
+dl.kv dd{margin:0;text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.split{display:flex;height:8px;border-radius:2px;overflow:hidden;gap:2px}
+.split div:nth-child(1){background:var(--accent)} .split div:nth-child(2){background:var(--accent-2)} .split div:nth-child(3){background:var(--ink)}
+.tag{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.tag.warn{background:var(--warn-soft);color:var(--warn)} .tag.ok{background:var(--ok-soft);color:var(--real)} .tag.acc{background:var(--accent-soft);color:var(--accent)}
+
+/* charts */
+svg text{font-family:var(--f-mono);fill:var(--muted)}
+svg .lbl{font-family:var(--f-body);fill:var(--ink);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-2px;margin-right:5px}
+.chart-wrap{overflow-x:auto}
+.deltas{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.delta{border:1px solid var(--line);border-radius:6px;padding:10px 12px;display:grid;gap:6px}
+.delta .r{display:flex;justify-content:space-between;font-size:.8rem;gap:8px}
+.delta .r b{font-family:var(--f-mono)}
+.pos{color:var(--real)} .neg{color:var(--fake)}
+
+/* table */
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.82rem}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.num,th.num{text-align:right}
+tr.best td.num.hl{color:var(--accent);font-weight:600}
+
+/* pipeline */
+.pipe{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.pipe button{flex:1 1 120px;min-width:0;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:10px;cursor:pointer;display:grid;gap:3px;position:relative}
+.pipe button .k{font-family:var(--f-mono);font-size:.68rem;color:var(--muted)}
+.pipe button .n{font-weight:600;font-size:.86rem;font-family:var(--f-display)}
+.pipe button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.pipe button.s1{border-top:3px solid var(--accent)} .pipe button.s2{border-top:3px solid var(--real)}
+.node-detail{display:grid;gap:10px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--f-mono);font-size:.75rem;background:var(--sunk);padding:3px 8px;border-radius:4px}
+.chip b{color:var(--accent);font-weight:600}
+pre{background:var(--sunk);border-radius:6px;padding:12px;overflow-x:auto;font-family:var(--f-mono);font-size:.76rem;margin:0;line-height:1.6}
+.issues{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.issues li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;font-size:.86rem}
+.sev{width:8px;height:8px;border-radius:2px;margin-top:7px}
+.sev.h{background:var(--fake)} .sev.m{background:var(--warn)} .sev.l{background:var(--muted)}
+.runs{display:grid;gap:8px}
+.runs .rr{display:grid;grid-template-columns:minmax(90px,140px) 1fr auto;gap:10px;align-items:center}
+.runs .cells{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.runs .c{height:26px;border-radius:4px;background:var(--sunk);border:1px solid var(--line);font-family:var(--f-mono);font-size:.7rem;display:grid;place-items:center;color:var(--muted)}
+.runs .c.done{background:var(--real);border-color:var(--real);color:var(--surface)}
+.runs .c.s1{background:var(--accent);border-color:var(--accent);color:var(--surface);animation:pulse 1.6s ease-in-out infinite}
+.runs .c.s2{background:var(--accent-2);border-color:var(--accent-2);color:var(--surface);animation:pulse 1.6s ease-in-out infinite}
+.runs .rr .nm{font-weight:600;font-size:.86rem;min-width:0}
+.runs .rr .cnt{font-family:var(--f-mono);font-size:.76rem;color:var(--muted)}
+@keyframes pulse{50%{opacity:.6}}
+.foot{margin-top:28px;font-size:.75rem;color:var(--muted)}
+@media (max-width:560px){.rail .nm{font-size:.62rem}h1{font-size:1.4rem}.pct{font-size:2rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="head-top">
+    <div style="display:grid;gap:6px;min-width:0">
+      <span class="label">Paper-Based · DPML 2026</span>
+      <h1>RPPG-Fake Tracker</h1>
+      <div class="cite">Early Detection of Multimodal Fake News via Reinforced Propagation Path Generation · Zhang et al., IEEE TKDE 37(2), 2025</div>
+    </div>
+    <div style="text-align:right">
+      <div class="pct" id="pct">0%<small id="pctSub"></small></div>
+      <div class="label" style="margin-top:4px">อัปเดต 14 ต.ค. 2026</div>
+    </div>
+  </div>
+  <div class="rail" id="rail" aria-label="ความคืบหน้าแยกตามเฟส"></div>
+  <div class="pills">
+    <span class="pill ok"><i></i>Final model พร้อมนำเสนอ</span>
+    <span class="pill wait" id="livePill"><i></i>Round 4 · Paper protocol</span>
+    <span class="pill"><i></i>ยังไม่ push GitHub</span>
+    <span class="pill run"><i></i>branch <span class="mono">runnable</span></span>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" id="tabs">
+  <button role="tab" data-t="progress" aria-selected="true">ความคืบหน้า</button>
+  <button role="tab" data-t="data" aria-selected="false">Dataset</button>
+  <button role="tab" data-t="results" aria-selected="false">ผลการรัน</button>
+  <button role="tab" data-t="code" aria-selected="false">Code &amp; Pipeline</button>
+  <button role="tab" data-t="issues" aria-selected="false">ข้อจำกัด</button>
+</nav>
+
+<!-- ============ PROGRESS ============ -->
+<section class="tab" id="tab-progress">
+  <div class="kpis">
+    <div class="kpi"><span class="label">Dataset ที่ใช้</span><span class="v">3</span><span class="s">GossipCop · PHEME · PolitiFact</span></div>
+    <div class="kpi"><span class="label">ข่าว (ครบ 3 ส่วน)</span><span class="v num">4,910</span><span class="s">ข้อความ + รูป + เส้นทาง</span></div>
+    <div class="kpi"><span class="label">รอบทดลอง</span><span class="v">4</span><span class="s">75 runs · Stage 1 + 2</span></div>
+    <div class="kpi"><span class="label">Runs ตาม Paper</span><span class="v"><span id="kpiRuns">0</span><span class="muted" style="font-size:1rem"> / 15</span></span><span class="s">3 dataset × 5 seeds</span></div>
+    <div class="kpi"><span class="label">Acc ดีสุด (early)</span><span class="v num">0.848</span><span class="s">PHEME · paper 0.829</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="row" style="margin-bottom:12px">
+      <h2>Round 4 · Paper protocol</h2>
+      <span class="muted mono" style="font-size:.74rem" id="liveUpdated"></span>
+    </div>
+    <div class="chips" style="margin-bottom:12px"><span class="chip">5 seeds</span><span class="chip">T <b>200</b></span><span class="chip">K2 <b>10</b></span><span class="chip">time steps <b>20</b></span><span class="chip">RL <b>10</b> epoch</span><span class="chip">early · full · no G′</span></div>
+    <div class="runs" id="runGrid"></div>
+    <div class="legend" style="margin-top:10px"><span><i style="background:var(--real)"></i>เสร็จ</span><span><i style="background:var(--accent)"></i>Stage 1 (RL)</span><span><i style="background:var(--accent-2)"></i>Stage 2 (detect)</span><span><i style="background:var(--sunk);border:1px solid var(--line)"></i>รอคิว</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="row" style="margin-bottom:12px">
+      <h2>Checklist</h2>
+      <div class="row" style="gap:12px">
+        <span class="muted" style="font-size:.78rem">คลิกเพื่อติ๊ก · บันทึกในเบราว์เซอร์นี้</span>
+        <button class="linkbtn" id="resetChecks" type="button">คืนค่าเริ่มต้น</button>
+      </div>
+    </div>
+    <div class="grid g3" id="phases"></div>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-bottom:16px">Timeline</h2>
+    <div class="tl" id="timeline"></div>
+  </div>
+</section>
+
+<!-- ============ DATA ============ -->
+<section class="tab" id="tab-data" hidden>
+  <div class="row">
+    <div class="segc" id="dsView">
+      <button type="button" data-v="used" aria-pressed="true">ที่ใช้อยู่ (ครบ 3 ส่วน)</button>
+      <button type="button" data-v="full" aria-pressed="false">ชุดเต็มเดิม</button>
+      <button type="button" data-v="paper" aria-pressed="false">Paper (Table I)</button>
+    </div>
+    <div class="legend"><span><i style="background:var(--fake)"></i>fake</span><span><i style="background:var(--real)"></i>real (positive class)</span></div>
+  </div>
+  <div class="grid g3" id="dsCards"></div>
+  <div class="panel">
+    <div class="row" style="margin-bottom:10px"><h2>จำนวนข่าว: ที่ใช้ vs Paper</h2><span class="legend"><span><i style="background:var(--accent)"></i>ที่ใช้อยู่</span><span><i style="background:var(--accent-2)"></i>ชุดเต็มเดิม</span><span><i style="background:var(--muted)"></i>Paper</span></span></div>
+    <div class="chart-wrap" id="dsChart"></div>
+  </div>
+  <div class="panel">
+    <h2 style="margin-bottom:10px">รูปแบบข้อมูล</h2>
+    <pre>news_actions_&lt;dataset&gt;.csv
+id, text, label (1 = real, 0 = fake), actions_id = [{head_user, user, time}, …]   <span class="muted"># เรียงตามเวลา</span>
+images/&lt;id&gt;.jpg      user_id_map.json      processed/content_clip_vitb32_img.pt</pre>
+  </div>
+</section>
+
+<!-- ============ RESULTS ============ -->
+<section class="tab" id="tab-results" hidden>
+  <div class="row">
+    <div class="segc" id="roundSel"></div>
+    <div class="segc" id="metricSel"></div>
+  </div>
+  <div class="panel">
+    <div class="row" style="margin-bottom:6px">
+      <h2 id="roundTitle"></h2>
+      <div class="legend">
+        <span><i style="background:var(--accent)"></i>early (3–5 engagements)</span>
+        <span><i style="background:var(--accent-2)"></i>full</span>
+        <span><i style="background:var(--muted);opacity:.55"></i>early ไม่ใช้ G′</span>
+        <span><i style="background:var(--ink);width:3px"></i>Paper</span>
+      </div>
+    </div>
+    <div class="muted" style="font-size:.8rem;margin-bottom:8px" id="roundNote"></div>
+    <div class="chart-wrap" id="resChart"></div>
+  </div>
+  <div class="deltas" id="deltas"></div>
+  <div class="panel">
+    <h2 style="margin-bottom:8px">ตารางผลเต็ม <span class="muted" style="font-size:.8rem;font-weight:400">seed 0 · test set</span></h2>
+    <div class="tbl" id="resTable"></div>
+  </div>
+</section>
+
+<!-- ============ CODE ============ -->
+<section class="tab" id="tab-code" hidden>
+  <div class="panel">
+    <div class="row" style="margin-bottom:12px"><h2>Pipeline</h2><span class="legend"><span><i style="background:var(--accent)"></i>Stage 1 · train_hete_RL.py</span><span><i style="background:var(--real)"></i>Stage 2 · train.py</span></span></div>
+    <div class="pipe" id="pipe"></div>
+    <div class="node-detail panel" style="margin-top:12px;background:var(--bg)" id="nodeDetail"></div>
+  </div>
+  <div class="grid g2">
+    <div class="panel">
+      <h2 style="margin-bottom:10px">Hyper-parameters</h2>
+      <div class="chips">
+        <span class="chip">hidden <b>128</b></span><span class="chip">AdamW lr <b>5e-3</b></span><span class="chip">batch <b>16</b></span>
+        <span class="chip">split <b>7:1:2</b></span><span class="chip">T <b>100</b> / 200*</span><span class="chip">RL epoch <b>3</b> / 10*</span>
+        <span class="chip">n_slots <b>10</b></span><span class="chip">slot_users <b>100</b></span><span class="chip">early <b>3–5</b> eng.</span>
+        <span class="chip">content <b>1024</b> = 512 + 512</span><span class="chip">disc lr <b>1e-3</b></span>
+      </div>
+      <p class="muted" style="font-size:.76rem;margin:10px 0 0">* PolitiFact (ข้อมูลผู้เขียน) ใช้ T=200, RL 10 epoch</p>
+    </div>
+    <div class="panel">
+      <h2 style="margin-bottom:10px">Environment</h2>
+      <dl class="kv">
+        <dt>Python</dt><dd>3.11 (uv · .venv)</dd>
+        <dt>PyTorch</dt><dd>2.11 + CUDA 12.8</dd>
+        <dt>GPU</dt><dd>RTX 5050 · 8 GB</dd>
+        <dt>Framework</dt><dd>Hydra + Lightning</dd>
+        <dt>Encoder</dt><dd>CLIP ViT-B/32</dd>
+        <dt>Stage 2 / run</dt><dd>~2 นาที (GossipCop)</dd>
+      </dl>
+    </div>
+  </div>
+  <div class="grid g2">
+    <div class="panel">
+      <h2 style="margin-bottom:10px">Code ต้นฉบับ → แก้แล้ว</h2>
+      <ul class="issues" id="fixList"></ul>
+    </div>
+    <div class="panel">
+      <h2 style="margin-bottom:10px">คำสั่งรัน</h2>
+      <pre>cd Paper-Based/Code_RPPG-Fake
+.venv/Scripts/python -u scripts/run_all.py \
+  --dataset pheme --seeds 0 1 2 3 4 \
+  --stage1_extra generator.T=100 generator.epochs=3 data.n_slots=10 \
+  --extra data.n_slots=10 data.slot_users=100</pre>
+      <p class="muted" style="font-size:.76rem;margin:8px 0 0">ผลสรุป → <span class="mono">logs/results_summary_&lt;dataset&gt;.md</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ ISSUES ============ -->
+<section class="tab" id="tab-issues" hidden>
+  <div class="grid g2">
+    <div class="panel">
+      <h2 style="margin-bottom:12px">Deviation จาก Paper</h2>
+      <ul class="issues" id="devList"></ul>
+    </div>
+    <div class="panel">
+      <h2 style="margin-bottom:12px">ประเด็นที่ยังเปิดอยู่</h2>
+      <ul class="issues" id="openList"></ul>
+    </div>
+  </div>
+  <div class="legend"><span><i style="background:var(--fake)"></i>กระทบผลมาก</span><span><i style="background:var(--warn)"></i>ต้องระบุในรายงาน</span><span><i style="background:var(--muted)"></i>เล็กน้อย</span></div>
+</section>
+
+<div class="foot">แหล่งข้อมูล: HANDOFF.md · Code_RPPG-Fake/logs/results_*.csv · data/*/news_actions_*.csv</div>
+</div>
+
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const fmt=n=>n==null?"—":n.toLocaleString("en-US");
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------------- PROGRESS ---------------- */
+const PHASES=[
+ {n:"เตรียมงาน",items:[
+  ["p1","อ่าน Paper + สรุป Interactive HTML",1,"10-08"],
+  ["p2","Clone code ทางการ (LitianD/RPPG-Fake)",1,"10-08"],
+  ["p3","ตั้ง environment: .venv, PyTorch 2.11, CUDA 12.8",1,"10-08"]]},
+ {n:"Code",items:[
+  ["c1","ตรวจ code ต้นฉบับ (รันไม่ได้)",1,"10-08"],
+  ["c2","เขียน Module 1–3 ใหม่ให้รันได้",1,"10-08"],
+  ["c3","Audit เทียบ Eq. 1–22 · แก้ 9 จุด",1,"10-08"]]},
+ {n:"Dataset",items:[
+  ["d1","โหลด PHEME, UPFD, FakeNewsNet",1,"10-09"],
+  ["d2","แปลงเป็น format เดียวกัน",1,"10-09"],
+  ["d3","เติมรูป + เนื้อข่าว (เว็บ / Wayback)",1,"10-10"],
+  ["d4","คัดเฉพาะข่าวครบ 3 ส่วน",1,"10-10"]]},
+ {n:"ทดลอง",items:[
+  ["e1","Round 1 · text + propagation",1,"10-09"],
+  ["e2","Round 2 · + รูป (multimodal)",1,"10-10"],
+  ["e3","Round 3 · เฉพาะข่าวครบ 3 ส่วน",1,"10-12"],
+  ["e4","Round 4 · PHEME 5 seeds ตาม Paper",0,"","auto:pheme"],
+  ["e5","Round 4 · GossipCop 5 seeds ตาม Paper",0,"","auto:gossipcop"],
+  ["e6","Round 4 · PolitiFact (ผู้เขียน) 5 seeds ตาม Paper",0,"","auto:politifact"],
+  ["e7","Round 5 · หาสาเหตุ G′ (diagnostics + จำกัด G′)",1,"10-15"],
+  ["e8","Round 6 · Final 3 seeds + Table IV (random / similarity)",1,"10-18"],
+  ["e9","Demo · predict.py บนข่าวที่ไม่เคยเห็น (402 + 64 ข่าว)",1,"10-17"]]},
+ {n:"รายงาน",items:[
+  ["r1","แท็บ Reproduction ใน HTML",1,"10-12"],
+  ["r2","แท็บ Progress ใน HTML",1,"10-14"],
+  ["r6","หน้า Results สำหรับนำเสนอ (Table II / III / IV + Demo)",1,"10-18"],
+  ["r3","อัปเดตแท็บ Code ให้ตรง code ที่แก้",0,""],
+  ["r4","Push GitHub (รออนุมัติ · ไม่รวม data/.venv/logs)",0,""]]}
+];
+/* Round 4 live state — rewritten by ../update_tracker.py */
+const LIVE=/*LIVE*/{"updated": "2026-10-15 12:04", "status": {"pheme": ["done", "done", "done", "done", "done"], "gossipcop": ["done", "done", "done", "done", "done"], "politifact": ["done", "done", "done", "done", "done"]}, "results": {"pheme": {"early": {"n": 5, "mean": [0.8333, 0.877, 0.8872, 0.8816, 0.7995, 0.9074], "sd": [0.0267, 0.0165, 0.0404, 0.0209, 0.0285, 0.0146]}, "full": {"n": 5, "mean": [0.8418, 0.8661, 0.9163, 0.8903, 0.803, 0.9107], "sd": [0.0167, 0.0104, 0.0249, 0.0126, 0.0186, 0.006]}, "early_no_gen": {"n": 5, "mean": [0.8338, 0.8739, 0.8922, 0.8826, 0.7986, 0.9118], "sd": [0.0199, 0.0151, 0.0319, 0.0154, 0.0221, 0.0092]}}, "gossipcop": {"early": {"n": 5, "mean": [0.7688, 0.7753, 0.7772, 0.7757, 0.7684, 0.8427], "sd": [0.0242, 0.0377, 0.0179, 0.0179, 0.0247, 0.0264]}, "full": {"n": 5, "mean": [0.789, 0.786, 0.8097, 0.7973, 0.7886, 0.8626], "sd": [0.0153, 0.0128, 0.0343, 0.0179, 0.0151, 0.0187]}, "early_no_gen": {"n": 5, "mean": [0.7858, 0.7813, 0.8138, 0.7961, 0.7848, 0.8634], "sd": [0.0258, 0.0396, 0.0355, 0.0203, 0.0271, 0.0198]}}, "politifact": {"early": {"n": 5, "mean": [0.7896, 0.7433, 0.7514, 0.7341, 0.7781, 0.8828], "sd": [0.0426, 0.1208, 0.1169, 0.0336, 0.0371, 0.0427]}, "full": {"n": 5, "mean": [0.8208, 0.8166, 0.7135, 0.754, 0.8059, 0.8921], "sd": [0.0426, 0.1084, 0.0948, 0.054, 0.0435, 0.0383]}, "early_no_gen": {"n": 5, "mean": [0.8042, 0.7586, 0.7622, 0.7489, 0.7927, 0.9021], "sd": [0.0518, 0.1095, 0.1343, 0.0634, 0.0521, 0.0553]}}}}/*END LIVE*/;
+const LDS=[["pheme","PHEME"],["gossipcop","GossipCop"],["politifact","PolitiFact (ผู้เขียน)"]];
+const nDone=ds=>(LIVE.status[ds]||[]).filter(x=>x==="done").length;
+const DEF={};PHASES.forEach(p=>p.items.forEach(i=>DEF[i[0]]=!!i[2]));
+let checks=Object.assign({},DEF,store.get("rppg-checks",{}));
+// auto items follow the run logs, not the click state
+PHASES.forEach(p=>p.items.forEach(i=>{if(i[4]&&i[4].startsWith("auto:"))checks[i[0]]=nDone(i[4].slice(5))===5;}));
+
+function drawRuns(){
+  const total=LDS.reduce((a,[k])=>a+nDone(k),0),running=LDS.some(([k])=>LIVE.status[k].some(x=>x!=="done"&&x!=="wait"));
+  $("#kpiRuns").textContent=total;
+  $("#liveUpdated").textContent="อัปเดต "+LIVE.updated;
+  const pill=$("#livePill");pill.className="pill "+(total===15?"ok":running?"run":"wait");
+  pill.lastChild.nodeValue=total===15?"Round 4 เสร็จ (5 seeds)":`Round 4 กำลังรัน · ${total}/15`;
+  $("#runGrid").innerHTML=LDS.map(([k,n])=>`<div class="rr"><span class="nm">${esc(n)}</span><div class="cells">${LIVE.status[k].map((s,i)=>{
+    const c=s.startsWith("s2")?"s2":s;const tip=c==="done"?"เสร็จ":c==="s1"?"Stage 1":c==="s2"?`Stage 2 (${s.split(":")[1]}/3)`:"รอคิว";
+    return `<div class="c ${c}" title="seed ${i} · ${tip}">s${i}</div>`;}).join("")}</div><span class="cnt">${nDone(k)}/5</span></div>`).join("");
+}
+
+function drawProgress(){
+  let all=0,done=0;
+  $("#rail").innerHTML=PHASES.map(p=>{
+    const d=p.items.filter(i=>checks[i[0]]).length,t=p.items.length;all+=t;done+=d;
+    return `<div class="seg${d===t?" full":""}"><div class="bar"><div class="fill" style="width:${d/t*100}%"></div></div><div class="nm"><b>${esc(p.n)}</b> ${d}/${t}</div></div>`;
+  }).join("");
+  $("#pct").firstChild.nodeValue=Math.round(done/all*100)+"%";
+  $("#pctSub").textContent=`${done}/${all} งาน`;
+  $("#phases").innerHTML=PHASES.map(p=>{
+    const d=p.items.filter(i=>checks[i[0]]).length,t=p.items.length;
+    return `<div class="phase${d===t?" full":""}"><div class="phase-head"><h3>${esc(p.n)}</h3><span class="num">${d}/${t}</span></div>
+    <div class="mini"><div style="width:${d/t*100}%"></div></div>
+    <ul class="checks">${p.items.map(i=>{const auto=i[4]&&i[4].startsWith("auto:"),ds=auto&&i[4].slice(5),cls=auto?(checks[i[0]]?"":LIVE.status[ds].some(x=>x!=="wait")?"now":""):(i[4]&&!checks[i[0]]?i[4]:"");
+      return `<li class="${cls}"><label><input type="checkbox" id="ck-${i[0]}" data-k="${i[0]}"${checks[i[0]]?" checked":""}${auto?" disabled":""}><span class="t">${esc(i[1])}</span><span class="d">${auto?nDone(ds)+"/5":i[3]||"—"}</span></label></li>`;}).join("")}</ul></div>`;
+  }).join("");
+}
+$("#phases").addEventListener("change",e=>{const k=e.target.dataset.k;if(!k)return;checks[k]=e.target.checked;store.set("rppg-checks",checks);drawProgress();});
+$("#resetChecks").addEventListener("click",()=>{PHASES.forEach(p=>p.items.forEach(i=>{if(!(i[4]&&i[4].startsWith("auto:")))checks[i[0]]=DEF[i[0]];}));store.set("rppg-checks",{});drawProgress();});
+
+const TL=[["10-08",["Paper summary","ตรวจ + เขียน code ใหม่","Audit 9 จุด"]],["10-09",["โหลด dataset","Round 1 (text)"]],["10-10",["เติมรูป / เนื้อข่าว","Round 2 (multimodal)","คัดข่าวครบ 3 ส่วน"]],["10-12",["Round 3 (complete)","แท็บ Reproduction"]],["10-14",["แท็บ Progress","Tracker นี้","เริ่ม Round 4 (Paper protocol)"]],["10-15",["Round 4 ครบ 15 runs","PHEME ≈ Paper","Round 5 · diagnostics G′"]],["10-17",["ดาวน์โหลด PHEME 9 events","Round 6 · final","Demo predict.py"]],["10-18",["Table IV ครบ","หน้า Results"]],["ถัดไป",["อัปเดตแท็บ Code","Push GitHub"]]];
+$("#timeline").innerHTML=TL.map(([d,xs])=>`<div class="d${d==="ถัดไป"?" next":""}"><b>${d}</b><ul>${xs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("");
+
+/* ---------------- DATASETS ---------------- */
+const DS={
+ used:[
+  {name:"GossipCop",src:"UPFD + FakeNewsNet + ดึงเนื้อข่าว/รูปเอง",n:2827,fake:1378,real:1449,split:[1979,283,565],cov:[["หัวข้อ + เนื้อข่าว",1],["รูป 100%",1],["retweet tree",1]],
+   kv:[["engagements",166281],["เฉลี่ย / ข่าว","58.8"],["median / ข่าว",51],["users",47107],["คำ / ข่าว (median)",405],["ช่วงเวลาแพร่ (median)","239 ชม."]]},
+  {name:"PHEME",src:"figshare 4010619 (CC BY 4.0) · Twitter rumours",n:2004,fake:599,real:1405,split:[1402,200,402],cov:[["tweet",1],["รูป 100%",1],["reply thread",1]],
+   kv:[["engagements",35756],["เฉลี่ย / ข่าว","17.8"],["median / ข่าว",15],["users",19841],["คำ / ข่าว (median)",14],["ช่วงเวลาแพร่ (median)","3.8 ชม."]]},
+  {name:"PolitiFact-UPFD",src:"UPFD + FakeNewsNet + ดึงเนื้อข่าว/รูปเอง",n:79,fake:43,real:36,split:[55,8,16],warn:"เล็กมาก · ใช้ทดสอบเท่านั้น",cov:[["หัวข้อ + เนื้อข่าว",1],["รูป 100%",1],["retweet tree",1]],
+   kv:[["engagements",9253],["เฉลี่ย / ข่าว","117.1"],["median / ข่าว",76],["users",8050],["คำ / ข่าว (median)",333],["ช่วงเวลาแพร่ (median)","~120 วัน"]]}],
+ full:[
+  {name:"PolitiFact (ผู้เขียน)",src:"data.zip ใน repo ทางการ",n:483,cov:[["เนื้อข่าวเต็ม",1],["ไม่มีรูป",0],["propagation",1]],kv:[["users (graph)",114516],["ใช้ใน","Round 1"]]},
+  {name:"PHEME",src:"figshare 4010619",n:5802,cov:[["tweet",1],["รูป 36%",.5],["reply thread",1]],kv:[["รูป",2086],["ใช้ใน","Round 1–2"]]},
+  {name:"GossipCop",src:"UPFD + FakeNewsNet",n:5464,fake:2732,real:2732,cov:[["เนื้อข่าว 67%",.5],["รูป 52%",.5],["retweet tree",1]],kv:[["รูป",2832],["ใช้ใน","Round 1–2"],["คัด","50 / 50"]]},
+  {name:"PolitiFact-UPFD",src:"UPFD + FakeNewsNet",n:314,fake:157,real:157,cov:[["เนื้อข่าว 55%",.5],["รูป 25%",.5],["retweet tree",1]],kv:[["รูป",79],["ใช้ใน","Round 2"],["คัด","50 / 50"]]}],
+ paper:[
+  {name:"PHEME",src:"Twitter rumours",n:3506,fake:1142,real:2364,cov:[["text",1],["image",1],["propagation",1]],kv:[["คำ / ข่าว",13.8]]},
+  {name:"PolitiFact",src:"FakeNewsNet",n:478,fake:294,real:184,cov:[["text",1],["image",1],["propagation",1]],kv:[["คำ / ข่าว","1,545.8"]]},
+  {name:"GossipCop",src:"FakeNewsNet",n:5526,fake:1935,real:3591,cov:[["text",1],["image",1],["propagation",1]],kv:[["คำ / ข่าว",578.6]]}]
+};
+let dsView=store.get("rppg-dsview","used");
+function balBar(d){
+  if(d.fake==null)return `<div class="bal unk">fake / real ไม่ได้แยกไว้</div>`;
+  const f=d.fake/d.n*100;
+  return `<div class="bal"><div class="f" style="width:${f}%">${fmt(d.fake)}</div><div class="r" style="width:${100-f}%">${fmt(d.real)}</div></div>`;
+}
+function drawDS(){
+  document.querySelectorAll("#dsView button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===dsView));
+  $("#dsCards").innerHTML=DS[dsView].map(d=>`<div class="panel ds-card">
+    <div class="top"><div style="min-width:0"><h3>${esc(d.name)}</h3><div class="src">${esc(d.src)}</div></div>${d.warn?`<span class="tag warn">${esc(d.warn)}</span>`:""}</div>
+    <div><span class="n num">${fmt(d.n)}</span> <span class="muted">ข่าว</span></div>
+    ${balBar(d)}
+    <div class="cov">${d.cov.map(([t,v])=>`<span class="${v===1?"":v>0?"part":"no"}">${esc(t)}</span>`).join("")}</div>
+    ${d.split?`<div style="display:grid;gap:4px"><div class="split">${d.split.map(x=>`<div style="flex:${x}"></div>`).join("")}</div><div class="mono muted" style="font-size:.72rem">train ${fmt(d.split[0])} · val ${fmt(d.split[1])} · test ${fmt(d.split[2])}</div></div>`:""}
+    <dl class="kv">${d.kv.map(([k,v])=>`<dt>${esc(k)}</dt><dd>${typeof v==="number"?fmt(v):esc(v)}</dd>`).join("")}</dl>
+  </div>`).join("");
+}
+document.querySelectorAll("#dsView button").forEach(b=>b.addEventListener("click",()=>{dsView=b.dataset.v;store.set("rppg-dsview",dsView);drawDS();}));
+
+function drawDSChart(){
+  const rows=[["GossipCop",2827,5464,5526],["PHEME",2004,5802,3506],["PolitiFact",79,314,478]];
+  const W=cw("#dsChart"),L=W<500?80:96,R=56,bh=12,gap=3,gh=bh*3+gap*2+18,H=rows.length*gh+24,max=6000,x=v=>L+(W-L-R)*v/max;
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="จำนวนข่าวเทียบ paper">`;
+  for(let t=0;t<=max;t+=1000)s+=`<line x1="${x(t)}" x2="${x(t)}" y1="0" y2="${H-20}" stroke="var(--line)" stroke-width="1"/><text x="${x(t)}" y="${H-6}" font-size="10" text-anchor="middle">${t?t/1000+"k":0}</text>`;
+  const cols=["var(--accent)","var(--accent-2)","var(--muted)"];
+  rows.forEach((r,i)=>{const y0=i*gh+6;s+=`<text class="lbl" x="0" y="${y0+bh*1.5+gap+4}" font-size="12">${r[0]}</text>`;
+    [1,2,3].forEach((c,j)=>{const y=y0+j*(bh+gap);s+=`<rect x="${L}" y="${y}" width="${x(r[c])-L}" height="${bh}" rx="2" fill="${cols[j]}"/><text x="${x(r[c])+5}" y="${y+bh-2}" font-size="10">${fmt(r[c])}</text>`;});});
+  $("#dsChart").innerHTML=s+"</svg>";
+}
+
+/* ---------------- RESULTS ---------------- */
+// [acc, pre, rec, f1, macro_f1, auc]
+const PAPER={politifact:{early:[.902,,,.886],full:[.924,,,.914]},pheme:{early:[.829,,,.867],full:[.844,,,.879]},gossipcop:{early:[.873,,,.913],full:[.891,,,.925]}};
+const ROUNDS=[
+ {id:"r3",tab:"Round 3",title:"Round 3 · เฉพาะข่าวครบ 3 ส่วน",note:"ข้อความ + รูป + เส้นทางข่าว · 12 ต.ค. 2026 · T=100, RL 3 epoch",rows:[
+  {name:"GossipCop",p:"gossipcop",early:[.7876,.7993,.7828,.7909,.7876,.8536],full:[.7929,.7952,.8034,.7993,.7927,.8564],nogen:[.7823,.7618,.8379,.7980,.7810,.8541]},
+  {name:"PHEME",p:"pheme",early:[.8483,.8797,.9078,.8935,.8147,.9115],full:[.8657,.8826,.9326,.9069,.8329,.9275],nogen:[.8383,.8729,.9007,.8866,.8026,.9077]},
+  {name:"PolitiFact-UPFD",p:"politifact",warn:"test 16 ข่าว",early:[.75,1,.4286,.6,.7091,.9206],full:[.8125,.7,1,.8235,.8118,.9683],nogen:[1,1,1,1,1,1]}]},
+ {id:"r2",tab:"Round 2",title:"Round 2 · Multimodal (ชุดเต็ม)",note:"ข่าวที่ไม่มีรูป = เวกเตอร์ศูนย์ · 10 ต.ค. 2026",rows:[
+  {name:"GossipCop + เนื้อข่าว + รูป",p:"gossipcop",early:[.7788,.7819,.7733,.7776,.7788,.8465],full:[.8016,.7594,.8830,.8166,.8003,.8870],nogen:[.7834,.7618,.8245,.7919,.7830,.8527]},
+  {name:"PHEME + รูป",p:"pheme",early:[.8329,.8961,.8446,.8696,.8185,.9164],full:[.8295,.8807,.8577,.8690,.8123,.9154],nogen:[.8295,.8827,.8551,.8687,.8127,.9162]},
+  {name:"PolitiFact-UPFD + เนื้อข่าว + รูป",p:"politifact",warn:"early ล่ม",early:[.6452,.5882,.9677,.7317,.6039,.7190],full:[.8387,.8,.9032,.8485,.838,.9261],nogen:[.871,.7949,1,.8857,.8688,.9084]},
+  {name:"PolitiFact-UPFD หัวข้อข่าว",p:"politifact",early:[.8548,.8667,.8387,.8525,.8548,.9407],full:[.8548,.7895,.9677,.8696,.853,.9396],nogen:[.8387,.8387,.8387,.8387,.8387,.9136]}]},
+ {id:"r1",tab:"Round 1",title:"Round 1 · Text + Propagation",note:"ยังไม่มีรูป · 9 ต.ค. 2026 · GossipCop ใช้หัวข้อข่าวอย่างเดียว",rows:[
+  {name:"PolitiFact (ผู้เขียน)",p:"politifact",note:"T=200, RL 10 ep",early:[.8438,.8929,.6757,.7692,.8256,.9404],full:[.8646,.9,.7297,.806,.851,.9528],nogen:[.8333,.8889,.6486,.75,.8125,.9317]},
+  {name:"PHEME",p:"pheme",early:[.8355,.8808,.8681,.8744,.818,.91],full:[.8355,.8859,.8616,.8736,.819,.9095],nogen:[.8381,.8905,.8603,.8752,.8224,.91]},
+  {name:"GossipCop (หัวข้อข่าว)",p:"gossipcop",early:[.7623,.7522,.7824,.767,.7622,.8496],full:[.7815,.7516,.841,.7938,.7808,.8738],nogen:[.7651,.7409,.8154,.7763,.7645,.8616]}]}
+];
+// Round 4 rows come from LIVE (mean ± sd over finished seeds)
+(()=>{const nm={pheme:"PHEME (ครบ 3 ส่วน)",gossipcop:"GossipCop (ครบ 3 ส่วน)",politifact:"PolitiFact (ผู้เขียน · ไม่มีรูป)"};
+  const rows=LDS.map(([k])=>k).filter(k=>LIVE.results[k]&&LIVE.results[k].early).map(k=>{const r=LIVE.results[k],z=[0,0,0,0,0,0],g=(s,f)=>r[s]?r[s][f]:z;
+    return {name:nm[k],p:k,n:r.early.n,warn:r.early.n<5?`${r.early.n}/5 seeds`:"",early:g("early","mean"),full:g("full","mean"),nogen:g("early_no_gen","mean"),sd:{early:g("early","sd"),full:g("full","sd"),nogen:g("early_no_gen","sd")}};});
+  ROUNDS.unshift({id:"r4",tab:"Round 4",title:"Round 4 · Paper protocol (5 seeds)",note:"mean ± std · T=200, K2=10, 20 time steps, RL 10 epoch · เส้นสั้นที่ปลายแท่ง = ± std",rows,empty:"ยังไม่มี seed ที่รันเสร็จ — ดูสถานะในแท็บความคืบหน้า"});})();
+const METRICS=[["Acc",0],["F1",3],["AUC",5],["Precision",1],["Recall",2],["Macro-F1",4]];
+let rSel=store.get("rppg-round","r4"),mSel=store.get("rppg-metric",0);
+$("#roundSel").innerHTML=ROUNDS.map(r=>`<button type="button" data-r="${r.id}">${r.tab}</button>`).join("");
+$("#metricSel").innerHTML=METRICS.map(([n,i])=>`<button type="button" data-m="${i}">${n}</button>`).join("");
+$("#roundSel").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;rSel=b.dataset.r;store.set("rppg-round",rSel);drawRes();});
+$("#metricSel").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;mSel=+b.dataset.m;store.set("rppg-metric",mSel);drawRes();});
+const cw=sel=>{const w=$(sel).clientWidth;return w?Math.max(320,w):680};
+const pp=v=>(v>=0?"+":"")+(v*100).toFixed(1)+" pp";
+
+function drawRes(){
+  const R=ROUNDS.find(r=>r.id===rSel)||ROUNDS[0],m=mSel,mName=METRICS.find(x=>x[1]===m)[0];
+  document.querySelectorAll("#roundSel button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.r===R.id));
+  document.querySelectorAll("#metricSel button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.m===m));
+  $("#roundTitle").textContent=R.title+" · "+mName;
+  $("#roundNote").textContent=R.note+(PAPER.pheme.early[m]==null?" · paper ไม่รายงาน "+mName:"");
+  if(!R.rows.length){$("#resChart").innerHTML=`<p class="muted" style="margin:24px 0;text-align:center">${esc(R.empty)}</p>`;$("#deltas").innerHTML="";$("#resTable").innerHTML="";return;}
+  const W=cw("#resChart"),L=W<500?52:110,Rm=50,bh=13,gap=3,head=20,gh=head+bh*3+gap*2+18,H=R.rows.length*gh+22,lo=.5,hi=1,x=v=>L+(W-L-Rm)*(Math.max(lo,v)-lo)/(hi-lo);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="ผล ${esc(mName)}">`;
+  for(let t=lo;t<=hi+1e-9;t+=.1)s+=`<line x1="${x(t)}" x2="${x(t)}" y1="0" y2="${H-20}" stroke="var(--line)"/><text x="${x(t)}" y="${H-6}" font-size="10" text-anchor="middle">${t.toFixed(1)}</text>`;
+  const ser=[["early","early","var(--accent)",1],["full","full","var(--accent-2)",1],["nogen","no G′","var(--muted)",.55]];
+  R.rows.forEach((r,i)=>{
+    const y0=i*gh+4;
+    s+=`<text class="lbl" x="0" y="${y0+12}" font-size="12.5">${esc(r.name)}</text>`;
+    if(r.warn)s+=`<text x="${W-Rm}" y="${y0+12}" font-size="10.5" text-anchor="end" style="fill:var(--warn)">⚠ ${esc(r.warn)}</text>`;
+    ser.forEach(([k,lab,c,op],j)=>{
+      const y=y0+head+j*(bh+gap),v=r[k][m];
+      s+=`<text x="${L-8}" y="${y+bh-2}" font-size="10.5" text-anchor="end">${lab}</text>`;
+      s+=`<rect x="${L}" y="${y}" width="${Math.max(1,x(v)-L)}" height="${bh}" rx="2" fill="${c}" fill-opacity="${op}"><title>${esc(r.name)} · ${lab}: ${v.toFixed(3)}</title></rect>`;
+      const sd=r.sd?r.sd[k][m]:0;
+      if(sd){s+=`<line x1="${x(v-sd)}" x2="${x(v+sd)}" y1="${y+bh/2}" y2="${y+bh/2}" stroke="var(--ink)" stroke-width="1.2"/><line x1="${x(v+sd)}" x2="${x(v+sd)}" y1="${y+2}" y2="${y+bh-2}" stroke="var(--ink)" stroke-width="1.2"/>`;}
+      s+=`<text x="${x(v+sd)+5}" y="${y+bh-2}" font-size="10.5" style="fill:var(--ink)">${v.toFixed(3)}${sd?" ±"+sd.toFixed(3):""}</text>`;
+      const pv=k!=="nogen"&&PAPER[r.p][k][m];
+      if(pv){const px=x(pv);s+=`<line x1="${px}" x2="${px}" y1="${y-2}" y2="${y+bh+2}" stroke="var(--ink)" stroke-width="2.5"><title>Paper ${k}: ${pv}</title></line>`;}
+    });
+  });
+  $("#resChart").innerHTML=s+"</svg>";
+  // deltas
+  $("#deltas").innerHTML=R.rows.map(r=>{
+    const g=r.early[m]-r.nogen[m],pe=PAPER[r.p].early[m],pf=PAPER[r.p].full[m];
+    const line=(lab,v)=>`<div class="r"><span class="muted">${lab}</span><b class="${v>=0?"pos":"neg"}">${pp(v)}</b></div>`;
+    return `<div class="delta panel"><h3 style="font-size:.86rem">${esc(r.name)}</h3>${line("ผลของ G′ (early − no G′)",g)}${pe?line("early vs paper",r.early[m]-pe):""}${pf?line("full vs paper",r.full[m]-pf):""}</div>`;
+  }).join("")+`<div class="delta panel" style="background:var(--accent-soft);border-color:transparent"><h3 style="font-size:.86rem">Paper (Table III–IV)</h3><div class="r"><span class="muted">ดีกว่า baseline ที่ดีที่สุด (early)</span><b>+2.7 ถึง +4.1 pp</b></div><div class="r"><span class="muted">RL vs Random Sample (full)</span><b>+1.9 ถึง +3.3 pp</b></div><div class="r"><span class="muted">แบบไม่ใช้ G′</span><b>ไม่ได้ทดสอบ</b></div></div>`;
+  // table
+  const cols=["Acc","Pre","Rec","F1","Macro-F1","AUC"];
+  let t=`<table><thead><tr><th>Dataset</th><th>Setting</th>${cols.map(c=>`<th class="num">${c}</th>`).join("")}<th class="num">Paper Acc / F1</th></tr></thead><tbody>`;
+  R.rows.forEach(r=>[["early","early"],["full","full"],["nogen","early · no G′"]].forEach(([k,lab],j)=>{
+    const p=PAPER[r.p][k];
+    t+=`<tr><td>${j?"":esc(r.name)}</td><td class="muted">${lab}</td>${r[k].map((v,ci)=>`<td class="num mono"${ci===m?' style="color:var(--accent);font-weight:600"':""}>${v.toFixed(3)}${r.sd?`<span class="muted" style="font-weight:400"> ±${r.sd[k][ci].toFixed(3)}</span>`:""}</td>`).join("")}<td class="num mono muted">${p?p[0].toFixed(3)+" / "+p[3].toFixed(3):"—"}</td></tr>`;
+  }));
+  $("#resTable").innerHTML=t+"</tbody></table>";
+}
+
+/* ---------------- CODE ---------------- */
+const NODES=[
+ {k:"data",st:"",n:"News + Engagements",tag:"Data",f:["src/data/components/politifact.py"],c:["news_actions_<ds>.csv","split 7:1:2 (stratified)","early = 3–5 engagements"],d:"โหลดข่าว + เส้นทางการแพร่ (user, time) แบ่ง train/val/test"},
+ {k:"clip",st:"",n:"CLIP Encoder",tag:"Content",f:["src/data/components/encode_content.py"],c:["ViT-B/32","text 512 + image 512","77 tokens"],d:"แปลงข้อความ + รูปเป็นเวกเตอร์ แล้ว cache ไว้ใน processed/"},
+ {k:"m1",st:"s1",n:"Module 1 · Contrastive",tag:"Stage 1",f:["rppg/contrastive.py","rppg/layers.py"],c:["graph H (train only)","GAT (Eq. 2)","meta-path RWR","τ₁ τ₂ λ₁"],d:"เรียน user embedding จาก heterogeneous graph"},
+ {k:"m2",st:"s1",n:"Module 2 · RL Generator",tag:"Stage 1",f:["rppg/generator.py","src/train_hete_RL.py"],c:["actor-critic","R = temporal + global (Eq. 13)","discriminator บน prefix","T = 100"],d:"สร้างเส้นทางการแพร่ในอนาคต G′ ให้ข่าวที่ยังมี engagement น้อย"},
+ {k:"gen",st:"s1",n:"Generated paths G′",tag:"Output",f:["data/<ds>/generated/seed0/"],c:["เติมต่อจาก 3–5 engagements จริง"],d:"เส้นทางจริง (early) + เส้นทางที่ generate ส่งต่อให้ detector"},
+ {k:"m3",st:"s2",n:"Module 3 · Detector",tag:"Stage 2",f:["rppg/detector.py","src/train.py"],c:["temporal-aware","Λ(t)","n_slots 10","Eq. 21 residual"],d:"จำแนก fake / real จาก snapshot graph ตามเวลา + เนื้อหา"},
+ {k:"eval",st:"s2",n:"Evaluate",tag:"Metrics",f:["scripts/run_all.py","logs/results_summary_<ds>.md"],c:["Acc · Pre · Rec · F1","Macro-F1 · AUC","early / full / no G′"],d:"รันทุก setting แล้วสรุป mean ± std ข้าม seed"}
+];
+let nSel=store.get("rppg-node","m2");
+function drawPipe(){
+  $("#pipe").innerHTML=NODES.map(n=>`<button type="button" class="${n.st}" data-k="${n.k}" aria-pressed="${n.k===nSel}"><span class="k">${n.tag}</span><span class="n">${esc(n.n)}</span></button>`).join("");
+  const n=NODES.find(x=>x.k===nSel)||NODES[0];
+  $("#nodeDetail").innerHTML=`<div class="row"><h3>${esc(n.n)}</h3><span class="tag ${n.st==="s2"?"ok":"acc"}">${n.tag}</span></div><div style="font-size:.86rem">${esc(n.d)}</div><div class="chips">${n.c.map(c=>`<span class="chip">${esc(c)}</span>`).join("")}</div><div class="mono muted" style="font-size:.74rem">${n.f.map(esc).join(" · ")}</div>`;
+}
+$("#pipe").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;nSel=b.dataset.k;store.set("rppg-node",nSel);drawPipe();});
+
+const FIX=[["h","Config / ไฟล์ source หาย → รันไม่ได้"],["h","Validation / test สลับกัน"],["h","Reward ไม่ตรง paper → R_G ตาม Eq. 13"],["m","GAT ไม่ตรง Eq. 2 · Λ(t) ไม่ตรง"],["m","Discriminator ไม่ train บน prefix"],["m","ข้อมูลรั่วผ่าน content candidates"],["l","ตัวแปรไม่ได้ประกาศ · action ไม่มีทิศทาง"]];
+const DEV=[["m","PolitiFact (ข้อมูลผู้เขียน) ไม่มีรูป → image feature = 0"],["h","PHEME ใช้เฉพาะ tweet ที่มีรูป: 2,004 ข่าว (paper 3,506)"],["m","GossipCop / PolitiFact-UPFD คัดให้ fake/real สมดุล (paper ไม่สมดุล)"],["m","T=100, RL 3 epoch เพื่อประหยัดเวลา (paper ไม่ระบุ epoch)"],["m","CLIP อ่านข้อความได้แค่ 77 token"],["l","ไม่มี publisher → ใช้ meta-path UU แทน PNU"]];
+const OPEN=[["h","G′ ไม่ช่วย (5 seeds, early): PHEME −0.1 · GossipCop −1.7 · PolitiFact −1.4 pp (paper ไม่ได้ทดสอบแบบไม่มี G′)"],["m","+2.7–4.1 pp ใน paper คือ ดีกว่า baseline ที่ดีที่สุด ไม่ใช่ผลของ G′ (เคยสรุปผิด แก้แล้ว 15 ต.ค.)"],["h","GossipCop ต่ำกว่า paper ~10 pp · PolitiFact ~11 pp (early Acc)"],["m","user ที่ generate ตรงกับ path จริงน้อยมาก: PHEME 0.04–0.09%, PolitiFact ~0.7%, GossipCop ~3.5%"],["l","RAM 16 GB ไม่พอรัน 2 dataset พร้อมกัน → แก้แล้ว: รันทีละชุด"],["m","PolitiFact-UPFD test มีแค่ 16 ข่าว · ผลไม่เสถียร"],["m","Code_RPPG-Fake มี .git ซ้อน · ต้องตัดสินใจก่อน push"],["l","แท็บ Code ใน Paper Summary ยังอธิบาย code ต้นฉบับ"]];
+const li=a=>a.map(([s,t])=>`<li><span class="sev ${s}"></span><span>${esc(t)}</span></li>`).join("");
+$("#fixList").innerHTML=li(FIX);$("#devList").innerHTML=li(DEV);$("#openList").innerHTML=li(OPEN);
+
+/* ---------------- TABS ---------------- */
+function showTab(t){
+  document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t));
+  document.querySelectorAll("section.tab").forEach(s=>s.hidden=s.id!=="tab-"+t);
+  store.set("rppg-tab",t);
+  if(t==="data")drawDSChart();if(t==="results")drawRes();
+}
+let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(()=>{drawDSChart();drawRes();},150)});
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)showTab(b.dataset.t);});
+const hash=(location.hash||"").slice(1);
+showTab(["progress","data","results","code","issues"].includes(hash)?hash:store.get("rppg-tab","progress"));
+
+drawRuns();drawProgress();drawDS();drawDSChart();drawRes();drawPipe();
+</script>

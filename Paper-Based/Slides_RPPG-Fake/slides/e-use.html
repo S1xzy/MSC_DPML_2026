@@ -1,0 +1,19 @@
+<section id="e-use" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">04 · การทดลอง · ใช้ในชีวิตจริง</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">ระบบเตือนข่าวน่าสงสัยตั้งแต่นาทีแรก ๆ</h2>
+<div style="display:flex;align-items:center;gap:14px">
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#2950B8">1</p><h3 style="font-size:28px;font-weight:600">ข่าวใหม่ถูกโพสต์</h3><p style="font-size:24px;color:#4F5D6B">ข้อความ + รูป</p></div>
+<x-shape kind="arrow-right" style="width:44px;height:26px;background:#9AA6B2"></x-shape>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#2950B8">2</p><h3 style="font-size:28px;font-weight:600">รอ 3–5 การแชร์</h3><p style="font-size:24px;color:#4F5D6B">ไม่ต้องรอแพร่เต็มที่</p></div>
+<x-shape kind="arrow-right" style="width:44px;height:26px;background:#9AA6B2"></x-shape>
+<div style="flex:1;background:#14202C;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#8FB0FF">3</p><h3 style="font-size:28px;font-weight:600;color:#EEF2F6">model ให้คะแนน</h3><p style="font-size:24px;color:#BFCBD8">P(fake) = 1 − P(real)</p></div>
+<x-shape kind="arrow-right" style="width:44px;height:26px;background:#9AA6B2"></x-shape>
+<div style="flex:1;background:#FBE7D3;border:2px solid #C9650E;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#8A4208">4</p><h3 style="font-size:28px;font-weight:600">คะแนนสูง → ส่งคนตรวจ</h3><p style="font-size:24px;color:#4F5D6B">ติดป้ายเตือน · ชะลอการกระจาย</p></div>
+</div>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:8px"><h3 style="font-size:28px;font-weight:600">ใครใช้ได้</h3><p style="font-size:24px;color:#4F5D6B">• แพลตฟอร์มโซเชียล: จัดคิวให้ทีมตรวจสอบ</p><p style="font-size:24px;color:#4F5D6B">• สำนัก fact-check: เลือกข่าวที่ต้องตรวจก่อน</p><p style="font-size:24px;color:#4F5D6B">• หน่วยงาน: เฝ้าระวังข่าวลือช่วงวิกฤต</p></div>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:8px"><h3 style="font-size:28px;font-weight:600">ข้อควรระวัง (จาก demo ของเรา)</h3><p style="font-size:24px;color:#4F5D6B">• ต้อง retrain เมื่อมีเหตุการณ์ / user ใหม่</p><p style="font-size:24px;color:#4F5D6B">• ใช้จัดลำดับ (AUC) ดีกว่าตัดสินด้วย 0.5</p><p style="font-size:24px;color:#4F5D6B">• ช่วยคนตัดสิน ไม่ใช่ตัดสินแทน</p></div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">input ที่ต้องมี: ข้อความ + รูป + ใครแชร์ต่อจากใคร เมื่อไร (เช่นจาก API ของแพลตฟอร์ม)</p>
+<aside>ในชีวิตจริง model นี้เหมาะเป็นระบบเตือนล่วงหน้า: พอข่าวใหม่มีคนแชร์ 3–5 ครั้ง ระบบเก็บข้อความ รูป และข้อมูลการแชร์ ส่งเข้า model ได้คะแนนความน่าจะเป็นว่าปลอม ข่าวคะแนนสูงจะถูกส่งให้ fact-checker ตรวจก่อน หรือติดป้ายเตือน จาก demo B เรารู้ว่าถ้าเจอเหตุการณ์ใหม่และ user ใหม่ model จะพลาดมาก จึงต้อง retrain เป็นระยะ ใช้คะแนนเพื่อจัดลำดับดีกว่าใช้ threshold ตายตัว และควรให้คนเป็นผู้ตัดสินสุดท้าย</aside>
+</section>

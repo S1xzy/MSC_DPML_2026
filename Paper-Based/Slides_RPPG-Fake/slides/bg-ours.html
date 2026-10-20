@@ -1,0 +1,18 @@
+<section id="bg-ours" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">01 · ที่มาและความสำคัญ</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">เราทำซ้ำ (reproduce) paper นี้อย่างไร</h2>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:56px;font-weight:700;color:#C9650E;line-height:1">1</p><h3 style="font-size:32px;font-weight:600">ตรวจ code ทางการ</h3><p style="font-size:26px;color:#4F5D6B;line-height:1.45">รันไม่ได้: config หาย, val/test สลับ, reward ไม่ตรง paper</p></div>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:56px;font-weight:700;color:#C9650E;line-height:1">2</p><h3 style="font-size:32px;font-weight:600">เขียน 3 module ใหม่</h3><p style="font-size:26px;color:#4F5D6B;line-height:1.45">ตามสมการ Eq. 1–22 · ตรวจเทียบ 2 รอบ แก้ 9 จุด</p></div>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:56px;font-weight:700;color:#C9650E;line-height:1">3</p><h3 style="font-size:32px;font-weight:600">รวบรวม dataset</h3><p style="font-size:26px;color:#4F5D6B;line-height:1.45">เติมรูป + เนื้อข่าวเอง ให้ครบ ข้อความ + รูป + เส้นทาง</p></div>
+<div style="flex:1;background:#14202C;border-radius:16px;padding:32px;display:flex;flex-direction:column;gap:12px"><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:56px;font-weight:700;color:#F0A35E;line-height:1">4</p><h3 style="font-size:32px;font-weight:600;color:#EEF2F6">ทดลอง 8 รอบ</h3><p style="font-size:26px;color:#BFCBD8;line-height:1.45">พบและแก้ bug สำคัญในรอบ 8 · final: 3 datasets × 3 seeds + demo</p></div>
+</div>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;background:#E8ECF1;padding:8px 16px;border-radius:8px">Python 3.11 · PyTorch 2.11</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;background:#E8ECF1;padding:8px 16px;border-radius:8px">CUDA 12.8 · RTX 5050 8 GB</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;background:#E8ECF1;padding:8px 16px;border-radius:8px">Hydra + Lightning</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;background:#E8ECF1;padding:8px 16px;border-radius:8px">github.com/LitianD/RPPG-Fake</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">RPPG-Fake · Zhang et al., IEEE TKDE 2025</p>
+<aside>Code ที่ผู้เขียนเผยแพร่รันไม่ได้: ไฟล์ config และ source บางส่วนหาย มีตัวแปรที่ไม่ได้ประกาศ validation กับ test สลับกัน และ reward/discriminator ไม่ได้ทำตาม paper เราจึงเขียน Module 1–3 ใหม่ (branch runnable) แล้วตรวจเทียบสมการทุกข้อสองรอบ แก้ไป 9 จุด เช่น GAT ตาม Eq. 2, Λ(t), global reward ตาม Eq. 13, discriminator บน prefix และปิดการรั่วของข้อมูลผ่าน content candidates</aside>
+</section>

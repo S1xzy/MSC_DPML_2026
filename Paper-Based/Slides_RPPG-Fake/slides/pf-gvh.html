@@ -1,0 +1,28 @@
+<section id="pf-gvh" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">02 · นิยามของปัญหา · G เทียบ H</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">G = เส้นทางของข่าว 1 ชิ้น · H = กราฟรวมทุกข่าว train</h2>
+<div style="display:flex;gap:28px">
+<div style="width:800px;background:#14202C;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:6px">
+<p style="font-size:26px;font-weight:600;color:#8FB0FF">G · ข่าว 1 ชิ้น (อยู่ในชุด test)</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#EEF2F6">{head_user: 1, user: 2772, time: 1420638597}</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#EEF2F6">{head_user: 1, user: 258,  time: 1420638828}</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#EEF2F6">{head_user: 1, user: 3449, time: 1420640333}</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#7F8C99">… รวม 20 แถว · 19 user · ~10 ชั่วโมง</p>
+<p style="font-size:24px;color:#BFCBD8">ไฟล์: data/pheme/news_actions_pheme.csv → คอลัมน์ actions_id ของ id 552824462958395392</p>
+</div>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:8px">
+<p style="font-size:26px;font-weight:600;color:#2950B8">H · ทุกข่าวใน train</p>
+<p style="font-size:24px;color:#4F5D6B">สร้างโดย <span style="color:#14202C">src/data/components/politifact.py</span> → build_graph()</p>
+<p style="font-size:24px;color:#4F5D6B">เก็บใน <span style="color:#14202C">data/pheme/processed/seed2_time20_T200.pt</span></p>
+<p style="font-size:24px;color:#4F5D6B">key “graph” = edge_index, edge_type, edge_origin · key “meta” = UNU, NUN, UU</p>
+</div>
+</div>
+<table style="font-size:24px;width:1664px">
+<tr><th style="width:16%"></th><th style="width:42%">G (ข่าว 1 ชิ้น)</th><th style="width:42%">H (ทั้งระบบ)</th></tr>
+<tr><td>ขอบเขต</td><td>ใครแชร์ข่าวนี้ จากใคร เมื่อไร</td><td>ข่าว train ทั้งหมด 1,402 ชิ้น รวมเป็นกราฟเดียว</td></tr>
+<tr><td>ขนาด</td><td>20 แถว · 19 user</td><td>14,583 user · 26,763 เส้น</td></tr>
+<tr><td>ใช้ทำอะไร</td><td>input ตอนตัดสิน (ใช้แค่ 3–5 แถวแรก)</td><td>ให้ model รู้จัก user · หา candidate ตอนสร้าง G′</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">ข่าวนี้อยู่ใน test จึงไม่อยู่ใน H · แต่ u258 และ u2772 (3 คนแรก) เคยแชร์ข่าว train → model รู้จักจาก H</p>
+<aside>ตัวอย่าง G คือ actions_id ของข่าว id 552824462958395392 (“Love is Stronger than Hate #CharlieHebdo cover…”, label real) ในไฟล์ Paper-Based/Code_RPPG-Fake/data/pheme/news_actions_pheme.csv แต่ละแถวคือการแชร์ 1 ครั้ง head_user = 1 หมายถึงแชร์จากตัวข่าวโดยตรง user คือรหัสผู้แชร์ time คือเวลา Unix (7 ม.ค. 2015 13:49 UTC ถึง 8 ม.ค. 00:08 UTC) มี 20 แถว 19 user (u3449 แชร์สองครั้ง) ไม่มีการ repost ต่อกัน ใน seed 2 ข่าวนี้อยู่ในชุด test จึงไม่ถูกนำไปสร้าง H model เห็นแค่ 3 แถวแรก (u2772, u258, u3449) เป็น early path ส่วน H สร้างโดยฟังก์ชัน build_graph ใน src/data/components/politifact.py จากข่าว train ทั้งหมด แล้ว cache ไว้ใน data/pheme/processed/seed2_time20_T200.pt ภายใต้ key "graph" (edge_index, edge_type, edge_origin) และ "meta" (เส้น meta-path UNU, NUN, UU) user ในข่าวนี้ที่เคยแชร์ข่าว train: u258 (24 ข่าว), u585 (21), u2964 (13), u2772 (2), u3454 (1) ส่วนอีก 14 คนไม่เคยปรากฏใน H</aside>
+</section>

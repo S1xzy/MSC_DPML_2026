@@ -1,0 +1,20 @@
+<section id="e-demo10" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">04 · การทดลอง · Demo สด 10 ข่าว</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">10 ข่าวที่ model ไม่เคยเห็น: ถูก 9 จาก 10</h2>
+<table style="font-size:24px;width:1664px">
+<tr><th style="width:12%">ชุด</th><th style="width:58%">ข้อความ / หัวข้อข่าว</th><th style="width:10%">จริง</th><th style="width:10%">ทาย</th><th style="width:10%;text-align:right">P(real)</th></tr>
+<tr><td>PHEME</td><td>Aussie grand mufti &amp; Imam Council condemn #Sydneysiege hostage capture</td><td>fake</td><td>fake</td><td style="text-align:right">0.17</td></tr>
+<tr><td>PHEME</td><td>Two female hostages have run out of #SydneySiege. 5 in total have escaped</td><td>fake</td><td>fake</td><td style="text-align:right">0.15</td></tr>
+<tr style="background:#FBE7D3"><td>PHEME</td><td>Hostages seen fleeing from cafe at centre of #SydneySiege moments ago</td><td>fake</td><td style="color:#A8330C">real ✗</td><td style="text-align:right">0.74</td></tr>
+<tr><td>PHEME</td><td>Zuckerberg on #CharlieHebdo: Facebook will protect free speech</td><td>real</td><td>real</td><td style="text-align:right">0.98</td></tr>
+<tr><td>PHEME</td><td>A dark day for freedom of expression, an appalling human tragedy. #JeSuisCharlie</td><td>real</td><td>real</td><td style="text-align:right">0.99</td></tr>
+<tr><td>PHEME</td><td>Smoke, gunshots reported at site of standoff with suspects … Charlie Hebdo</td><td>real</td><td>real</td><td style="text-align:right">0.59</td></tr>
+<tr><td>GossipCop</td><td>Gwen And Blake Make Happy Family After Spring Break Getaway</td><td>fake</td><td>fake</td><td style="text-align:right">0.04</td></tr>
+<tr><td>GossipCop</td><td>2018 SAG Award Nominations: See Full List of Nominees</td><td>fake</td><td>fake</td><td style="text-align:right">0.18</td></tr>
+<tr><td>GossipCop</td><td>Three More Women Accuse Jeremy Piven of Sexual Misconduct</td><td>real</td><td>real</td><td style="text-align:right">0.95</td></tr>
+<tr><td>GossipCop</td><td>Exclusive: Kyle Clarke dishes mightily on What Happens at The Abbey</td><td>real</td><td>real</td><td style="text-align:right">0.99</td></tr>
+</table>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;background:#14202C;color:#EEF2F6;border-radius:12px;padding:14px 22px">python scripts/predict.py --dataset pheme --input data/demo_present/pheme --tag early_fix</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">สุ่มจาก test split ของ seed ที่ val ดีสุด (seed 2) · มีภาพ + early ≥ 3 · data/demo_present/</p>
+<aside>ชุด demo 10 ข่าวสำหรับโชว์สด เลือกแบบสุ่ม (กำหนด seed ไว้) จาก test split ของ model ที่นำเสนอ จึงเป็นข่าวที่ model ไม่เคยเห็นตอน train ทุกข่าวมีข้อความ ภาพ และการแชร์ช่วงแรกอย่างน้อย 3 ครั้ง PHEME 6 ข่าว (fake 3 / real 3) และ GossipCop 4 ข่าว (fake 2 / real 2) model ทายถูก 9 จาก 10 ข่าวที่พลาดคือ rumour “Hostages seen fleeing from cafe…” ซึ่งเขียนเหมือนรายงานข่าวจริงมาก ตอนนำเสนอรันคำสั่งด้านล่างในโฟลเดอร์ Code_RPPG-Fake เพื่อโชว์ได้สด ๆ ใช้เวลาไม่ถึงหนึ่งนาที</aside>
+</section>

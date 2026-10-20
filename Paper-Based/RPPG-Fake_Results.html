@@ -1,0 +1,323 @@
+<title>RPPG-Fake Reproduction Results</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: results report — header with setup chips, tab strip, each tab one comparison (ours vs paper) */
+:root{
+  --bg:#F2F4F7; --surface:#FFFFFF; --sunk:#E8ECF1; --ink:#14202C; --muted:#5A6977; --line:#D8DFE6;
+  --accent:#2950B8; --accent-2:#7F9BE0; --accent-soft:#E3EAFB; --paper:#8A6D3B; --paper-soft:#F3EBDD;
+  --real:#1F8A5B; --fake:#C23E4A; --warn:#B7790A; --warn-soft:#FBF0D9; --ok-soft:#DDF2E7; --bad-soft:#F8E0E2;
+  --f-display:"Bai Jamjuree","IBM Plex Sans Thai",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans Thai",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E141A; --surface:#161F28; --sunk:#1D2833; --ink:#E4EBF2; --muted:#93A2B1; --line:#283543;
+  --accent:#7D9DFF; --accent-2:#3F5A9E; --accent-soft:#1E2B47; --paper:#D9B26F; --paper-soft:#33291A;
+  --real:#4CC38A; --fake:#F07A84; --warn:#F0B54A; --warn-soft:#3A2E14; --ok-soft:#173226; --bad-soft:#3A1D21; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E141A; --surface:#161F28; --sunk:#1D2833; --ink:#E4EBF2; --muted:#93A2B1; --line:#283543;
+  --accent:#7D9DFF; --accent-2:#3F5A9E; --accent-soft:#1E2B47; --paper:#D9B26F; --paper-soft:#33291A;
+  --real:#4CC38A; --fake:#F07A84; --warn:#F0B54A; --warn-soft:#3A2E14; --ok-soft:#173226; --bad-soft:#3A1D21; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.55}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:20px;padding-block:20px 48px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+h1{font-size:1.75rem;font-weight:700} h2{font-size:1.15rem;font-weight:600} h3{font-size:.95rem;font-weight:600}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.muted{color:var(--muted)}
+.label{font-size:.72rem;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-weight:600}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+header{display:grid;gap:10px}
+.cite{font-size:.82rem;color:var(--muted);max-width:70ch}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-family:var(--f-mono);font-size:.74rem;background:var(--surface);border:1px solid var(--line);padding:3px 8px;border-radius:4px}
+.chip b{color:var(--accent);font-weight:600}
+nav.tabs{display:flex;gap:2px;margin-top:20px;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+nav.tabs button{background:none;border:0;padding:10px 14px;cursor:pointer;color:var(--muted);font-weight:500;border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap}
+nav.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent);font-weight:600}
+section.tab{padding-top:18px;display:grid;gap:16px}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;min-width:0}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.row{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.segc{display:inline-flex;background:var(--sunk);border-radius:7px;padding:3px;gap:2px;flex-wrap:wrap}
+.segc button{border:0;background:none;padding:5px 11px;border-radius:5px;cursor:pointer;font-size:.82rem;color:var(--muted)}
+.segc button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgb(0 0 0 / .08)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;vertical-align:-2px;margin-right:5px}
+.chart-wrap{overflow-x:auto}
+svg text{font-family:var(--f-mono);fill:var(--muted)}
+svg .lbl{font-family:var(--f-body);fill:var(--ink);font-weight:600}
+.tbl{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.82rem}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+td.num,th.num{text-align:right}
+td.best{color:var(--accent);font-weight:700}
+td.pp{color:var(--paper)}
+.sd{color:var(--muted);font-weight:400;font-size:.74rem}
+.pos{color:var(--real)} .neg{color:var(--fake)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.kpi{background:var(--surface);padding:12px 14px;display:grid;gap:2px}
+.kpi .v{font-family:var(--f-display);font-size:1.45rem;font-weight:700}
+.kpi .s{font-size:.75rem;color:var(--muted)}
+.tag{display:inline-block;font-size:.7rem;font-weight:600;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.tag.ok{background:var(--ok-soft);color:var(--real)} .tag.warn{background:var(--warn-soft);color:var(--warn)} .tag.bad{background:var(--bad-soft);color:var(--fake)}
+.pipe{display:flex;flex-wrap:wrap;gap:6px;align-items:stretch}
+.pipe div{flex:1 1 140px;min-width:0;border:1px solid var(--line);border-radius:6px;padding:10px;background:var(--surface);display:grid;gap:2px}
+.pipe .k{font-family:var(--f-mono);font-size:.68rem;color:var(--muted)}
+.pipe .n{font-family:var(--f-display);font-weight:600;font-size:.88rem}
+.pipe .s1{border-top:3px solid var(--accent)} .pipe .s2{border-top:3px solid var(--real)} .pipe .s0{border-top:3px solid var(--muted)}
+.cm{display:grid;grid-template-columns:auto 1fr 1fr;gap:4px;font-size:.78rem;max-width:320px}
+.cm div{padding:10px;border-radius:4px;text-align:center;font-family:var(--f-mono)}
+.cm .h{background:none;color:var(--muted);font-family:var(--f-body);font-size:.72rem;padding:4px}
+.cm .good{background:var(--ok-soft);color:var(--real);font-weight:700}
+.cm .badc{background:var(--bad-soft);color:var(--fake);font-weight:700}
+ul.list{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+ul.list li{display:grid;grid-template-columns:auto 1fr;gap:10px;font-size:.86rem;align-items:start}
+.sev{width:8px;height:8px;border-radius:2px;margin-top:7px}
+.sev.h{background:var(--fake)} .sev.m{background:var(--warn)} .sev.l{background:var(--muted)}
+td.txt{white-space:normal;min-width:240px;max-width:420px;font-size:.78rem}
+.pill{display:inline-block;font-size:.7rem;font-weight:600;padding:1px 7px;border-radius:999px}
+.pill.f{background:var(--bad-soft);color:var(--fake)} .pill.r{background:var(--ok-soft);color:var(--real)}
+.foot{margin-top:28px;font-size:.75rem;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+<header>
+  <span class="label">Paper-Based · DPML 2026 · Reproduction</span>
+  <h1>RPPG-Fake Reproduction Results</h1>
+  <div class="cite">Early Detection of Multimodal Fake News via Reinforced Propagation Path Generation · L. Zhang et al., IEEE TKDE 37(2), 2025 · code ที่แก้ให้รันได้ตามสมการ Eq. 1–22</div>
+  <div class="chips">
+    <span class="chip">3 datasets</span><span class="chip">seeds <b>0–2</b></span><span class="chip">split <b>7:1:2</b></span>
+    <span class="chip">T <b>200</b> · K2 <b>10</b></span><span class="chip">RL <b>10</b> epoch</span><span class="chip">AdamW lr <b>5e-3</b> · batch <b>16</b></span>
+    <span class="chip">CLIP ViT-B/32 text + image</span><span class="chip">early = <b>3–5</b> engagements</span>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" id="tabs">
+  <button role="tab" data-t="over" aria-selected="true">ภาพรวม</button>
+  <button role="tab" data-t="main" aria-selected="false">Table II / III</button>
+  <button role="tab" data-t="abl" aria-selected="false">Table IV · Ablation</button>
+  <button role="tab" data-t="demo" aria-selected="false">Demo</button>
+  <button role="tab" data-t="lim" aria-selected="false">ข้อจำกัด</button>
+</nav>
+
+<!-- OVERVIEW -->
+<section class="tab" id="tab-over">
+  <div class="kpis" id="kpis"></div>
+  <div class="panel">
+    <h2 style="margin-bottom:12px">Algorithm (ตาม paper)</h2>
+    <div class="pipe">
+      <div class="s0"><span class="k">Input</span><span class="n">News + early path</span><span class="muted" style="font-size:.76rem">ข้อความ · รูป · 3–5 engagements แรก</span></div>
+      <div class="s1"><span class="k">Module 1 · Eq. 2–5</span><span class="n">Hetero contrastive</span><span class="muted" style="font-size:.76rem">node view (PGD) + meta-path view</span></div>
+      <div class="s1"><span class="k">Module 2 · Eq. 6–19</span><span class="n">RL path generation</span><span class="muted" style="font-size:.76rem">actor-critic · R = λ₂R_T + (1−λ₂)R_G</span></div>
+      <div class="s2"><span class="k">Module 3 · Eq. 20–22</span><span class="n">Temporal-aware detector</span><span class="muted" style="font-size:.76rem">dynamic GAT + fusion + content → P(real)</span></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h2 style="margin-bottom:10px">Dataset</h2>
+    <div class="tbl"><table>
+      <thead><tr><th>Dataset</th><th class="num">ข่าว (ของเรา)</th><th class="num">fake / real</th><th>องค์ประกอบ</th><th class="num">Paper</th></tr></thead>
+      <tbody>
+        <tr><td>PolitiFact</td><td class="num mono">483</td><td class="num mono">—</td><td>ข้อความเต็ม + เส้นทาง (ไม่มีรูป · ข้อมูลของผู้เขียน)</td><td class="num mono">478</td></tr>
+        <tr><td>GossipCop</td><td class="num mono">2,827</td><td class="num mono">1,378 / 1,449</td><td>ข้อความ + รูป + เส้นทาง (ครบ 3 ส่วน)</td><td class="num mono">5,526</td></tr>
+        <tr><td>PHEME</td><td class="num mono">2,004</td><td class="num mono">599 / 1,405</td><td>ข้อความ + รูป + เส้นทาง (ครบ 3 ส่วน)</td><td class="num mono">3,506</td></tr>
+      </tbody></table></div>
+  </div>
+  <div class="panel">
+    <h2 style="margin-bottom:10px">Model ที่ใช้นำเสนอ <span class="muted" style="font-size:.8rem;font-weight:400">เลือก seed จาก validation accuracy</span></h2>
+    <div class="tbl" id="models"></div>
+  </div>
+</section>
+
+<!-- MAIN -->
+<section class="tab" id="tab-main" hidden>
+  <div class="row">
+    <div class="segc" id="setSel"><button type="button" data-v="early" aria-pressed="true">Early stage · Table III</button><button type="button" data-v="full" aria-pressed="false">Full path · Table II</button></div>
+    <div class="segc" id="metSel"><button type="button" data-v="0" aria-pressed="true">Accuracy</button><button type="button" data-v="3" aria-pressed="false">F1</button></div>
+  </div>
+  <div class="panel">
+    <div class="row" style="margin-bottom:6px"><h2 id="mainTitle"></h2>
+      <div class="legend"><span><i style="background:var(--accent)"></i>ของเรา (mean ± std, 3 seeds)</span><span><i style="background:var(--paper)"></i>Paper</span></div></div>
+    <div class="chart-wrap" id="mainChart"></div>
+  </div>
+  <div class="panel">
+    <h2 style="margin-bottom:8px">ตารางเต็ม <span class="muted" style="font-size:.8rem;font-weight:400">test set · positive class = real</span></h2>
+    <div class="tbl" id="mainTable"></div>
+  </div>
+</section>
+
+<!-- ABLATION -->
+<section class="tab" id="tab-abl" hidden>
+  <div class="row">
+    <div class="segc" id="ablSet"><button type="button" data-v="full" aria-pressed="true">Full path (เหมือน Table IV)</button><button type="button" data-v="early" aria-pressed="false">Early stage</button></div>
+    <span class="muted" style="font-size:.8rem">Accuracy · ตัวหนา = ดีที่สุดใน dataset นั้น</span>
+  </div>
+  <div class="panel">
+    <h2 style="margin-bottom:8px">การสร้าง propagation path: RL vs Random Sample vs Node Similarity</h2>
+    <div class="tbl" id="ablTable"></div>
+    <p class="muted" style="font-size:.78rem;margin:10px 0 0">Random Sample = สุ่ม K2 user ต่อ step · Node Similarity = เลือก K2 user ที่คล้ายข่าวที่สุด · ใช้ generator weights ชุดเดียวกับ RL (seed เดียวกัน) · "ไม่ใช้ G′" เป็นการทดลองเพิ่ม (paper ไม่มี)</p>
+  </div>
+  <div class="grid g3" id="ablCards"></div>
+</section>
+
+<!-- DEMO -->
+<section class="tab" id="tab-demo" hidden>
+  <div class="panel">
+    <h2 style="margin-bottom:6px">โยนข่าวใหม่เข้า model</h2>
+    <p class="muted" style="font-size:.82rem;margin:0 0 10px">PHEME model (seed 2, เลือกจาก validation) · <span class="mono">scripts/predict.py</span> · early 3–5 engagements → CLIP → G′ จาก generator → detector → P(real)</p>
+    <div class="segc" id="demoSel"><button type="button" data-v="A" aria-pressed="true">A · Test split (402 ข่าว)</button><button type="button" data-v="B" aria-pressed="false">B · 4 event ใหม่ (64 ข่าว)</button></div>
+  </div>
+  <div class="grid g2">
+    <div class="panel" id="demoSum"></div>
+    <div class="panel" id="demoCm"></div>
+  </div>
+  <div class="panel" id="demoEv"></div>
+  <div class="panel">
+    <h2 style="margin-bottom:8px">ตัวอย่างผลรายข่าว <span class="muted" style="font-size:.8rem;font-weight:400">เรียงตาม P(real)</span></h2>
+    <div class="tbl" id="demoEx"></div>
+  </div>
+</section>
+
+<!-- LIMITATIONS -->
+<section class="tab" id="tab-lim" hidden>
+  <div class="grid g2">
+    <div class="panel"><h2 style="margin-bottom:12px">ต่างจาก paper</h2><ul class="list" id="devList"></ul></div>
+    <div class="panel"><h2 style="margin-bottom:12px">ข้อสังเกตจากผล</h2><ul class="list" id="findList"></ul></div>
+  </div>
+  <div class="legend"><span><i style="background:var(--fake)"></i>กระทบผลมาก</span><span><i style="background:var(--warn)"></i>ควรระบุ</span><span><i style="background:var(--muted)"></i>เล็กน้อย</span></div>
+</section>
+
+<div class="foot">ข้อมูลจาก Code_RPPG-Fake/logs/results_*_final.csv, *_random_f.csv, *_similarity_f.csv, predict_*.json · สร้าง 18 ต.ค. 2026</div>
+</div>
+
+<script>
+const D=/*DATA*/{"res": {"politifact": {"early_final": {"n": 3, "mean": [0.8646, 0.8733, 0.7658, 0.8061, 0.8505, 0.9188], "sd": [0.0454, 0.0362, 0.1716, 0.092, 0.0598, 0.029], "seeds": [0.8958, 0.8854, 0.8125]}, "full_final": {"n": 3, "mean": [0.7917, 0.6978, 0.8378, 0.758, 0.7868, 0.9128], "sd": [0.0521, 0.0824, 0.0541, 0.0419, 0.0493, 0.0257], "seeds": [0.8438, 0.7396, 0.7917]}, "early_no_gen_final": {"n": 3, "mean": [0.8438, 0.8717, 0.7117, 0.7797, 0.8291, 0.9313], "sd": [0.0313, 0.1168, 0.0312, 0.0284, 0.0286, 0.0405], "seeds": [0.8438, 0.875, 0.8125]}, "early_random_f": {"n": 3, "mean": [0.8403, 0.8569, 0.7027, 0.7716, 0.8244, 0.9392], "sd": [0.0217, 0.0182, 0.0541, 0.037, 0.026, 0.0318], "seeds": [0.8229, 0.8646, 0.8333]}, "full_random_f": {"n": 3, "mean": [0.8472, 0.9093, 0.6847, 0.769, 0.8269, 0.9273], "sd": [0.0301, 0.0793, 0.1489, 0.0784, 0.0466, 0.0524], "seeds": [0.8646, 0.8646, 0.8125]}, "early_similarity_f": {"n": 3, "mean": [0.8438, 0.8903, 0.7027, 0.768, 0.8243, 0.9409], "sd": [0.0276, 0.1014, 0.1772, 0.0796, 0.0453, 0.0275], "seeds": [0.8646, 0.8542, 0.8125]}, "full_similarity_f": {"n": 3, "mean": [0.8299, 0.9183, 0.6397, 0.7228, 0.7987, 0.9317], "sd": [0.0739, 0.1129, 0.2511, 0.1773, 0.1094, 0.0362], "seeds": [0.8438, 0.8958, 0.75]}}, "gossipcop": {"early_final": {"n": 3, "mean": [0.7676, 0.7609, 0.8046, 0.7809, 0.7661, 0.8431], "sd": [0.0308, 0.0505, 0.0259, 0.0183, 0.0329, 0.02], "seeds": [0.7912, 0.7788, 0.7327]}, "full_final": {"n": 3, "mean": [0.7929, 0.7825, 0.831, 0.8048, 0.7917, 0.8682], "sd": [0.0595, 0.0637, 0.0644, 0.0532, 0.0606, 0.0575], "seeds": [0.7876, 0.8549, 0.7363]}, "early_no_gen_final": {"n": 3, "mean": [0.7599, 0.7629, 0.7747, 0.7682, 0.7594, 0.8359], "sd": [0.0347, 0.042, 0.0328, 0.0304, 0.0352, 0.0373], "seeds": [0.7965, 0.7558, 0.7274]}, "early_random_f": {"n": 3, "mean": [0.764, 0.7642, 0.7816, 0.7728, 0.7636, 0.832], "sd": [0.0295, 0.0303, 0.0261, 0.0277, 0.0296, 0.0315], "seeds": [0.7912, 0.7681, 0.7327]}, "full_random_f": {"n": 3, "mean": [0.7782, 0.7732, 0.8046, 0.7884, 0.7776, 0.843], "sd": [0.0194, 0.0269, 0.0071, 0.0155, 0.0197, 0.0167], "seeds": [0.8, 0.7717, 0.7628]}, "early_similarity_f": {"n": 3, "mean": [0.7634, 0.7553, 0.8046, 0.7777, 0.7618, 0.8443], "sd": [0.0305, 0.0497, 0.04, 0.0203, 0.0325, 0.0215], "seeds": [0.7876, 0.7735, 0.7292]}, "full_similarity_f": {"n": 3, "mean": [0.7741, 0.7616, 0.8161, 0.7875, 0.773, 0.8488], "sd": [0.0067, 0.0174, 0.0268, 0.0068, 0.007, 0.0121], "seeds": [0.7788, 0.777, 0.7664]}}, "pheme": {"early_final": {"n": 3, "mean": [0.8383, 0.8592, 0.9208, 0.8886, 0.7963, 0.9106], "sd": [0.0163, 0.0145, 0.0348, 0.013, 0.0165, 0.0074], "seeds": [0.8532, 0.8408, 0.8209]}, "full_final": {"n": 3, "mean": [0.8275, 0.8627, 0.8972, 0.8795, 0.788, 0.8978], "sd": [0.01, 0.0129, 0.0071, 0.0062, 0.0149, 0.0127], "seeds": [0.8333, 0.8333, 0.8159]}, "early_no_gen_final": {"n": 3, "mean": [0.8391, 0.8676, 0.9102, 0.8878, 0.8009, 0.905], "sd": [0.0141, 0.0127, 0.0408, 0.0132, 0.0089, 0.0093], "seeds": [0.8507, 0.8433, 0.8234]}, "early_random_f": {"n": 3, "mean": [0.8342, 0.8577, 0.9161, 0.8857, 0.7916, 0.9062], "sd": [0.0137, 0.0158, 0.0266, 0.0103, 0.0166, 0.0007], "seeds": [0.8433, 0.8408, 0.8184]}, "full_random_f": {"n": 3, "mean": [0.8458, 0.8701, 0.9173, 0.893, 0.8084, 0.9135], "sd": [0.0213, 0.0168, 0.0168, 0.0146, 0.0273, 0.0112], "seeds": [0.8682, 0.8433, 0.8259]}, "early_similarity_f": {"n": 3, "mean": [0.8226, 0.8468, 0.9149, 0.8787, 0.7722, 0.8942], "sd": [0.019, 0.0364, 0.0309, 0.0095, 0.0393, 0.0228], "seeds": [0.806, 0.8433, 0.8184]}, "full_similarity_f": {"n": 3, "mean": [0.8284, 0.8632, 0.8984, 0.8801, 0.7886, 0.9058], "sd": [0.0043, 0.0167, 0.0231, 0.0038, 0.0102, 0.0012], "seeds": [0.8333, 0.8259, 0.8259]}}}, "models": {"politifact": {"seed": 0, "val": 0.898, "test": 0.896, "ckpt": "logs/stage2_detect/runs/2026-10-17_18-05-00/checkpoints/epoch_012.ckpt"}, "gossipcop": {"seed": 1, "val": 0.813, "test": 0.779, "ckpt": "logs/stage2_detect/runs/2026-10-17_20-43-43/checkpoints/epoch_019.ckpt"}, "pheme": {"seed": 2, "val": 0.89, "test": 0.821, "ckpt": "logs/stage2_detect/runs/2026-10-17_17-36-34/checkpoints/epoch_029.ckpt"}}, "demo": {"A": {"n": 402, "fake": 120, "real": 282, "acc": 0.8208955223880597, "pre": 0.8523489932885906, "rec": 0.900709219858156, "f1": 0.8758620689655171, "auc": 0.9060283687943262, "confusion": {"real_as_real": 254, "fake_as_fake": 76, "fake_as_real": 44, "real_as_fake": 28}, "by_event": {"": {"n": 402, "acc": 0.8208955223880597}}, "examples": [{"event": "", "truth": "fake", "pred": "fake", "p": 0.0033, "known": "3/3", "text": "Soldier killed in #OttawaShooting identified as Cpl. Nathan Cirillo (via @globeandmail) http://t.co/WL4Fs1H9Z2"}, {"event": "", "truth": "fake", "pred": "fake", "p": 0.0163, "known": "4/4", "text": "Soldier killed at war memorial identified as Nathan Cirillo #HamOnt #OttawaShooting #cndpoli http://t.co/BjEM0"}, {"event": "", "truth": "fake", "pred": "fake", "p": 0.0229, "known": "5/5", "text": "Soldier shot at Canada National War Memorial has died; police are looking for several suspects http://t.co/dQY"}, {"event": "", "truth": "fake", "pred": "real", "p": 0.8288, "known": "4/4", "text": "so #MikeBrown's hat disappeared and he changed into shoes right? #Ferguson http://t.co/2zu5sUH84S"}, {"event": "", "truth": "real", "pred": "real", "p": 0.829, "known": "4/4", "text": "People being held as hostages does seem a perfect selfie moment 😬😐. Absolute morons! #sydneysiege http://t.co/"}, {"event": "", "truth": "real", "pred": "real", "p": 0.9987, "known": "4/4", "text": "A message to all religions #CharlieHebdo http://t.co/bKlg6NX6vm"}, {"event": "", "truth": "real", "pred": "real", "p": 0.9993, "known": "3/3", "text": "I'm so very proud of you America. Every young, senior, veteran, sane non-violent person for justice #NMOS14 #F"}, {"event": "", "truth": "real", "pred": "real", "p": 0.9994, "known": "4/4", "text": "Newsrooms around the world show their support for #CharlieHebdo: https://t.co/2sZ43iXyYe #jesuischarlie http:/"}]}, "B": {"n": 64, "fake": 47, "real": 17, "acc": 0.25, "pre": 0.25396825396825395, "rec": 0.9411764705882353, "f1": 0.39999999999999997, "auc": 0.753441802252816, "confusion": {"real_as_real": 16, "fake_as_fake": 0, "fake_as_real": 47, "real_as_fake": 1}, "by_event": {"ebola-essien": {"n": 3, "acc": 0.0}, "gurlitt": {"n": 2, "acc": 0.5}, "prince-toronto": {"n": 33, "acc": 0.0}, "putinmissing": {"n": 26, "acc": 0.5769230769230769}}, "examples": [{"event": "gurlitt", "truth": "real", "pred": "fake", "p": 0.482, "known": "1/4", "text": "Former top judge thinks #Nazi-stolen art 'belongs in a museum' #indianajones #Gurlitt #Germany http://t.co/kqy"}, {"event": "prince-toronto", "truth": "fake", "pred": "real", "p": 0.5966, "known": "1/4", "text": "UPDATED: Prince not playing Massey Hall, Live Nation says http://t.co/MjRWsEJRWo #PrinceTO #cbcto http://t.co/"}, {"event": "ebola-essien", "truth": "fake", "pred": "real", "p": 0.6193, "known": "0/3", "text": "BREAKING: Unconfirmed reports claim AC Milan midfielder Michael Essien has contracted the Ebola virus. #GetWel"}, {"event": "prince-toronto", "truth": "fake", "pred": "real", "p": 0.6585, "known": "0/2", "text": "omggggg :'( \"@TorontoStar: Sorry, fans. Prince will not be performing at Massey Hall tonight: http://t.co/ajNl"}, {"event": "gurlitt", "truth": "real", "pred": "real", "p": 0.6642, "known": "0/2", "text": "German, Swiss handling of Gurlitt hoard and bequest is all wrong, says senior Austrian curator http://t.co/4Io"}, {"event": "prince-toronto", "truth": "fake", "pred": "real", "p": 0.8568, "known": "0/2", "text": "Prince is going to make #Toronto purple tonight. And all eyes are watching. http://t.co/UpnrwN0qet"}, {"event": "putinmissing", "truth": "real", "pred": "real", "p": 0.8631, "known": "0/3", "text": "I'm back! Few days of \"me time\". Secretly had a bit of work done. It's taken years off me! #ПутинУмер #putinde"}, {"event": "putinmissing", "truth": "real", "pred": "real", "p": 0.9456, "known": "0/4", "text": "The Mausoleum for two))) #putindead #lenindead #putin #lenin http://t.co/xQoNLviBLw"}, {"event": "putinmissing", "truth": "real", "pred": "real", "p": 0.9647, "known": "0/5", "text": "Welp, Putin is fine, guys. These photos PROVE IT.  http://t.co/DlTxIXxmMi  #putindead  #putinstroke http://t.c"}, {"event": "putinmissing", "truth": "real", "pred": "real", "p": 0.9649, "known": "0/3", "text": "#Russia prepares for a military parade in #Moscow marking 1 y anniversary of #Crimea occupation. #putindead ht"}]}}}/*END DATA*/;
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const store={get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const DS=[["politifact","PolitiFact"],["gossipcop","GossipCop"],["pheme","PHEME"]];
+// paper [acc, f1]: Table III early, Table II full, Table IV (full) Random Sample / Node Similarity
+const P={politifact:{early:[.902,.886],full:[.924,.914],random:[.891,.875],similarity:[.902,.886]},
+         gossipcop:{early:[.873,.913],full:[.891,.925],random:[.872,.912],similarity:[.873,.913]},
+         pheme:{early:[.829,.867],full:[.844,.879],random:[.824,.864],similarity:[.826,.865]}};
+const R=(ds,tag)=>D.res[ds][tag];
+const f3=v=>v.toFixed(3);
+const pp=v=>(v>=0?"+":"")+(v*100).toFixed(1);
+const cw=sel=>{const w=$(sel).clientWidth;return w?Math.max(320,w):680};
+
+/* overview */
+function drawOver(){
+  $("#kpis").innerHTML=DS.map(([k,n])=>{const o=R(k,"early_final").mean[0],p=P[k].early[0],d=o-p;
+    return `<div class="kpi"><span class="label">${n} · early Acc</span><span class="v num">${f3(o)}</span><span class="s">paper ${f3(p)} · <span class="${d>=-0.01?"pos":"neg"}">${pp(d)} pp</span></span></div>`}).join("")
+    +`<div class="kpi"><span class="label">Demo · test split</span><span class="v num">${f3(D.demo.A.acc)}</span><span class="s">PHEME 402 ข่าว · AUC ${f3(D.demo.A.auc)}</span></div>`;
+  $("#models").innerHTML=`<table><thead><tr><th>Dataset</th><th class="num">seed</th><th class="num">val Acc</th><th class="num">test Acc</th><th>checkpoint (detector)</th></tr></thead><tbody>${
+    DS.map(([k,n])=>{const m=D.models[k];return `<tr><td>${n}</td><td class="num mono">${m.seed}</td><td class="num mono">${f3(m.val)}</td><td class="num mono">${f3(m.test)}</td><td class="mono" style="font-size:.74rem">${esc(m.ckpt)}</td></tr>`}).join("")}</tbody></table>
+    <p class="muted" style="font-size:.76rem;margin:8px 0 0">generator / contrastive: <span class="mono">data/&lt;dataset&gt;/generated_final/seed&lt;k&gt;/</span></p>`;
+}
+
+/* main tables */
+let setV=store.get("rr-set","early"),metV=store.get("rr-met",0);
+function drawMain(){
+  document.querySelectorAll("#setSel button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===setV));
+  document.querySelectorAll("#metSel button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.v===metV));
+  const tag=setV+"_final",mi=metV,pi=mi===0?0:1,mName=mi===0?"Accuracy":"F1";
+  $("#mainTitle").textContent=(setV==="early"?"Early stage (Table III)":"Full path (Table II)")+" · "+mName;
+  const W=cw("#mainChart"),L=W<500?84:110,Rm=96,bh=16,gap=4,gh=bh*2+gap+26,H=DS.length*gh+22,lo=.5,hi=1,x=v=>L+(W-L-Rm)*(Math.max(lo,v)-lo)/(hi-lo);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" role="img" aria-label="${mName}">`;
+  for(let t=lo;t<=hi+1e-9;t+=.1)s+=`<line x1="${x(t)}" x2="${x(t)}" y1="0" y2="${H-20}" stroke="var(--line)"/><text x="${x(t)}" y="${H-6}" font-size="10" text-anchor="middle">${t.toFixed(1)}</text>`;
+  DS.forEach(([k,n],i)=>{const y0=i*gh+8,o=R(k,tag),v=o.mean[mi],sd=o.sd[mi],p=P[k][setV][pi];
+    s+=`<text class="lbl" x="0" y="${y0+bh+4}" font-size="12.5">${n}</text>`;
+    s+=`<rect x="${L}" y="${y0}" width="${x(v)-L}" height="${bh}" rx="2" fill="var(--accent)"><title>ของเรา ${f3(v)} ± ${f3(sd)}</title></rect>`;
+    s+=`<line x1="${x(v-sd)}" x2="${x(v+sd)}" y1="${y0+bh/2}" y2="${y0+bh/2}" stroke="var(--ink)" stroke-width="1.3"/><line x1="${x(v+sd)}" x2="${x(v+sd)}" y1="${y0+3}" y2="${y0+bh-3}" stroke="var(--ink)" stroke-width="1.3"/>`;
+    s+=`<text x="${x(v+sd)+6}" y="${y0+bh-4}" font-size="11" style="fill:var(--ink)">${f3(v)} ±${f3(sd)}</text>`;
+    const y1=y0+bh+gap;
+    s+=`<rect x="${L}" y="${y1}" width="${x(p)-L}" height="${bh}" rx="2" fill="var(--paper)"><title>Paper ${f3(p)}</title></rect><text x="${x(p)+6}" y="${y1+bh-4}" font-size="11" style="fill:var(--ink)">${f3(p)}</text>`;
+  });
+  $("#mainChart").innerHTML=s+"</svg>";
+  const cols=["Acc","Pre","Rec","F1","Macro-F1","AUC"];
+  let t=`<table><thead><tr><th>Dataset</th><th>Setting</th>${cols.map(c=>`<th class="num">${c}</th>`).join("")}<th class="num">Paper Acc / F1</th><th class="num">Δ Acc</th></tr></thead><tbody>`;
+  DS.forEach(([k,n])=>[["early_final","early (III)","early"],["full_final","full (II)","full"]].forEach(([tg,lab,pk],j)=>{
+    const o=R(k,tg),p=P[k][pk],d=o.mean[0]-p[0];
+    t+=`<tr><td>${j?"":n}</td><td class="muted">${lab}</td>${o.mean.map((v,ci)=>`<td class="num mono">${f3(v)}<span class="sd"> ±${f3(o.sd[ci])}</span></td>`).join("")}<td class="num mono pp">${f3(p[0])} / ${f3(p[1])}</td><td class="num mono ${d>=-0.01?"pos":"neg"}">${pp(d)}</td></tr>`;}));
+  $("#mainTable").innerHTML=t+"</tbody></table>";
+}
+document.querySelectorAll("#setSel button").forEach(b=>b.addEventListener("click",()=>{setV=b.dataset.v;store.set("rr-set",setV);drawMain();}));
+document.querySelectorAll("#metSel button").forEach(b=>b.addEventListener("click",()=>{metV=+b.dataset.v;store.set("rr-met",metV);drawMain();}));
+
+/* ablation */
+let ablV=store.get("rr-abl","full");
+function drawAbl(){
+  document.querySelectorAll("#ablSet button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===ablV));
+  const rows=[["RL (proposed)",ablV+"_final","early"===ablV?"early":"full"],["Random Sample",ablV+"_random_f","random"],["Node Similarity",ablV+"_similarity_f","similarity"]];
+  if(ablV==="early")rows.push(["ไม่ใช้ G′ (เพิ่มเอง)","early_no_gen_final",null]);
+  let t=`<table><thead><tr><th>วิธีสร้าง path</th>${DS.map(([,n])=>`<th class="num">${n} ของเรา</th><th class="num">Paper</th>`).join("")}</tr></thead><tbody>`;
+  const best={};DS.forEach(([k])=>best[k]=Math.max(...rows.map(r=>R(k,r[1]).mean[0])));
+  const pbest={};DS.forEach(([k])=>pbest[k]=Math.max(P[k].full[0],P[k].random[0],P[k].similarity[0]));
+  rows.forEach(([lab,tg,pk])=>{t+=`<tr><td>${lab}</td>${DS.map(([k])=>{const o=R(k,tg);const pv=ablV==="full"&&pk?P[k][pk][0]:null;
+    return `<td class="num mono${o.mean[0]===best[k]?" best":""}">${f3(o.mean[0])}<span class="sd"> ±${f3(o.sd[0])}</span></td><td class="num mono pp${pv&&pv===pbest[k]?" best":""}">${pv?f3(pv):"—"}</td>`}).join("")}</tr>`;});
+  $("#ablTable").innerHTML=t+"</tbody></table>"+(ablV==="early"?`<p class="muted" style="font-size:.76rem;margin:8px 0 0">Paper รายงาน Table IV เฉพาะแบบ full</p>`:"");
+  $("#ablCards").innerHTML=DS.map(([k,n])=>{const rl=R(k,ablV+"_final").mean[0],ra=R(k,ablV+"_random_f").mean[0],si=R(k,ablV+"_similarity_f").mean[0];
+    const line=(lab,v,p)=>`<div class="row" style="font-size:.82rem"><span class="muted">${lab}</span><span class="mono"><b class="${v>=0?"pos":"neg"}">${pp(v)}</b>${p!=null?` <span class="pp">(paper ${pp(p)})</span>`:""}</span></div>`;
+    const ok=rl>=ra&&rl>=si;
+    return `<div class="panel" style="display:grid;gap:6px"><div class="row"><h3>${n}</h3><span class="tag ${ok?"ok":"warn"}">${ok?"RL ดีที่สุด":"RL ไม่ชนะ"}</span></div>${line("RL − Random",rl-ra,ablV==="full"?P[k].full[0]-P[k].random[0]:null)}${line("RL − Similarity",rl-si,ablV==="full"?P[k].full[0]-P[k].similarity[0]:null)}</div>`;}).join("");
+}
+document.querySelectorAll("#ablSet button").forEach(b=>b.addEventListener("click",()=>{ablV=b.dataset.v;store.set("rr-abl",ablV);drawAbl();}));
+
+/* demo */
+let demoV=store.get("rr-demo","A");
+function drawDemo(){
+  document.querySelectorAll("#demoSel button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===demoV));
+  const d=D.demo[demoV],c=d.confusion;
+  const desc=demoV==="A"?"ข่าวใน test split ของ seed 2 — model ไม่เคยเห็นตอน train (event เดิม, user ส่วนใหญ่รู้จัก)":"4 event ที่ไม่อยู่ใน training (PHEME 9-event release, figshare 6392078) · เฉพาะข่าวที่มีข้อความ + รูป + เส้นทาง · user ใหม่ ~77%";
+  $("#demoSum").innerHTML=`<div class="row"><h2>${demoV==="A"?"A · Test split":"B · Event ใหม่"}</h2><span class="tag ${d.acc>.7?"ok":"bad"}">${d.acc>.7?"ใช้ได้":"generalize ไม่ได้"}</span></div>
+   <p class="muted" style="font-size:.8rem;margin:6px 0 12px">${desc}</p>
+   <div class="kpis"><div class="kpi"><span class="label">ข่าว</span><span class="v num">${d.n}</span><span class="s">fake ${d.fake} · real ${d.real}</span></div>
+   <div class="kpi"><span class="label">Accuracy</span><span class="v num">${f3(d.acc)}</span><span class="s">F1 ${f3(d.f1)}</span></div>
+   <div class="kpi"><span class="label">AUC</span><span class="v num">${f3(d.auc)}</span><span class="s">ลำดับคะแนน fake/real</span></div></div>`;
+  $("#demoCm").innerHTML=`<h2 style="margin-bottom:10px">Confusion matrix</h2>
+   <div class="cm"><div class="h"></div><div class="h">ทาย real</div><div class="h">ทาย fake</div>
+   <div class="h">จริง real</div><div class="good">${c.real_as_real}</div><div class="badc">${c.real_as_fake}</div>
+   <div class="h">จริง fake</div><div class="badc">${c.fake_as_real}</div><div class="good">${c.fake_as_fake}</div></div>
+   ${demoV==="B"?`<p class="muted" style="font-size:.78rem;margin:10px 0 0">P(real) ทุกข่าวอยู่ช่วง 0.48–0.96 → threshold 0.5 ทำให้ทายเป็น real เกือบหมด · AUC 0.75 แปลว่ายังเรียงลำดับได้บ้าง · ไม่ได้ปรับ threshold หลังเห็นผล</p>`:""}`;
+  const ev=Object.entries(d.by_event||{}).filter(([k])=>k);
+  $("#demoEv").hidden=!ev.length;
+  if(ev.length)$("#demoEv").innerHTML=`<h2 style="margin-bottom:10px">แยกตาม event</h2><div class="tbl"><table><thead><tr><th>Event</th><th class="num">ข่าว</th><th class="num">Accuracy</th></tr></thead><tbody>${ev.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num mono">${v.n}</td><td class="num mono">${f3(v.acc)}</td></tr>`).join("")}</tbody></table></div>`;
+  $("#demoEx").innerHTML=`<table><thead><tr>${demoV==="B"?"<th>Event</th>":""}<th>ข้อความ</th><th>จริง</th><th>ทาย</th><th class="num">P(real)</th><th class="num">user ที่รู้จัก</th></tr></thead><tbody>${
+    d.examples.map(x=>`<tr>${demoV==="B"?`<td class="muted">${esc(x.event)}</td>`:""}<td class="txt">${esc(x.text)}</td><td><span class="pill ${x.truth==="real"?"r":"f"}">${x.truth}</span></td><td><span class="pill ${x.pred==="real"?"r":"f"}">${x.pred}</span>${x.truth===x.pred?"":" ✗"}</td><td class="num mono">${x.p.toFixed(3)}</td><td class="num mono">${x.known}</td></tr>`).join("")}</tbody></table>`;
+}
+document.querySelectorAll("#demoSel button").forEach(b=>b.addEventListener("click",()=>{demoV=b.dataset.v;store.set("rr-demo",demoV);drawDemo();}));
+
+/* limitations */
+const DEV=[["h","Dataset ไม่ตรงกับ paper: GossipCop 2,827 (paper 5,526) และ PHEME 2,004 (paper 3,506) เพราะเก็บเฉพาะข่าวที่มีครบ 3 ส่วน · GossipCop สมดุล 50/50 (paper ไม่สมดุล)"],
+ ["h","PolitiFact ของผู้เขียนไม่มีรูป → image feature = 0"],
+ ["m","ไม่มี publisher ในข้อมูล → meta-path PNU ใช้ UU แทน"],
+ ["m","3 seeds (paper เฉลี่ย 5 รอบ)"],
+ ["m","ข้อความยาวของ PolitiFact: CLIP อ่านทีละ 50 คำแล้วเฉลี่ย (เลือกจาก validation; CLIP รับได้ 77 token)"],
+ ["l","Hyper-parameter ที่ paper ไม่ระบุ (epoch, dropout, γ, PGD) ตั้งเอง — ระบุใน configs"]];
+const FIND=[["h","PHEME ตรงกับ paper (early +0.9 pp) · PolitiFact early ต่ำกว่า 3.7 pp · GossipCop ต่ำกว่า ~10 pp"],
+ ["h","Full path ไม่ได้ดีกว่า early เสมอ (PolitiFact 0.792 < 0.865, std สูง) ต่างจาก paper ที่ full ดีกว่าทุก dataset"],
+ ["m","Table IV: ที่ early stage RL ดีกว่า Random / Similarity ทุก dataset (PolitiFact +2.5 / +2.1 pp) · ที่ full เป็นจริงแค่ GossipCop (+1.5 / +1.9 pp ใกล้ paper +1.9 / +1.8)"],
+ ["m","G′ ช่วยน้อย: early กับ ไม่ใช้ G′ ต่างกัน +2.1 (PolitiFact), +0.8 (GossipCop), −0.1 pp (PHEME) · user ที่ generate ตรงกับคนแชร์จริงแค่ 0.06% (PHEME) / 0.75% (PolitiFact) / 3.6% (GossipCop)"],
+ ["h","Event ใหม่ (Demo B): Acc 0.25 / AUC 0.75 — model พึ่ง user ที่เคยเห็นและสัดส่วน label ของ training"]];
+const li=a=>a.map(([s,t])=>`<li><span class="sev ${s}"></span><span>${esc(t)}</span></li>`).join("");
+$("#devList").innerHTML=li(DEV);$("#findList").innerHTML=li(FIND);
+
+/* tabs */
+function showTab(t){document.querySelectorAll("#tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.t===t));
+  document.querySelectorAll("section.tab").forEach(s=>s.hidden=s.id!=="tab-"+t);store.set("rr-tab",t);if(t==="main")drawMain();}
+$("#tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)showTab(b.dataset.t);});
+let rz;addEventListener("resize",()=>{clearTimeout(rz);rz=setTimeout(drawMain,150)});
+const hash=(location.hash||"").slice(1);
+drawOver();drawAbl();drawDemo();
+showTab(["over","main","abl","demo","lim"].includes(hash)?hash:store.get("rr-tab","over"));
+drawMain();
+</script>

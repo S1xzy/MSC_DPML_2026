@@ -1,0 +1,9 @@
+_target_: src.models.rppg_detector_module.RPPGDetectorModule
+user_dim: 128
+content_dim: 1024          # CLIP text (512) + image (512)
+dim: 128                   # paper hidden size
+heads: 4
+dropout: 0.2
+max_steps: 64
+lr: 5e-3                   # paper (AdamW)
+weight_decay: 1e-2

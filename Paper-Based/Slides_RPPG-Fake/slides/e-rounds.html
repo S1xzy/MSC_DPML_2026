@@ -1,0 +1,17 @@
+<section id="e-rounds" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">04 · การทดลอง · ลำดับการทดลอง</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">8 รอบ กว่าจะได้ model สุดท้าย</h2>
+<table style="font-size:24px;width:1664px">
+<tr><th style="width:7%">รอบ</th><th style="width:43%">เปลี่ยนอะไร</th><th style="width:22%;text-align:right">GossipCop early Acc</th><th style="width:28%">สิ่งที่ได้เรียนรู้</th></tr>
+<tr><td>1</td><td>ข้อความ + เส้นทาง · 1 seed</td><td style="text-align:right">0.762</td><td>pipeline รันได้</td></tr>
+<tr><td>2</td><td>+ รูป (ข่าวที่ไม่มีรูป = เวกเตอร์ 0)</td><td style="text-align:right">0.779</td><td>รูปช่วยเล็กน้อย</td></tr>
+<tr><td>3</td><td>เก็บเฉพาะข่าวครบ 3 ส่วน</td><td style="text-align:right">0.788</td><td>seed เดียวเชื่อไม่ได้</td></tr>
+<tr><td>4</td><td>ค่าตาม paper · 5 seeds · RL 10 epoch</td><td style="text-align:right">0.769 ± 0.024</td><td>ต่ำกว่า paper ~10 pp</td></tr>
+<tr><td>5</td><td>หาสาเหตุที่ G′ ช่วยน้อย</td><td style="text-align:right">—</td><td>G′ ไม่ตรงคนแชร์จริง</td></tr>
+<tr><td>6</td><td>3 seeds + Table IV + demo · CLIP อ่านข้อความยาว</td><td style="text-align:right">0.768 ± 0.031</td><td>ยังต่ำกว่า paper</td></tr>
+<tr><td>7</td><td>จำกัดจำนวน G′ · ปรับสัดส่วน class</td><td style="text-align:right">0.766–0.778</td><td>ไม่ใช่สาเหตุหลัก</td></tr>
+<tr style="background:#E3EAFB"><td><b>8</b></td><td><b>แก้ bug embedding ยุบ · train ใหม่ 3 seeds</b></td><td style="text-align:right"><b>0.878 ± 0.087</b></td><td><b>ตรง paper (0.873) · ใช้นำเสนอ</b></td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">9 – 20 ต.ค. 2026 · รายละเอียดทุกรอบใน HANDOFF.md</p>
+<aside>ตารางนี้ใช้ GossipCop เป็นตัวชี้ เพราะเห็นการเปลี่ยนแปลงชัดที่สุด รอบ 1–7 ปรับทั้งข้อมูล จำนวน seed และค่าตั้ง แต่ GossipCop ติดอยู่ราว 0.77 ต่ำกว่า paper ราว 10 pp ตลอด รอบ 7 ทดสอบสองสมมติฐาน (G′ มากเกินไป และสัดส่วน class) แล้วพบว่าไม่ใช่สาเหตุหลัก รอบ 8 ระหว่างทำตัวอย่างจริงสำหรับสไลด์ เราพบ bug ที่ทำให้ embedding ของ user ทุกคนเหมือนกัน หลังแก้และ train ใหม่ GossipCop ขึ้นเป็น 0.878 ตรงกับ paper บทเรียน: ควรตรวจค่ากลางของ model (เช่น embedding) ตั้งแต่ต้น ไม่ใช่ดูแค่ accuracy</aside>
+</section>

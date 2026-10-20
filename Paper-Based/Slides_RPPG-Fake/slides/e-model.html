@@ -1,0 +1,19 @@
+<section id="e-model" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">04 · การทดลอง · model ที่ได้</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">model 1 ชุด = 3 ไฟล์ ต่อ dataset ต่อ seed</h2>
+<div style="display:flex;align-items:center;gap:16px">
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:8px"><p style="font-size:24px;font-weight:600;color:#2950B8">Module 1</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:26px;font-weight:600">contrastive.ckpt</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:56px;font-weight:700;line-height:1.1">26 MB</p><p style="font-size:24px;color:#4F5D6B">embedding 128 มิติ ต่อ user (PHEME 49,326 คน)</p></div>
+<x-shape kind="arrow-right" style="width:48px;height:28px;background:#9AA6B2"></x-shape>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:8px"><p style="font-size:24px;font-weight:600;color:#2950B8">Module 2</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:26px;font-weight:600">generator.ckpt</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:56px;font-weight:700;line-height:1.1">1.7 MB</p><p style="font-size:24px;color:#4F5D6B">policy + critic + discriminator</p></div>
+<x-shape kind="arrow-right" style="width:48px;height:28px;background:#9AA6B2"></x-shape>
+<div style="flex:1;background:#14202C;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:8px"><p style="font-size:24px;font-weight:600;color:#8FB0FF">Module 3</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:26px;font-weight:600;color:#EEF2F6">epoch_XXX.ckpt</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:56px;font-weight:700;line-height:1.1;color:#EEF2F6">488 K</p><p style="font-size:24px;color:#BFCBD8">parameters · ไฟล์ 5.9 MB</p></div>
+</div>
+<table style="font-size:26px;width:1664px">
+<tr><th style="width:22%">model ที่นำเสนอ (รอบ 8)</th><th style="width:14%;text-align:right">seed</th><th style="width:20%;text-align:right">val Acc</th><th style="width:20%;text-align:right">test Acc</th><th style="width:24%">เลือกจาก</th></tr>
+<tr><td>PolitiFact</td><td style="text-align:right">1</td><td style="text-align:right">0.878</td><td style="text-align:right">0.875</td><td>val สูงสุด</td></tr>
+<tr><td>GossipCop</td><td style="text-align:right">2</td><td style="text-align:right">0.922</td><td style="text-align:right">0.924</td><td>val สูงสุด</td></tr>
+<tr><td>PHEME</td><td style="text-align:right">2</td><td style="text-align:right">0.890</td><td style="text-align:right">0.823</td><td>val สูงสุด</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">data/&lt;dataset&gt;/generated_fix/seed&lt;k&gt;/ · logs/stage2_detect/runs/&lt;run&gt;/checkpoints/</p>
+<aside>หลัง train เสร็จ model หนึ่งชุดมีสามไฟล์: contrastive.ckpt (Module 1, embedding ของ user), generator.ckpt (Module 2) และ checkpoint ของ detector (Module 3, 488K parameters) stage1.pt เก็บเส้นทาง G′ ของทุกข่าวและรายชื่อ user ที่อยู่ในกราฟ H model ที่ใช้นำเสนอมาจากรอบ 8 (หลังแก้ bug) เลือก seed ที่ val accuracy สูงสุด ไม่ได้เลือกจาก test เช่น PHEME seed 2 มี val สูงสุดแต่ test ต่ำสุดในสาม seed</aside>
+</section>

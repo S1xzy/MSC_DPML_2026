@@ -1,0 +1,25 @@
+<section id="m-overview" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">03 · ระเบียบวิธีวิจัย</p><p style="font-size:24px;font-weight:600;color:#4F5D6B;background:#E8ECF1;padding:6px 18px;border-radius:999px">จาก Paper</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">ภาพรวม: 3 module, train เป็น 2 ขั้น</h2>
+<div style="display:flex;align-items:stretch;gap:24px">
+<div style="flex:2;background:#FBE7D3;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:20px">
+<p style="font-size:26px;font-weight:600;color:#8A4208">Stage 1 · train บนข่าว train แล้วสร้าง G′ ให้ทุกข่าว</p>
+<div style="display:flex;align-items:center;gap:16px">
+<div style="flex:1;background:#FCFDFE;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:8px"><p style="font-size:24px;font-weight:600;color:#2950B8">Module 1</p><h3 style="font-size:32px;font-weight:600">รู้จัก user</h3><p style="font-size:24px;color:#4F5D6B">contrastive learning บนกราฟ → user embedding</p></div>
+<x-shape kind="arrow-right" style="width:56px;height:32px;background:#C9650E"></x-shape>
+<div style="flex:1;background:#FCFDFE;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:8px"><p style="font-size:24px;font-weight:600;color:#2950B8">Module 2</p><h3 style="font-size:32px;font-weight:600">สร้างเส้นทาง</h3><p style="font-size:24px;color:#4F5D6B">RL เลือก user ทีละ step → G′</p></div>
+</div>
+</div>
+<x-shape kind="arrow-right" style="width:64px;height:36px;background:#9AA6B2;align-self:center"></x-shape>
+<div style="flex:1;background:#E3EAFB;border-radius:20px;padding:28px;display:flex;flex-direction:column;gap:20px">
+<p style="font-size:26px;font-weight:600;color:#1E3F94">Stage 2 · ตัวจำแนก</p>
+<div style="background:#FCFDFE;border-radius:16px;padding:28px;display:flex;flex-direction:column;gap:8px"><p style="font-size:24px;font-weight:600;color:#2950B8">Module 3</p><h3 style="font-size:32px;font-weight:600">ตัดสิน fake / real</h3><p style="font-size:24px;color:#4F5D6B">ดูเส้นทางตามเวลา + โครงสร้าง + เนื้อหา</p></div>
+</div>
+</div>
+<div style="display:flex;gap:24px">
+<p style="flex:1;font-size:26px;color:#4F5D6B;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:20px 24px"><b style="color:#14202C">Input:</b> ข่าว (ข้อความ + รูป) · เส้นทางช่วงแรก · กราฟจากอดีต</p>
+<p style="flex:1;font-size:26px;color:#4F5D6B;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:20px 24px"><b style="color:#14202C">Output:</b> P(real) ของข่าว 1 ชิ้น · &gt; 0.5 = real</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">Algorithm 1: บรรทัด 1–14 = Stage 1 · 15–17 = Stage 2 · ภาพรวมใน paper: Fig. 2 (PDF หน้า 2)</p>
+<aside>Module 1 เรียน embedding ของ user จากกราฟสังคมด้วย contrastive learning ซึ่งไม่ใช้ label Module 2 ใช้ embedding นั้นเป็น state และ action ของ RL agent เพื่อสร้างเส้นทาง G′ ให้ทุกข่าว ทั้งสอง module train ใน Stage 1 จากนั้น Stage 2 train Module 3 ด้วย label ของข่าว โดยรับเส้นทางจริงช่วงแรก + G′ + เนื้อหาข่าว</aside>
+</section>

@@ -1,0 +1,23 @@
+<section id="m3-fuse" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">03 · Module 3 · Temporal-aware Fake News Detection (2/2)</p><p style="font-size:24px;font-weight:600;color:#4F5D6B;background:#E8ECF1;padding:6px 18px;border-radius:999px">จาก Paper</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">รวมเวลา + โครงสร้าง + เนื้อหา → ตัดสิน</h2>
+<div style="display:flex;align-items:stretch;gap:12px">
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#2950B8">1 · Self-attention</p><p style="font-size:24px;color:#4F5D6B">snapshot แต่ละช่วงดูกันเอง</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#14202C">H′ = LN(SA(Ĥ) + Ĥ)</p></div>
+<x-shape kind="arrow-right" style="width:36px;height:22px;background:#9AA6B2;align-self:center"></x-shape>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#2950B8">2 · Cross-attention</p><p style="font-size:24px;color:#4F5D6B">เติมข้อมูลโครงสร้าง Û_T เข้าไป</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#14202C">U = LN(CA(Û_T, H′) + H′)</p></div>
+<x-shape kind="arrow-right" style="width:36px;height:22px;background:#9AA6B2;align-self:center"></x-shape>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#2950B8">3 · Feed-forward</p><p style="font-size:24px;color:#4F5D6B">ได้ feature เส้นทางที่รวมแล้ว</p><p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#14202C">H* = LN(FF(U) + H′)</p></div>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<p style="flex:1;font-size:24px;font-weight:600;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px;text-align:center">h* = mean(H*)</p>
+<p style="font-size:32px;font-weight:700;color:#6B7886">+</p>
+<p style="flex:1;font-size:24px;font-weight:600;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:16px;text-align:center">n = [ข้อความ n_T ; ภาพ n_V]</p>
+<x-shape kind="arrow-right" style="width:40px;height:24px;background:#9AA6B2"></x-shape>
+<p style="flex:1.3;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;font-weight:600;background:#14202C;color:#EEF2F6;border-radius:12px;padding:16px;text-align:center">P(y) = σ(W_P[h* ; n] + b)</p>
+<x-shape kind="arrow-right" style="width:40px;height:24px;background:#9AA6B2"></x-shape>
+<div style="display:flex;flex-direction:column;gap:8px"><p style="font-size:24px;font-weight:600;color:#A8330C;background:#FBE7D3;padding:6px 18px;border-radius:999px;text-align:center">fake</p><p style="font-size:24px;font-weight:600;color:#1E3F94;background:#E3EAFB;padding:6px 18px;border-radius:999px;text-align:center">real</p></div>
+</div>
+<p style="font-size:26px;color:#4F5D6B;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:12px;padding:18px 24px"><b style="color:#14202C">Train:</b> binary cross-entropy (Eq. 22) · L = −y·log P(y) − (1 − y)·log(1 − P(y)) · y = 1 คือ real</p>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">Section III-D2, D3 · Eq. 21–22 · โครงแบบ Transformer · Algorithm 1 บรรทัด 16–17</p>
+<aside>ขั้นรวมใช้โครงแบบ Transformer (Eq. 21): self-attention บนลำดับเวลา Ĥ ให้ snapshot แต่ละช่วงเรียนจากกันเอง แล้วบวก residual และ layer norm ได้ H′ จากนั้น cross-attention นำ feature โครงสร้าง Û_T มารวมกับ H′ แล้วผ่าน feed-forward ได้ H* ซึ่งเป็น feature ของเส้นทางที่มีทั้งเวลาและโครงสร้าง ทำ readout ด้วย mean pooling ได้ h* แล้วต่อกับ feature เนื้อหาข่าว n = [n_T ; n_V] (ข้อความ + ภาพ) ผ่านชั้นเส้นตรงและ sigmoid ได้ความน่าจะเป็น P(y) ว่าเป็นข่าวจริง train ด้วย binary cross-entropy (Eq. 22) หมายเหตุ: ใน code ของเรา cross-attention ใช้ H′ เป็น query และ Û_T เป็น key/value</aside>
+</section>

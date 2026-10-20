@@ -1,0 +1,44 @@
+<section id="pf-graph" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">02 · นิยามของปัญหา · กราฟสังคม H</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">หน้าตาของกราฟ H (ตัวอย่างจริงจาก PHEME)</h2>
+<div style="display:flex;gap:48px">
+<div style="width:760px;display:flex;flex-direction:column;gap:12px">
+<div style="position:relative;width:760px;height:540px;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px">
+<svg aria-label="Subgraph of H around one news item: the news node in the centre linked to five users, two repost links between users, and two users linked to other news items" width="760" height="540" viewBox="0 0 760 540" style="position:absolute;left:0;top:0;width:760px;height:540px"><g stroke="#9AA6B2" stroke-width="4"><line x1="380" y1="270" x2="230" y2="150"/><line x1="380" y1="270" x2="230" y2="400"/><line x1="380" y1="270" x2="120" y2="470"/><line x1="380" y1="270" x2="540" y2="150"/><line x1="380" y1="270" x2="660" y2="80"/><line x1="230" y1="150" x2="90" y2="80"/><line x1="230" y1="150" x2="90" y2="240"/><line x1="540" y1="150" x2="620" y2="300"/><line x1="540" y1="150" x2="680" y2="200"/></g><g stroke="#C9650E" stroke-width="5" stroke-dasharray="12 8"><line x1="230" y1="400" x2="120" y2="470"/><line x1="540" y1="150" x2="660" y2="80"/></g><rect x="350" y="240" width="60" height="60" rx="10" fill="#2950B8"/><g fill="#7F9BE0"><rect x="66" y="56" width="48" height="48" rx="8"/><rect x="66" y="216" width="48" height="48" rx="8"/><rect x="596" y="276" width="48" height="48" rx="8"/><rect x="656" y="176" width="48" height="48" rx="8"/></g><g fill="#D8DFE6" stroke="#4F5D6B" stroke-width="3"><circle cx="230" cy="150" r="22"/><circle cx="230" cy="400" r="22"/><circle cx="120" cy="470" r="22"/><circle cx="540" cy="150" r="22"/><circle cx="660" cy="80" r="22"/></g></svg>
+<p style="position:absolute;left:300px;top:310px;width:180px;font-size:24px;font-weight:600;color:#1E3F94;text-align:center">ข่าว A</p>
+<p style="position:absolute;left:150px;top:96px;width:160px;font-size:24px;color:#4F5D6B;text-align:center">u174</p>
+<p style="position:absolute;left:250px;top:384px;width:140px;font-size:24px;color:#4F5D6B">u2817</p>
+<p style="position:absolute;left:150px;top:470px;width:140px;font-size:24px;color:#4F5D6B">u2818</p>
+<p style="position:absolute;left:440px;top:100px;width:120px;font-size:24px;color:#4F5D6B">u2819</p>
+<p style="position:absolute;left:560px;top:20px;width:120px;font-size:24px;color:#4F5D6B">u2820</p>
+<p style="position:absolute;left:24px;top:110px;width:140px;font-size:24px;color:#4F5D6B">ข่าว D</p>
+<p style="position:absolute;left:24px;top:270px;width:140px;font-size:24px;color:#4F5D6B">ข่าว E</p>
+<p style="position:absolute;left:560px;top:330px;width:140px;font-size:24px;color:#4F5D6B">ข่าว B</p>
+<p style="position:absolute;left:620px;top:230px;width:130px;font-size:24px;color:#4F5D6B">ข่าว C</p>
+</div>
+<div style="display:flex;gap:24px;flex-wrap:wrap"><p style="font-size:24px;color:#2950B8">■ ข่าว</p><p style="font-size:24px;color:#4F5D6B">● user</p><p style="font-size:24px;color:#6B7886">─ แชร์ข่าว (N–U)</p><p style="font-size:24px;color:#C9650E">┅ repost (U–U)</p></div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:20px">
+<div style="background:#14202C;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:6px;font-family:'JetBrains Mono', 'Courier New', monospace">
+<p style="font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;font-size:26px;font-weight:600;color:#8FB0FF">เก็บในเครื่องเป็นรายการ edge</p>
+<p style="font-size:24px;color:#EEF2F6">edge_index  [2 × 53,526]</p>
+<p style="font-size:24px;color:#BFCBD8">edge_type   0 = repost · 1 = แชร์ข่าว</p>
+<p style="font-size:24px;color:#BFCBD8">edge_origin มาจากข่าว train ชิ้นไหน</p>
+</div>
+<div style="background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:12px">
+<h3 style="font-size:28px;font-weight:600">ขนาดจริง (train 1,402 ข่าว)</h3>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+<div style="display:flex;flex-direction:column"><p style="font-size:24px;color:#6B7886">user</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:40px;font-weight:700">14,583</p></div>
+<div style="display:flex;flex-direction:column"><p style="font-size:24px;color:#6B7886">แชร์ข่าว</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:40px;font-weight:700">17,359</p></div>
+<div style="display:flex;flex-direction:column"><p style="font-size:24px;color:#6B7886">repost</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:40px;font-weight:700">9,404</p></div>
+<div style="display:flex;flex-direction:column"><p style="font-size:24px;color:#6B7886">meta UNU</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:40px;font-weight:700">205,756</p></div>
+<div style="display:flex;flex-direction:column"><p style="font-size:24px;color:#6B7886">meta NUN</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:40px;font-weight:700">9,584</p></div>
+<div style="display:flex;flex-direction:column"><p style="font-size:24px;color:#6B7886">meta UU</p><p style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:40px;font-weight:700">14,786</p></div>
+</div>
+</div>
+<p style="font-size:24px;color:#4F5D6B;background:#E8ECF1;border-radius:12px;padding:16px 22px">Paper: มี node ผู้เผยแพร่ (publisher) ด้วย · ข้อมูลของเราไม่มี</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">ที่มา: Code_RPPG-Fake/data/pheme/processed/seed2_time20_T200.pt (key graph, meta) · ข่าว A = id 552819983915700224 ใน news_actions_pheme.csv</p>
+<aside>นี่คือกราฟย่อยจริงจาก H ของ PHEME (seed 2) รอบข่าว A “Love is stronger than hate: #CharlieHebdo cover after Molotov cocktail attack” มี user 5 คนแชร์ข่าวนี้ (เส้นเทา) ในนั้นมีการ repost ต่อกันสองคู่: u2817 → u2818 และ u2819 → u2820 (เส้นประส้ม) และ u2819 เคยแชร์ข่าว B, C ส่วน u174 เคยแชร์ข่าว D, E ทำให้ข่าวหลายชิ้นเชื่อมกันผ่าน user (meta-path NUN) และ user เชื่อมกันผ่านข่าว (UNU) ในเครื่อง H เก็บเป็นรายการ edge: edge_index ขนาด 2 × 53,526 (นับทั้งสองทิศ) edge_type บอกชนิด (0 = repost, 1 = แชร์ข่าว) และ edge_origin บอกว่า edge มาจากข่าว train ชิ้นไหน เพื่อให้ตอน train RL ซ่อนเส้นทางของข่าวตัวเองได้ node id ของ user คือ 0–49,325 และข่าว i คือ 49,326 + i H สร้างจากข่าว train 1,402 ชิ้นเท่านั้น มี user ที่มี edge 14,583 คน ใน paper กราฟมี node publisher ด้วย แต่ข้อมูลที่มีไม่มีผู้เผยแพร่ จึงใช้ความสัมพันธ์ user–user (UU) แทน meta-path PNU</aside>
+</section>

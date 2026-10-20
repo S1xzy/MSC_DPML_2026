@@ -1,0 +1,30 @@
+# @package _global_
+
+# Stage 2 of RPPG-Fake: temporal-aware fake news detection (Module 3).
+#   python src/train.py seed=0                          # early stage (Table III)
+#   python src/train.py seed=0 data.train_real=full data.eval_real=full   # full propagation paths (Table II)
+# Needs Stage 1 output for the same seed (python src/train_hete_RL.py seed=0).
+
+defaults:
+  - _self_
+  - data: rppg_politifact.yaml
+  - model: rppg_detector.yaml
+  - callbacks: default.yaml
+  - logger: csv
+  - trainer: default.yaml
+  - paths: default.yaml
+  - extras: default.yaml
+  - hydra: default.yaml
+  - experiment: null
+  - hparams_search: null
+  - optional local: default.yaml
+  - debug: null
+
+task_name: "stage2_detect"
+tags: ["rppg", "stage2"]
+train: True
+test: True
+compile: False
+ckpt_path: null
+seed: 0
+dataset: gossipcop        # gossipcop | pheme | politifact_upfd

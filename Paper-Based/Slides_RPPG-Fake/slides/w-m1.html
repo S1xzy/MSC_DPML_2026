@@ -1,0 +1,24 @@
+<section id="w-m1" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">03 · ตัวอย่างจริงทีละขั้น · Module 1</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">user u258: model วางคนที่ repost ต่อกันไว้ใกล้กัน</h2>
+<div style="display:flex;gap:40px;align-items:center">
+<div style="position:relative;width:640px;height:520px;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px">
+<svg aria-label="User u258 in the centre with its five nearest users close by and two far users at the edge" width="640" height="520" viewBox="0 0 640 520" style="position:absolute;left:0;top:0;width:640px;height:520px"><g stroke="#2950B8" stroke-width="3"><line x1="300" y1="260" x2="300" y2="140"/><line x1="300" y1="260" x2="410" y2="190"/><line x1="300" y1="260" x2="410" y2="330"/><line x1="300" y1="260" x2="190" y2="330"/><line x1="300" y1="260" x2="190" y2="190"/></g><g stroke="#C9650E" stroke-width="3" stroke-dasharray="10 8"><line x1="300" y1="260" x2="600" y2="60"/><line x1="300" y1="260" x2="600" y2="460"/></g><circle cx="300" cy="260" r="36" fill="#14202C"/><g fill="#7F9BE0" stroke="#2950B8" stroke-width="3"><circle cx="300" cy="140" r="22"/><circle cx="410" cy="190" r="22"/><circle cx="410" cy="330" r="22"/><circle cx="190" cy="330" r="22"/><circle cx="190" cy="190" r="22"/></g><g fill="#FBE7D3" stroke="#C9650E" stroke-width="3"><circle cx="600" cy="60" r="20"/><circle cx="600" cy="460" r="20"/></g></svg>
+<p style="position:absolute;left:240px;top:300px;width:120px;font-size:24px;font-weight:600;text-align:center">u258</p>
+<p style="position:absolute;left:250px;top:80px;width:200px;font-size:24px;color:#1E3F94">u4110 · 0.93</p>
+<p style="position:absolute;left:440px;top:170px;width:190px;font-size:24px;color:#1E3F94">u5777 · 0.88</p>
+<p style="position:absolute;left:440px;top:316px;width:190px;font-size:24px;color:#1E3F94">u3783 · 0.87</p>
+<p style="position:absolute;left:30px;top:350px;width:190px;font-size:24px;color:#1E3F94">u412 · 0.84</p>
+<p style="position:absolute;left:30px;top:130px;width:190px;font-size:24px;color:#1E3F94">u4097 · 0.81</p>
+<p style="position:absolute;left:420px;top:20px;width:160px;font-size:24px;color:#A8330C;text-align:right">−0.56</p>
+<p style="position:absolute;left:420px;top:470px;width:160px;font-size:24px;color:#A8330C;text-align:right">−0.56</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:16px">
+<div style="background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:22px 26px;display:flex;flex-direction:column;gap:4px"><p style="font-size:24px;font-weight:600;color:#2950B8">input</p><p style="font-size:26px">u258 เคยแชร์ข่าว train 20 ชิ้น (#CharlieHebdo, …)</p></div>
+<div style="background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:22px 26px;display:flex;flex-direction:column;gap:4px"><p style="font-size:24px;font-weight:600;color:#2950B8">output: embedding 128 มิติ</p><p style="font-size:26px">5 คนที่ใกล้ที่สุด (cosine 0.81–0.93) = คนที่ <b>repost ต่อกับ u258</b> และแชร์ข่าวเดียวกัน 1 ชิ้น</p><p style="font-size:26px">คนที่ไกลที่สุด (−0.56) ไม่เคยแชร์ข่าวร่วมกันเลย</p></div>
+<div style="background:#14202C;border-radius:16px;padding:22px 26px;display:flex;flex-direction:column;gap:4px"><p style="font-size:24px;font-weight:600;color:#8FB0FF">ก่อนแก้ bug (รอบ 1–7)</p><p style="font-size:26px;color:#EEF2F6">ทุกคนใน H มี cosine = 1.00 กับ u258 · แยกใครออกจากใครไม่ได้</p></div>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">PHEME seed 2 · data/pheme/generated_fix/seed2/stage1.pt (user_emb)</p>
+<aside>ตัวอย่างจริงจาก model ที่ใช้นำเสนอ (PHEME seed 2) user u258 เคยแชร์ข่าวในชุด train 20 ชิ้น หลัง Module 1 ได้ embedding 128 มิติ เมื่อหา user ที่ embedding ใกล้ที่สุด 5 คน (cosine 0.81–0.93) พบว่าทั้งหมดคือคนที่มีความสัมพันธ์ repost กับ u258 ใน meta-path UU และแต่ละคนเคยแชร์ข่าวเดียวกับ u258 หนึ่งชิ้น ส่วน user ที่ไกลที่สุด (cosine −0.56) ไม่เคยแชร์ข่าวร่วมกันเลย แสดงว่า embedding จับความสัมพันธ์ในกราฟได้ ก่อนแก้ bug ในรอบ 8 user ทุกคนใน H มี embedding เหมือนกัน cosine = 1.00 จึงไม่มีข้อมูลตัวตนเลย</aside>
+</section>

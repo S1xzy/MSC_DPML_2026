@@ -1,0 +1,20 @@
+<section id="m2" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">03 · ระเบียบวิธีวิจัย · Module 2</p><p style="font-size:24px;font-weight:600;color:#4F5D6B;background:#E8ECF1;padding:6px 18px;border-radius:999px">จาก Paper</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">สร้างเส้นทางด้วย Reinforcement Learning ทีละ step</h2>
+<div style="display:flex;align-items:center;gap:14px">
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#2950B8">State</p><h3 style="font-size:28px;font-weight:600">เส้นทางตอนนี้ + ข่าว</h3><p style="font-size:24px;color:#4F5D6B">เริ่มจาก 3–5 คนแรก</p></div>
+<x-shape kind="arrow-right" style="width:48px;height:28px;background:#9AA6B2"></x-shape>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#2950B8">Action</p><h3 style="font-size:28px;font-weight:600">เลือก K₂ = 10 คน</h3><p style="font-size:24px;color:#4F5D6B">จาก candidate ด้านล่าง</p></div>
+<x-shape kind="arrow-right" style="width:48px;height:28px;background:#9AA6B2"></x-shape>
+<div style="flex:1;background:#FBE7D3;border:2px solid #C9650E;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#8A4208">Reward</p><h3 style="font-size:28px;font-weight:600">ดีแค่ไหน?</h3><p style="font-size:24px;color:#4F5D6B">ถูกคน ถูกเวลา + ดูสมจริง</p></div>
+<x-shape kind="arrow-right" style="width:48px;height:28px;background:#9AA6B2"></x-shape>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px;display:flex;flex-direction:column;gap:6px"><p style="font-size:24px;font-weight:600;color:#2950B8">Update</p><h3 style="font-size:28px;font-weight:600">actor-critic</h3><p style="font-size:24px;color:#4F5D6B">ปรับ policy</p></div>
+</div>
+<p style="font-size:26px;font-weight:600;color:#1E3F94;background:#E3EAFB;border-radius:12px;padding:14px 24px;text-align:center">↺ ทำซ้ำจนเส้นทางมีครบ T = 200 users → ได้ G′</p>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:8px"><h3 style="font-size:28px;font-weight:600">Candidate user มาจาก</h3><p style="font-size:24px;color:#4F5D6B">• คนที่เคย repost ต่อจากคนในเส้นทาง</p><p style="font-size:24px;color:#4F5D6B">• คนที่แชร์ข่าวเดียวกันบ่อย</p><p style="font-size:24px;color:#4F5D6B">• คนที่สนใจเนื้อหาคล้ายข่าวนี้</p></div>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:8px"><h3 style="font-size:28px;font-weight:600">Reward 2 ส่วน (λ₂ = 0.4)</h3><p style="font-size:24px;color:#4F5D6B"><b style="color:#14202C">Temporal:</b> คนที่เลือกคล้ายคนที่แชร์จริงในช่วงเวลานั้น</p><p style="font-size:24px;color:#4F5D6B"><b style="color:#14202C">Global:</b> discriminator ดูแล้วว่าเหมือนเส้นทางจริง</p></div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">Eq. 6–19 · state = กราฟย่อย + user ใหม่ + ข่าว · reward = λ₂·R_T + (1−λ₂)·R_G</p>
+<aside>Module 2 มองการสร้างเส้นทางเป็น MDP: state คือเส้นทางที่สร้างไว้แล้ว + user ที่เพิ่งเพิ่ม + embedding ของข่าว action คือเลือก user K2 คนจาก candidate (repost, co-engagement, content similarity) reward มีสองส่วน temporal reward = ความคล้ายระหว่าง user ที่เลือกกับกลุ่มคนที่แชร์จริงใน time step นั้น (Λ(t)) และ global reward = −log(1 − D(G′)) จาก discriminator ที่แยกเส้นทางจริงกับเส้นทางที่สร้าง train ด้วย actor-critic แล้วสร้าง G′ ให้ทุกข่าวรวมถึงข่าว test</aside>
+</section>

@@ -1,0 +1,18 @@
+<section id="e-tune" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:112px 128px 160px;display:flex;flex-direction:column;gap:32px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">04 · การทดลอง · ลองปรับ model (รอบ 7)</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:60px;font-weight:700;line-height:1.15">ลองแก้ตามสาเหตุ แล้วทดสอบใหม่</h2>
+<table style="font-size:24px;width:1664px">
+<tr><th style="width:34%">early Acc (val / test)</th><th style="width:22%;text-align:right">PolitiFact</th><th style="width:22%;text-align:right">GossipCop</th><th style="width:22%;text-align:right">PHEME</th></tr>
+<tr style="background:#E3EAFB"><td>model เดิม (G′ ~196 คน)</td><td style="text-align:right">0.871 / 0.865</td><td style="text-align:right">0.796 / 0.768</td><td style="text-align:right">0.847 / 0.838</td></tr>
+<tr><td>จำกัด G′ 50 คน</td><td style="text-align:right">0.857 / 0.833</td><td style="text-align:right">0.796 / 0.768</td><td style="text-align:right">0.810 / 0.822</td></tr>
+<tr><td>จำกัด G′ 20 คน</td><td style="text-align:right">0.857 / 0.819</td><td style="text-align:right">0.795 / 0.766</td><td style="text-align:right">0.842 / 0.837</td></tr>
+<tr><td>GossipCop real 65% (ปรับน้ำหนัก test)</td><td style="text-align:right">—</td><td style="text-align:right">— / 0.778</td><td style="text-align:right">—</td></tr>
+</table>
+<div style="display:flex;gap:24px">
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:6px"><h3 style="font-size:28px;font-weight:600">วิธีเลือก</h3><p style="font-size:24px;color:#4F5D6B">ใช้ val เท่านั้น → model เดิมชนะ ทุก dataset</p></div>
+<div style="flex:1;background:#FCFDFE;border:1px solid #D8DFE6;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:6px"><h3 style="font-size:28px;font-weight:600">สัดส่วน class</h3><p style="font-size:24px;color:#4F5D6B">+1.0 pp · model ทาย real / fake ถูกพอ ๆ กัน (~78%)</p></div>
+<div style="flex:1;background:#14202C;border-radius:16px;padding:24px 28px;display:flex;flex-direction:column;gap:6px"><h3 style="font-size:28px;font-weight:600;color:#EEF2F6">ข้อสรุป</h3><p style="font-size:24px;color:#BFCBD8">ยังใช้ model เดิม (รอบ 6) นำเสนอ</p></div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:1664px;font-size:24px;color:#6B7886">รอบ 7 ใช้ model ก่อนแก้ bug · ภายหลังพบว่าสาเหตุหลักคือ bug embedding ยุบ (รอบ 8)</p>
+<aside>รอบ 7 ลองแก้ตามสาเหตุที่วิเคราะห์ (1) จำกัดจำนวน user ที่สร้างให้เหลือ 20 หรือ 50 คน เพื่อไม่ให้กลบ user จริง ผลตาม validation ไม่ดีขึ้นในทุก dataset (2) ปรับน้ำหนัก test ของ GossipCop ให้เป็น real 65% เท่า paper accuracy เพิ่มแค่ 1 pp (0.768 เป็น 0.778) เพราะ model ทายถูกทั้งสองฝั่งพอ ๆ กัน จึงยังใช้ model รอบ 6 สองการทดลองที่ตัดออกเพื่อประหยัดเวลาคือ hit reward (ไม่มีใน paper) และการ train GossipCop ใหม่ที่ real 65%</aside>
+</section>
