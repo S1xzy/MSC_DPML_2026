@@ -1,0 +1,200 @@
+[
+ {
+  "ds": "pheme",
+  "tag": "early_fix",
+  "seed": 0,
+  "acc": 0.846,
+  "h_std": 0.0264,
+  "w_graph": 0.195,
+  "w_content": 13.89,
+  "graph_std": 0.0248,
+  "acc_graph_const": 0.843
+ },
+ {
+  "ds": "pheme",
+  "tag": "early_fix",
+  "seed": 1,
+  "acc": 0.841,
+  "h_std": 0.0036,
+  "w_graph": 0.197,
+  "w_content": 21.99,
+  "graph_std": 0.0023,
+  "acc_graph_const": 0.841
+ },
+ {
+  "ds": "pheme",
+  "tag": "early_fix",
+  "seed": 2,
+  "acc": 0.823,
+  "h_std": 0.0017,
+  "w_graph": 0.263,
+  "w_content": 29.499,
+  "graph_std": 0.0003,
+  "acc_graph_const": 0.823
+ },
+ {
+  "ds": "pheme",
+  "tag": "full_fix",
+  "seed": 0,
+  "acc": 0.866,
+  "h_std": 0.0004,
+  "w_graph": 0.244,
+  "w_content": 22.084,
+  "graph_std": 0.0002,
+  "acc_graph_const": 0.866
+ },
+ {
+  "ds": "pheme",
+  "tag": "full_fix",
+  "seed": 1,
+  "acc": 0.843,
+  "h_std": 0.0075,
+  "w_graph": 0.232,
+  "w_content": 23.548,
+  "graph_std": 0.0028,
+  "acc_graph_const": 0.843
+ },
+ {
+  "ds": "pheme",
+  "tag": "full_fix",
+  "seed": 2,
+  "acc": 0.823,
+  "h_std": 0.0043,
+  "w_graph": 0.27,
+  "w_content": 29.538,
+  "graph_std": 0.0003,
+  "acc_graph_const": 0.823
+ },
+ {
+  "ds": "gossipcop",
+  "tag": "early_fix",
+  "seed": 0,
+  "acc": 0.933,
+  "h_std": 0.3198,
+  "w_graph": 0.907,
+  "w_content": 21.522,
+  "graph_std": 3.2092,
+  "acc_graph_const": 0.74
+ },
+ {
+  "ds": "gossipcop",
+  "tag": "early_fix",
+  "seed": 1,
+  "acc": 0.777,
+  "h_std": 0.0279,
+  "w_graph": 0.266,
+  "w_content": 25.021,
+  "graph_std": 0.0196,
+  "acc_graph_const": 0.777
+ },
+ {
+  "ds": "gossipcop",
+  "tag": "early_fix",
+  "seed": 2,
+  "acc": 0.924,
+  "h_std": 0.2086,
+  "w_graph": 0.642,
+  "w_content": 17.687,
+  "graph_std": 2.3164,
+  "acc_graph_const": 0.72
+ },
+ {
+  "ds": "gossipcop",
+  "tag": "full_fix",
+  "seed": 0,
+  "acc": 0.973,
+  "h_std": 0.4184,
+  "w_graph": 1.025,
+  "w_content": 23.478,
+  "graph_std": 4.1125,
+  "acc_graph_const": 0.749
+ },
+ {
+  "ds": "gossipcop",
+  "tag": "full_fix",
+  "seed": 1,
+  "acc": 0.823,
+  "h_std": 0.237,
+  "w_graph": 0.274,
+  "w_content": 11.457,
+  "graph_std": 0.4706,
+  "acc_graph_const": 0.761
+ },
+ {
+  "ds": "gossipcop",
+  "tag": "full_fix",
+  "seed": 2,
+  "acc": 0.927,
+  "h_std": 0.4844,
+  "w_graph": 0.307,
+  "w_content": 2.464,
+  "graph_std": 1.6767,
+  "acc_graph_const": 0.664
+ },
+ {
+  "ds": "politifact",
+  "tag": "early_fix",
+  "seed": 0,
+  "acc": 0.812,
+  "h_std": 0.0007,
+  "w_graph": 0.102,
+  "w_content": 12.982,
+  "graph_std": 0.0001,
+  "acc_graph_const": 0.812
+ },
+ {
+  "ds": "politifact",
+  "tag": "early_fix",
+  "seed": 1,
+  "acc": 0.875,
+  "h_std": 0.0012,
+  "w_graph": 0.212,
+  "w_content": 3.281,
+  "graph_std": 0.0017,
+  "acc_graph_const": 0.875
+ },
+ {
+  "ds": "politifact",
+  "tag": "early_fix",
+  "seed": 2,
+  "acc": 0.792,
+  "h_std": 0.5884,
+  "w_graph": 0.34,
+  "w_content": 8.006,
+  "graph_std": 2.4074,
+  "acc_graph_const": 0.792
+ },
+ {
+  "ds": "politifact",
+  "tag": "full_fix",
+  "seed": 0,
+  "acc": 0.865,
+  "h_std": 0.1216,
+  "w_graph": 0.21,
+  "w_content": 7.55,
+  "graph_std": 0.1278,
+  "acc_graph_const": 0.854
+ },
+ {
+  "ds": "politifact",
+  "tag": "full_fix",
+  "seed": 1,
+  "acc": 0.875,
+  "h_std": 0.0649,
+  "w_graph": 0.131,
+  "w_content": 4.314,
+  "graph_std": 0.0196,
+  "acc_graph_const": 0.875
+ },
+ {
+  "ds": "politifact",
+  "tag": "full_fix",
+  "seed": 2,
+  "acc": 0.865,
+  "h_std": 0.659,
+  "w_graph": 0.24,
+  "w_content": 2.09,
+  "graph_std": 1.7532,
+  "acc_graph_const": 0.615
+ }
+]

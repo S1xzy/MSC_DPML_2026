@@ -17,7 +17,8 @@ This section collects all work related to the paper assigned by the professor fo
 | `RPPG-Fake_Methodology_Interactive.html` | Interactive walkthrough of the method |
 | `RPPG-Fake_Results.html` | Reproduction results |
 | `Project_Tracker_RPPG-Fake.html`, `update_tracker.py` | Progress tracker |
-| [`Slides_RPPG-Fake/`](Slides_RPPG-Fake/) | Source of the presentation deck (52 slides, Thai): background, problem formulation, methodology, experiments, ablation, research critique, conclusion |
+| [`Slides_RPPG-Fake/`](Slides_RPPG-Fake/) | Source of the presentation deck (57 slides, Thai): background, problem formulation, methodology with real worked examples per module, experiments, ablation, research critique (incl. internal validation), conclusion · `figures/` = figures + scripts used in the slides |
+| [`Demo_RPPG-Fake/`](Demo_RPPG-Fake/) | Ready-to-run demo: trained models + data, a small `rppg_demo` package and notebooks that visualize every module with REAL and FAKE news side by side (local + [Colab](https://colab.research.google.com/github/S1xzy/MSC_DPML_2026/blob/main/Paper-Based/Demo_RPPG-Fake/RPPG-Fake_Demo_Colab.ipynb)). Data bundle is not in git (see its README) |
 
 ## Reproduction status (round 8, 3 seeds, early-stage accuracy)
 
@@ -27,6 +28,6 @@ This section collects all work related to the paper assigned by the professor fo
 | GossipCop | 0.878 ± 0.087 | 0.873 |
 | PolitiFact (authors' data, no images) | 0.826 ± 0.043 | 0.902 |
 
-The generated propagation paths (G′) did not improve accuracy in our runs; see `HANDOFF.md` for the analysis and limitations.
+The generated propagation paths (G′) did not improve accuracy in our runs, and on PHEME the detector's decision comes almost entirely from text + image; see `HANDOFF.md` for the analysis and limitations. On news from 4 PHEME events never seen in training the model reaches only 0.25 accuracy (AUC 0.75).
 
 Datasets, trained models and logs (`Code_RPPG-Fake/data/`, `logs/`, `.venv/`) are not in the repository. The authors' PolitiFact data (`data/data.zip`) is in the official repository; the other datasets are rebuilt with the scripts in `Code_RPPG-Fake/scripts/`.
