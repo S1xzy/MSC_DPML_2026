@@ -130,7 +130,7 @@ code ที่เพิ่ม (ทั้งหมด default = ปิด, ไม
 **ยังไม่แก้ (บันทึกไว้):** สเกล content vs user ใน Module 1 (#4), T=200 สำหรับ PHEME, actor/critic loss scale, early user ซ้ำ, detector GAT ทิศเดียว
 
 ### Final presentation (2026-10-22)
-- `MS_DPMLA_Final Presentation.pdf` = สไลด์ที่ผู้ใช้ทำเอง (42 หน้า, อัปเดต 22 ต.ค. 14:31: เพิ่มหน้า 8 "Data · Model training") · `Supawit_MS_DPMLA_Final Presentation.pdf` = เวอร์ชันก่อนหน้า 41 หน้า (ผู้ใช้เพิ่มเอง)
+- `MS_DPMLA_Final Presentation.pdf` = สไลด์ที่ผู้ใช้ทำเอง (42 หน้า, อัปเดต 22 ต.ค. 14:31: เพิ่มหน้า 8 "Data · Model training") · (ฉบับ 41 หน้า `Supawit_MS_DPMLA_Final Presentation.pdf` ลบออกแล้ว 22 ต.ค. ตามคำสั่งผู้ใช้ · ยังกู้ได้จาก git history commit f966987)
 - `MS_DPMLA_Final Presentation_Script.pdf` = script ภาษาไทยรายหน้า (ตรงกับฉบับ 42 หน้า) · เวลารวม ~33 นาที · มี Q&A 6 ข้อ + จุดที่ควรแก้บนสไลด์ · สร้างจาก scratchpad `final_pres/script_data.py` + `build_script_pdf.py` (Chrome headless)
 - Demo notebook: code ที่ใช้รันจริงแนบท้ายแต่ละส่วน (หัวข้อ 🔧) + ส่วน 8 คำสั่งรัน (`Demo_RPPG-Fake/tools/source_cells.py`, `add_source_cells.py`)
 
