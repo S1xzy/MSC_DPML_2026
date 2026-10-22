@@ -4,6 +4,10 @@
 """
 import json
 import os
+import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from source_cells import insert_source  # noqa: E402
 
 HERE = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
@@ -31,6 +35,7 @@ TITLE = md(
     "| 5. ผลบน test set | Accuracy / F1 / AUC แยกข่าว real และ fake |",
     "| 6. ข้อมูลจากแหล่งอื่น | PHEME 4 เหตุการณ์ที่ model ไม่เคยเห็น (figshare) · REAL / FAKE คู่กัน |",
     "| 7. สรุป | notebook นี้ใช้ข้อมูลกี่ข่าวในแต่ละส่วน |",
+    "| 8. Code ที่ใช้รันจริง | คำสั่งรัน + ตำแหน่งไฟล์ · code ของแต่ละ module แนบท้ายส่วนนั้น (หัวข้อ 🔧) |",
     "",
     "Paper: L. Zhang et al., *Early Detection of Multimodal Fake News via Reinforced Propagation Path Generation*, IEEE TKDE 37(2), 2025",
 )
@@ -290,6 +295,7 @@ for name, setup, colab in [("RPPG-Fake_Demo_Local.ipynb", SETUP_LOCAL, False), (
     nb = notebook(([COLAB_BADGE] if colab else []) + [TITLE, *setup, *BODY], colab)
     for k, c in enumerate(nb["cells"]):
         c["id"] = f"c{k:02d}"
+    nb["cells"] = insert_source(nb["cells"])   # code that was actually run, inside each section + section 8
     with open(os.path.join(HERE, name), "w", encoding="utf-8") as f:
         json.dump(nb, f, ensure_ascii=False, indent=1)
     print("wrote", name, len(nb["cells"]), "cells")

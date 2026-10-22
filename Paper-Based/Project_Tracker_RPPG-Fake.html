@@ -187,15 +187,15 @@ pre{background:var(--sunk);border-radius:6px;padding:12px;overflow-x:auto;font-f
     </div>
     <div style="text-align:right">
       <div class="pct" id="pct">0%<small id="pctSub"></small></div>
-      <div class="label" style="margin-top:4px">อัปเดต 14 ต.ค. 2026</div>
+      <div class="label" style="margin-top:4px">อัปเดต 21 ต.ค. 2026</div>
     </div>
   </div>
   <div class="rail" id="rail" aria-label="ความคืบหน้าแยกตามเฟส"></div>
   <div class="pills">
     <span class="pill ok"><i></i>Final model พร้อมนำเสนอ</span>
     <span class="pill wait" id="livePill"><i></i>Round 4 · Paper protocol</span>
-    <span class="pill"><i></i>ยังไม่ push GitHub</span>
-    <span class="pill run"><i></i>branch <span class="mono">runnable</span></span>
+    <span class="pill ok"><i></i>push GitHub แล้ว</span>
+    <span class="pill ok"><i></i>Round 8 เสร็จ · หลังแก้ bug</span>
   </div>
 </header>
 
@@ -212,9 +212,9 @@ pre{background:var(--sunk);border-radius:6px;padding:12px;overflow-x:auto;font-f
   <div class="kpis">
     <div class="kpi"><span class="label">Dataset ที่ใช้</span><span class="v">3</span><span class="s">GossipCop · PHEME · PolitiFact</span></div>
     <div class="kpi"><span class="label">ข่าว (ครบ 3 ส่วน)</span><span class="v num">4,910</span><span class="s">ข้อความ + รูป + เส้นทาง</span></div>
-    <div class="kpi"><span class="label">รอบทดลอง</span><span class="v">4</span><span class="s">75 runs · Stage 1 + 2</span></div>
+    <div class="kpi"><span class="label">รอบทดลอง</span><span class="v">8</span><span class="s">รอบสุดท้าย: 3 dataset × 3 seeds</span></div>
     <div class="kpi"><span class="label">Runs ตาม Paper</span><span class="v"><span id="kpiRuns">0</span><span class="muted" style="font-size:1rem"> / 15</span></span><span class="s">3 dataset × 5 seeds</span></div>
-    <div class="kpi"><span class="label">Acc ดีสุด (early)</span><span class="v num">0.848</span><span class="s">PHEME · paper 0.829</span></div>
+    <div class="kpi"><span class="label">Acc early · รอบ 8</span><span class="v num">0.878</span><span class="s">GossipCop · paper 0.873 · PHEME 0.837 vs 0.829</span></div>
   </div>
 
   <div class="panel">
@@ -288,7 +288,7 @@ images/&lt;id&gt;.jpg      user_id_map.json      processed/content_clip_vitb32_i
   </div>
   <div class="deltas" id="deltas"></div>
   <div class="panel">
-    <h2 style="margin-bottom:8px">ตารางผลเต็ม <span class="muted" style="font-size:.8rem;font-weight:400">seed 0 · test set</span></h2>
+    <h2 style="margin-bottom:8px">ตารางผลเต็ม <span class="muted" style="font-size:.8rem;font-weight:400">test set · Round 4 / 8 = mean ± std · Round 1–3 = seed 0</span></h2>
     <div class="tbl" id="resTable"></div>
   </div>
 </section>
@@ -305,11 +305,11 @@ images/&lt;id&gt;.jpg      user_id_map.json      processed/content_clip_vitb32_i
       <h2 style="margin-bottom:10px">Hyper-parameters</h2>
       <div class="chips">
         <span class="chip">hidden <b>128</b></span><span class="chip">AdamW lr <b>5e-3</b></span><span class="chip">batch <b>16</b></span>
-        <span class="chip">split <b>7:1:2</b></span><span class="chip">T <b>100</b> / 200*</span><span class="chip">RL epoch <b>3</b> / 10*</span>
-        <span class="chip">n_slots <b>10</b></span><span class="chip">slot_users <b>100</b></span><span class="chip">early <b>3–5</b> eng.</span>
+        <span class="chip">split <b>7:1:2</b></span><span class="chip">T <b>200</b></span><span class="chip">K2 <b>10</b></span><span class="chip">RL epoch <b>5</b></span>
+        <span class="chip">n_slots <b>20</b></span><span class="chip">slot_users <b>200</b></span><span class="chip">early <b>3–5</b> eng.</span>
         <span class="chip">content <b>1024</b> = 512 + 512</span><span class="chip">disc lr <b>1e-3</b></span>
       </div>
-      <p class="muted" style="font-size:.76rem;margin:10px 0 0">* PolitiFact (ข้อมูลผู้เขียน) ใช้ T=200, RL 10 epoch</p>
+      <p class="muted" style="font-size:.76rem;margin:10px 0 0">ค่าของรอบ 8 (ทุก dataset) · รอบ 1–3 ใช้ T=100, RL 3 epoch · รอบ 4 ใช้ RL 10 epoch</p>
     </div>
     <div class="panel">
       <h2 style="margin-bottom:10px">Environment</h2>
@@ -332,9 +332,8 @@ images/&lt;id&gt;.jpg      user_id_map.json      processed/content_clip_vitb32_i
       <h2 style="margin-bottom:10px">คำสั่งรัน</h2>
       <pre>cd Paper-Based/Code_RPPG-Fake
 .venv/Scripts/python -u scripts/run_all.py \
-  --dataset pheme --seeds 0 1 2 3 4 \
-  --stage1_extra generator.T=100 generator.epochs=3 data.n_slots=10 \
-  --extra data.n_slots=10 data.slot_users=100</pre>
+  --dataset pheme --seeds 0 1 2 \
+  --stage1_extra generator.epochs=5</pre>
       <p class="muted" style="font-size:.76rem;margin:8px 0 0">ผลสรุป → <span class="mono">logs/results_summary_&lt;dataset&gt;.md</span></p>
     </div>
   </div>
@@ -388,13 +387,21 @@ const PHASES=[
   ["e6","Round 4 · PolitiFact (ผู้เขียน) 5 seeds ตาม Paper",0,"","auto:politifact"],
   ["e7","Round 5 · หาสาเหตุ G′ (diagnostics + จำกัด G′)",1,"10-15"],
   ["e8","Round 6 · Final 3 seeds + Table IV (random / similarity)",1,"10-18"],
-  ["e9","Demo · predict.py บนข่าวที่ไม่เคยเห็น (402 + 64 ข่าว)",1,"10-17"]]},
+  ["e9","Demo · predict.py บนข่าวที่ไม่เคยเห็น (402 + 64 ข่าว)",1,"10-17"],
+  ["e10","Round 7 · ลองปรับ (จำกัด G′ 20 / 50, สัดส่วน class)",1,"10-19"],
+  ["e11","พบ bug user embedding ยุบ · แก้ 4 จุด",1,"10-19"],
+  ["e12","Round 8 · train ใหม่ 3 dataset × 3 seeds",1,"10-20"],
+  ["e13","ตรวจ data leakage (สลับ label ของ train)",1,"10-20"],
+  ["e14","วิเคราะห์ว่า detector ใช้เส้นทางหรือไม่",1,"10-20"]]},
  {n:"รายงาน",items:[
   ["r1","แท็บ Reproduction ใน HTML",1,"10-12"],
   ["r2","แท็บ Progress ใน HTML",1,"10-14"],
   ["r6","หน้า Results สำหรับนำเสนอ (Table II / III / IV + Demo)",1,"10-18"],
-  ["r3","อัปเดตแท็บ Code ให้ตรง code ที่แก้",0,""],
-  ["r4","Push GitHub (รออนุมัติ · ไม่รวม data/.venv/logs)",0,""]]}
+  ["r7","Slide deck 57 หน้า (Paper → ของเรา · ตัวอย่างจริง · วิพากษ์)",1,"10-21"],
+  ["r8","Demo notebooks (Local + Colab) · REAL / FAKE คู่กัน",1,"10-21"],
+  ["r9","อัปเดตหน้า Results + Tracker เป็นรอบ 8",1,"10-21"],
+  ["r4b","Push GitHub (ไม่รวม data / .venv / logs)",1,"10-20"],
+  ["r3","อัปเดตแท็บ Code ของ Paper Summary ให้ตรง code ที่แก้",0,""]]}
 ];
 /* Round 4 live state — rewritten by ../update_tracker.py */
 const LIVE=/*LIVE*/{"updated": "2026-10-15 12:04", "status": {"pheme": ["done", "done", "done", "done", "done"], "gossipcop": ["done", "done", "done", "done", "done"], "politifact": ["done", "done", "done", "done", "done"]}, "results": {"pheme": {"early": {"n": 5, "mean": [0.8333, 0.877, 0.8872, 0.8816, 0.7995, 0.9074], "sd": [0.0267, 0.0165, 0.0404, 0.0209, 0.0285, 0.0146]}, "full": {"n": 5, "mean": [0.8418, 0.8661, 0.9163, 0.8903, 0.803, 0.9107], "sd": [0.0167, 0.0104, 0.0249, 0.0126, 0.0186, 0.006]}, "early_no_gen": {"n": 5, "mean": [0.8338, 0.8739, 0.8922, 0.8826, 0.7986, 0.9118], "sd": [0.0199, 0.0151, 0.0319, 0.0154, 0.0221, 0.0092]}}, "gossipcop": {"early": {"n": 5, "mean": [0.7688, 0.7753, 0.7772, 0.7757, 0.7684, 0.8427], "sd": [0.0242, 0.0377, 0.0179, 0.0179, 0.0247, 0.0264]}, "full": {"n": 5, "mean": [0.789, 0.786, 0.8097, 0.7973, 0.7886, 0.8626], "sd": [0.0153, 0.0128, 0.0343, 0.0179, 0.0151, 0.0187]}, "early_no_gen": {"n": 5, "mean": [0.7858, 0.7813, 0.8138, 0.7961, 0.7848, 0.8634], "sd": [0.0258, 0.0396, 0.0355, 0.0203, 0.0271, 0.0198]}}, "politifact": {"early": {"n": 5, "mean": [0.7896, 0.7433, 0.7514, 0.7341, 0.7781, 0.8828], "sd": [0.0426, 0.1208, 0.1169, 0.0336, 0.0371, 0.0427]}, "full": {"n": 5, "mean": [0.8208, 0.8166, 0.7135, 0.754, 0.8059, 0.8921], "sd": [0.0426, 0.1084, 0.0948, 0.054, 0.0435, 0.0383]}, "early_no_gen": {"n": 5, "mean": [0.8042, 0.7586, 0.7622, 0.7489, 0.7927, 0.9021], "sd": [0.0518, 0.1095, 0.1343, 0.0634, 0.0521, 0.0553]}}}}/*END LIVE*/;
@@ -435,7 +442,7 @@ function drawProgress(){
 $("#phases").addEventListener("change",e=>{const k=e.target.dataset.k;if(!k)return;checks[k]=e.target.checked;store.set("rppg-checks",checks);drawProgress();});
 $("#resetChecks").addEventListener("click",()=>{PHASES.forEach(p=>p.items.forEach(i=>{if(!(i[4]&&i[4].startsWith("auto:")))checks[i[0]]=DEF[i[0]];}));store.set("rppg-checks",{});drawProgress();});
 
-const TL=[["10-08",["Paper summary","ตรวจ + เขียน code ใหม่","Audit 9 จุด"]],["10-09",["โหลด dataset","Round 1 (text)"]],["10-10",["เติมรูป / เนื้อข่าว","Round 2 (multimodal)","คัดข่าวครบ 3 ส่วน"]],["10-12",["Round 3 (complete)","แท็บ Reproduction"]],["10-14",["แท็บ Progress","Tracker นี้","เริ่ม Round 4 (Paper protocol)"]],["10-15",["Round 4 ครบ 15 runs","PHEME ≈ Paper","Round 5 · diagnostics G′"]],["10-17",["ดาวน์โหลด PHEME 9 events","Round 6 · final","Demo predict.py"]],["10-18",["Table IV ครบ","หน้า Results"]],["ถัดไป",["อัปเดตแท็บ Code","Push GitHub"]]];
+const TL=[["10-08",["Paper summary","ตรวจ + เขียน code ใหม่","Audit 9 จุด"]],["10-09",["โหลด dataset","Round 1 (text)"]],["10-10",["เติมรูป / เนื้อข่าว","Round 2 (multimodal)","คัดข่าวครบ 3 ส่วน"]],["10-12",["Round 3 (complete)","แท็บ Reproduction"]],["10-14",["แท็บ Progress","Tracker นี้","เริ่ม Round 4 (Paper protocol)"]],["10-15",["Round 4 ครบ 15 runs","PHEME ≈ Paper","Round 5 · diagnostics G′"]],["10-17",["ดาวน์โหลด PHEME 9 events","Round 6 · final","Demo predict.py"]],["10-18",["Table IV ครบ","หน้า Results"]],["10-19",["Round 7 · ลองปรับ","พบ bug embedding ยุบ"]],["10-20",["Round 8 · train ใหม่","ตรวจ leakage","Push GitHub"]],["10-21",["Slide 57 หน้า","Demo notebooks","Results / Tracker รอบ 8"]],["ถัดไป",["รัน Table IV ใหม่หลังแก้ bug","5 seeds","แท็บ Code"]]];
 $("#timeline").innerHTML=TL.map(([d,xs])=>`<div class="d${d==="ถัดไป"?" next":""}"><b>${d}</b><ul>${xs.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`).join("");
 
 /* ---------------- DATASETS ---------------- */
@@ -509,9 +516,11 @@ const ROUNDS=[
 (()=>{const nm={pheme:"PHEME (ครบ 3 ส่วน)",gossipcop:"GossipCop (ครบ 3 ส่วน)",politifact:"PolitiFact (ผู้เขียน · ไม่มีรูป)"};
   const rows=LDS.map(([k])=>k).filter(k=>LIVE.results[k]&&LIVE.results[k].early).map(k=>{const r=LIVE.results[k],z=[0,0,0,0,0,0],g=(s,f)=>r[s]?r[s][f]:z;
     return {name:nm[k],p:k,n:r.early.n,warn:r.early.n<5?`${r.early.n}/5 seeds`:"",early:g("early","mean"),full:g("full","mean"),nogen:g("early_no_gen","mean"),sd:{early:g("early","sd"),full:g("full","sd"),nogen:g("early_no_gen","sd")}};});
-  ROUNDS.unshift({id:"r4",tab:"Round 4",title:"Round 4 · Paper protocol (5 seeds)",note:"mean ± std · T=200, K2=10, 20 time steps, RL 10 epoch · เส้นสั้นที่ปลายแท่ง = ± std",rows,empty:"ยังไม่มี seed ที่รันเสร็จ — ดูสถานะในแท็บความคืบหน้า"});})();
+  ROUNDS.unshift({id:"r4",tab:"Round 4",title:"Round 4 · Paper protocol (5 seeds, ก่อนแก้ bug)",note:"mean ± std · T=200, K2=10, 20 time steps, RL 10 epoch · เส้นสั้นที่ปลายแท่ง = ± std",rows,empty:"ยังไม่มี seed ที่รันเสร็จ — ดูสถานะในแท็บความคืบหน้า"});})();
+// Round 8 (final, after the embedding-collapse fix): Code_RPPG-Fake/logs/stage2_detect, tags *_fix
+ROUNDS.unshift({"id": "r8", "tab": "Round 8", "title": "Round 8 · หลังแก้ bug (3 seeds)", "note": "mean ± std · แก้ embedding ยุบ (z-score ก่อน Eq. 7, node view ใช้โครงสร้าง, UNK user) · T=200, K2=10, RL 5 epoch · 20 ต.ค. 2026", "rows": [{"name": "PHEME (ครบ 3 ส่วน)", "p": "pheme", "n": 3, "early": [0.8367, 0.8678, 0.9054, 0.8861, 0.7985, 0.9065], "full": [0.8441, 0.8673, 0.9184, 0.892, 0.8057, 0.9126], "nogen": [0.8441, 0.8713, 0.9125, 0.8914, 0.8076, 0.9122], "sd": {"early": [0.0118, 0.0171, 0.0054, 0.0067, 0.0187, 0.0004], "full": [0.0212, 0.0145, 0.0216, 0.0149, 0.0259, 0.0098], "nogen": [0.0275, 0.0153, 0.0269, 0.0197, 0.0325, 0.0085]}}, {"name": "GossipCop (ครบ 3 ส่วน)", "p": "gossipcop", "n": 3, "early": [0.8779, 0.8967, 0.8621, 0.879, 0.8779, 0.9343], "full": [0.908, 0.9235, 0.8989, 0.9099, 0.9078, 0.9583], "nogen": [0.8997, 0.8968, 0.9149, 0.9046, 0.8993, 0.9576], "sd": {"early": [0.0875, 0.0919, 0.0806, 0.0861, 0.0875, 0.0707], "full": [0.0771, 0.0928, 0.071, 0.0731, 0.0773, 0.0562], "nogen": [0.0442, 0.0744, 0.004, 0.0374, 0.0449, 0.0279]}}, {"name": "PolitiFact (ผู้เขียน · ไม่มีรูป)", "p": "politifact", "n": 3, "early": [0.8264, 0.7798, 0.8108, 0.7811, 0.8167, 0.9537], "full": [0.8681, 0.872, 0.7838, 0.8202, 0.8577, 0.9406], "nogen": [0.8681, 0.8639, 0.7838, 0.8188, 0.8574, 0.9389], "sd": {"early": [0.0434, 0.1094, 0.1622, 0.053, 0.0433, 0.0127], "full": [0.006, 0.0831, 0.0811, 0.0098, 0.0026, 0.0228], "nogen": [0.0217, 0.0276, 0.0936, 0.0433, 0.028, 0.0203]}}]});
 const METRICS=[["Acc",0],["F1",3],["AUC",5],["Precision",1],["Recall",2],["Macro-F1",4]];
-let rSel=store.get("rppg-round","r4"),mSel=store.get("rppg-metric",0);
+let rSel=store.get("rppg-round","r8"),mSel=store.get("rppg-metric",0);
 $("#roundSel").innerHTML=ROUNDS.map(r=>`<button type="button" data-r="${r.id}">${r.tab}</button>`).join("");
 $("#metricSel").innerHTML=METRICS.map(([n,i])=>`<button type="button" data-m="${i}">${n}</button>`).join("");
 $("#roundSel").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;rSel=b.dataset.r;store.set("rppg-round",rSel);drawRes();});
@@ -566,9 +575,9 @@ function drawRes(){
 const NODES=[
  {k:"data",st:"",n:"News + Engagements",tag:"Data",f:["src/data/components/politifact.py"],c:["news_actions_<ds>.csv","split 7:1:2 (stratified)","early = 3–5 engagements"],d:"โหลดข่าว + เส้นทางการแพร่ (user, time) แบ่ง train/val/test"},
  {k:"clip",st:"",n:"CLIP Encoder",tag:"Content",f:["src/data/components/encode_content.py"],c:["ViT-B/32","text 512 + image 512","77 tokens"],d:"แปลงข้อความ + รูปเป็นเวกเตอร์ แล้ว cache ไว้ใน processed/"},
- {k:"m1",st:"s1",n:"Module 1 · Contrastive",tag:"Stage 1",f:["rppg/contrastive.py","rppg/layers.py"],c:["graph H (train only)","GAT (Eq. 2)","meta-path RWR","τ₁ τ₂ λ₁"],d:"เรียน user embedding จาก heterogeneous graph"},
- {k:"m2",st:"s1",n:"Module 2 · RL Generator",tag:"Stage 1",f:["rppg/generator.py","src/train_hete_RL.py"],c:["actor-critic","R = temporal + global (Eq. 13)","discriminator บน prefix","T = 100"],d:"สร้างเส้นทางการแพร่ในอนาคต G′ ให้ข่าวที่ยังมี engagement น้อย"},
- {k:"gen",st:"s1",n:"Generated paths G′",tag:"Output",f:["data/<ds>/generated/seed0/"],c:["เติมต่อจาก 3–5 engagements จริง"],d:"เส้นทางจริง (early) + เส้นทางที่ generate ส่งต่อให้ detector"},
+ {k:"m1",st:"s1",n:"Module 1 · Contrastive",tag:"Stage 1",f:["rppg/contrastive.py","rppg/layers.py"],c:["graph H (train only)","GAT (Eq. 2)","meta-path RWR","τ₁ τ₂ λ₁","z-score ก่อน Eq. 7 (รอบ 8)"],d:"เรียน user embedding จาก heterogeneous graph"},
+ {k:"m2",st:"s1",n:"Module 2 · RL Generator",tag:"Stage 1",f:["rppg/generator.py","src/train_hete_RL.py"],c:["actor-critic","R = temporal + global (Eq. 13)","discriminator บน prefix","T = 200 · K2 = 10"],d:"สร้างเส้นทางการแพร่ในอนาคต G′ ให้ข่าวที่ยังมี engagement น้อย"},
+ {k:"gen",st:"s1",n:"Generated paths G′",tag:"Output",f:["data/<ds>/generated_fix/seed<k>/"],c:["เติมต่อจาก 3–5 engagements จริง"],d:"เส้นทางจริง (early) + เส้นทางที่ generate ส่งต่อให้ detector"},
  {k:"m3",st:"s2",n:"Module 3 · Detector",tag:"Stage 2",f:["rppg/detector.py","src/train.py"],c:["temporal-aware","Λ(t)","n_slots 10","Eq. 21 residual"],d:"จำแนก fake / real จาก snapshot graph ตามเวลา + เนื้อหา"},
  {k:"eval",st:"s2",n:"Evaluate",tag:"Metrics",f:["scripts/run_all.py","logs/results_summary_<ds>.md"],c:["Acc · Pre · Rec · F1","Macro-F1 · AUC","early / full / no G′"],d:"รันทุก setting แล้วสรุป mean ± std ข้าม seed"}
 ];
@@ -581,8 +590,8 @@ function drawPipe(){
 $("#pipe").addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;nSel=b.dataset.k;store.set("rppg-node",nSel);drawPipe();});
 
 const FIX=[["h","Config / ไฟล์ source หาย → รันไม่ได้"],["h","Validation / test สลับกัน"],["h","Reward ไม่ตรง paper → R_G ตาม Eq. 13"],["m","GAT ไม่ตรง Eq. 2 · Λ(t) ไม่ตรง"],["m","Discriminator ไม่ train บน prefix"],["m","ข้อมูลรั่วผ่าน content candidates"],["l","ตัวแปรไม่ได้ประกาศ · action ไม่มีทิศทาง"]];
-const DEV=[["m","PolitiFact (ข้อมูลผู้เขียน) ไม่มีรูป → image feature = 0"],["h","PHEME ใช้เฉพาะ tweet ที่มีรูป: 2,004 ข่าว (paper 3,506)"],["m","GossipCop / PolitiFact-UPFD คัดให้ fake/real สมดุล (paper ไม่สมดุล)"],["m","T=100, RL 3 epoch เพื่อประหยัดเวลา (paper ไม่ระบุ epoch)"],["m","CLIP อ่านข้อความได้แค่ 77 token"],["l","ไม่มี publisher → ใช้ meta-path UU แทน PNU"]];
-const OPEN=[["h","G′ ไม่ช่วย (5 seeds, early): PHEME −0.1 · GossipCop −1.7 · PolitiFact −1.4 pp (paper ไม่ได้ทดสอบแบบไม่มี G′)"],["m","+2.7–4.1 pp ใน paper คือ ดีกว่า baseline ที่ดีที่สุด ไม่ใช่ผลของ G′ (เคยสรุปผิด แก้แล้ว 15 ต.ค.)"],["h","GossipCop ต่ำกว่า paper ~10 pp · PolitiFact ~11 pp (early Acc)"],["m","user ที่ generate ตรงกับ path จริงน้อยมาก: PHEME 0.04–0.09%, PolitiFact ~0.7%, GossipCop ~3.5%"],["l","RAM 16 GB ไม่พอรัน 2 dataset พร้อมกัน → แก้แล้ว: รันทีละชุด"],["m","PolitiFact-UPFD test มีแค่ 16 ข่าว · ผลไม่เสถียร"],["m","Code_RPPG-Fake มี .git ซ้อน · ต้องตัดสินใจก่อน push"],["l","แท็บ Code ใน Paper Summary ยังอธิบาย code ต้นฉบับ"]];
+const DEV=[["m","PolitiFact (ข้อมูลผู้เขียน) ไม่มีรูป → image feature = 0"],["h","PHEME ใช้เฉพาะ tweet ที่มีรูป: 2,004 ข่าว (paper 3,506)"],["m","GossipCop / PolitiFact-UPFD คัดให้ fake/real สมดุล (paper ไม่สมดุล)"],["m","3 seeds · RL 5 epoch เพราะเครื่องรันไม่ไหว (paper 5 รอบ · ไม่ระบุ epoch)"],["m","แก้ bug รอบ 8 ที่ paper ไม่ได้ระบุ: z-score ก่อน Eq. 7 · node view ใช้โครงสร้างเพื่อนบ้าน · user ใหม่ = UNK"],["m","CLIP อ่านข้อความได้แค่ 77 token (PolitiFact อ่านทีละ 50 คำแล้วเฉลี่ย)"],["l","ไม่มี publisher → ใช้ meta-path UU แทน PNU"]];
+const OPEN=[["h","G′ ไม่ช่วย (รอบ 8, early): ใช้ G′ 0.837 / 0.878 / 0.826 vs ไม่ใช้ 0.844 / 0.900 / 0.868 (PHEME / GossipCop / PolitiFact)"],["h","Detector ของ PHEME แทบไม่ใช้เส้นทาง (0 / 6 run) ผลมาจากข้อความ + ภาพ · GossipCop ใช้ 5 / 6 · PolitiFact 1 / 6"],["h","PolitiFact ยังต่ำกว่า paper 7.6 pp (early) · PHEME / GossipCop ตรง paper แล้ว"],["m","ผลแกว่งระหว่าง seed: GossipCop early 0.777–0.933"],["h","Event ใหม่ (PHEME 4 event): Acc 0.25 / AUC 0.75 — model ต้องรู้จัก user ล่วงหน้า"],["m","Table IV (Random / Similarity) ยังเป็นผลรอบ 6 ก่อนแก้ bug"],["m","user ที่ generate ตรงคนแชร์จริงน้อย: ~0.1% (PHEME) ถึง ~5% (GossipCop)"],["l","RAM 16 GB ไม่พอรัน 2 dataset พร้อมกัน → รันทีละชุด"],["l","แท็บ Code ใน Paper Summary ยังอธิบาย code ต้นฉบับ"]];
 const li=a=>a.map(([s,t])=>`<li><span class="sev ${s}"></span><span>${esc(t)}</span></li>`).join("");
 $("#fixList").innerHTML=li(FIX);$("#devList").innerHTML=li(DEV);$("#openList").innerHTML=li(OPEN);
 

@@ -24,6 +24,8 @@
 
 เปลี่ยน dataset ได้ที่ cell `DATASET = 'pheme'` → `'gossipcop'`
 
+**Code ที่ใช้รันจริง:** ท้ายแต่ละส่วนมีหัวข้อ 🔧 ที่แนบไฟล์จริงจาก `Code_RPPG-Fake/` ที่ใช้ train model รอบ 8 (เช่น ส่วน Module 1 แนบ `layers.py` + `contrastive.py`) · ส่วนที่ 8 สรุปคำสั่งรันและตำแหน่งไฟล์ · cell เหล่านี้เป็น `%%writefile` (รันแล้วได้ไฟล์ใน `code_used/`) · สร้าง / อัปเดตด้วย `python tools/add_source_cells.py`
+
 ## โครงสร้างโฟลเดอร์
 
 ```

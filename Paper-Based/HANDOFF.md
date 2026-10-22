@@ -1,6 +1,6 @@
 # HANDOFF — Paper-Based: RPPG-Fake reproduction
 
-> อัปเดตล่าสุด: 2026-10-20 (รอบที่ 8 ครบ · Slide version 18 + หัวข้อวิพากษ์การวิจัย · ถัดไป: หน้า Results / tracker, rerun Table IV หลังแก้ bug ถ้าผู้ใช้ต้องการ)
+> อัปเดตล่าสุด: 2026-10-21 (⏸ หาสาเหตุ PolitiFact ค้างอยู่ — ดูหัวข้อ ⏸ ในส่วน Presentation) · เดิม: 2026-10-20 (รอบที่ 8 ครบ · Slide version 18 + หัวข้อวิพากษ์การวิจัย · ถัดไป: หน้า Results / tracker, rerun Table IV หลังแก้ bug ถ้าผู้ใช้ต้องการ)
 > Paper ที่ได้รับมอบหมาย: **Early Detection of Multimodal Fake News via Reinforced Propagation Path Generation (RPPG-Fake)** — L. Zhang et al., IEEE TKDE 37(2), 2025 · Code ทางการ: https://github.com/LitianD/RPPG-Fake
 > หน้าที่ของเรา: **ตรวจ / ทำให้ Code รันได้ และทดลอง reproduce ผล**
 
@@ -128,6 +128,26 @@ code ที่เพิ่ม (ทั้งหมด default = ปิด, ไม
 - **Demo set 10 record** (`data/demo_present/{pheme,gossipcop}/`, model seed 2 ทั้งคู่ เลือกจาก val): PHEME ถูก 5/6 (ผิด: rumour “Hostages seen fleeing from cafe… #SydneySiege” P(real) 0.74), GossipCop ถูก 4/4 · ผล `logs/predict_{pheme,gossipcop}_early_fix_seed2.csv` · แก้ `predict.py` ให้นับ early_known จาก `known` จริง (PHEME early user ที่ model รู้จัก 32%, GossipCop 92%)
 - **Detector ใช้เส้นทางหรือไม่ (2026-10-20, วิเคราะห์หลังเลือก model):** แยก logit ชั้นสุดท้าย σ(W·[h*; n_T; n_V] + b) ทุก run (`Slides_RPPG-Fake/figures/m3_seeds.py` → `m3_seeds.json`) · ถ้าแทนส่วนเส้นทางด้วยค่าเฉลี่ย: **PHEME 0/6 run เปลี่ยน** (h* ยุบ, std ส่วนเส้นทาง ≤ 0.025 → ผลมาจาก CLIP ข้อความ+ภาพ), **GossipCop 5/6 run acc ลด 6–26 pp** (seed 1 early ไม่ใช้เส้นทาง = seed ที่แย่สุด 0.777), PolitiFact 1/6 (full seed 2) · ตัวอย่างข่าว 115: P(real) ไม่เปลี่ยนเมื่อให้ G′ 0–20 step · ไอเดียต่อ: ทำไม h* ยุบใน PHEME (LayerNorm/attention กระจุก, w_graph เล็ก)
 **ยังไม่แก้ (บันทึกไว้):** สเกล content vs user ใน Module 1 (#4), T=200 สำหรับ PHEME, actor/critic loss scale, early user ซ้ำ, detector GAT ทิศเดียว
+
+### Final presentation (2026-10-22)
+- `MS_DPMLA_Final Presentation.pdf` = สไลด์ที่ผู้ใช้ทำเอง (42 หน้า, อัปเดต 22 ต.ค. 14:31: เพิ่มหน้า 8 "Data · Model training") · `Supawit_MS_DPMLA_Final Presentation.pdf` = เวอร์ชันก่อนหน้า 41 หน้า (ผู้ใช้เพิ่มเอง)
+- `MS_DPMLA_Final Presentation_Script.pdf` = script ภาษาไทยรายหน้า (ตรงกับฉบับ 42 หน้า) · เวลารวม ~33 นาที · มี Q&A 6 ข้อ + จุดที่ควรแก้บนสไลด์ · สร้างจาก scratchpad `final_pres/script_data.py` + `build_script_pdf.py` (Chrome headless)
+- Demo notebook: code ที่ใช้รันจริงแนบท้ายแต่ละส่วน (หัวข้อ 🔧) + ส่วน 8 คำสั่งรัน (`Demo_RPPG-Fake/tools/source_cells.py`, `add_source_cells.py`)
+
+### ⏸ หาสาเหตุ PolitiFact ไม่ตรง paper (2026-10-21 · หยุดตามคำสั่งผู้ใช้ · ทำต่อพรุ่งนี้)
+**พบแล้ว:**
+1. **Paper วัด PolitiFact บนชุดเดียว 92 ข่าว ไม่ได้เฉลี่ย 5 รอบ:** Acc ทุกค่าใน Table II/III/IV + Fig. 4 = k/92 (0.880…0.924 = 81…85/92), Recall = k/41 → confusion matrix ลงตัว (Table II: TP 37 FP 3 TN 48; Table III: TP 35 FP 3 TN 48) · code ทางการ (`.git_upstream`: `configs/data/rl_pol.yaml` split [338, 48, 92], `src/data/rl_politifiact_datamodule.py` shuffle `random_state=665` แล้วตัด 478, `data_test`=48 / `data_val`=92 สลับกัน, checkpoint monitor `val/acc`) → ชุด 92 ข่าว = ชุดที่ใช้เลือก checkpoint = ชุดที่รายงาน (น่าจะ) · ไฟล์ข้อมูลของผู้เขียนตอน train (`phase_3/politifact.csv`, 478 แถว) ≠ `data.zip` ใน repo (484 แถว) → สร้าง split เดียวกันไม่ได้
+2. **Content-only baseline:** logistic regression บน CLIP text (77 token) = **0.892** (seed 0–2: 0.927 / 0.896 / 0.854) > RPPG-Fake ของเรา 0.826 · ใช้ text_chunks=8 (ที่เราเลือกจาก val 48 ข่าว) LR ได้แค่ 0.858 → การเลือก text_chunks=8 ทำให้แย่ลง
+3. **Selection บนชุดเดียวกับที่รายงาน** (`scripts/diagnose_protocol.py`, train Stage 2 ใหม่ 30 epoch, G′ เดิม): early ours 0.826 → same-set **0.878** (+5.2 pp) · full ours 0.882 → same-set 0.896 (+1.4) · ผล → `Code_RPPG-Fake/logs/diagnose_politifact_{early,full}_fix.json`
+4. ไม่ใช่สาเหตุ: กราฟ H (early user อยู่ใน H 66% > PHEME 37%), ขนาด/สัดส่วนข้อมูล (484: fake 297 / real 187 vs paper 478: 294 / 184) · ข้อความของเรา mean 1,149 คำ (paper 1,546)
+**ยังไม่ได้ทำ (ต่อพรุ่งนี้):**
+- GossipCop early ปกติ vs ตัดภาพ (`--zero-image`) เพื่อประเมินผลของการไม่มีภาพ: `cd Code_RPPG-Fake && .venv/Scripts/python -u scripts/diagnose_protocol.py --dataset gossipcop --tag early_fix` และ `... --zero-image`
+- PolitiFact detector ด้วยข้อความ 77 token: `... --dataset politifact --tag early_fix --text-chunks 1` (และ full_fix)
+- สรุปลง slide (ผู้ใช้ขอ): หน้าใหม่ "ทำไม PolitiFact ไม่ตรง paper" แยกส่วนที่อธิบายได้จากแต่ละสาเหตุ
+
+### หน้า Results / Tracker เป็นรอบ 8 (2026-10-21)
+- **Results** (`RPPG-Fake_Results.html` → https://claude.ai/artifact/ToP6dbVMKvXVWhbhAj68x7, version 2): Table II/III ใช้ tag `*_fix` (รอบ 8) + แถว "ไม่ใช้ G′" · model ที่นำเสนอ = PolitiFact seed 1 / GossipCop seed 2 / PHEME seed 2 · panel ใหม่ "Detector ใช้เส้นทางหรือไม่" (จาก `Slides_RPPG-Fake/figures/m3_seeds.json`) · แท็บ Ablation ยังเป็นรอบ 6 (ติดป้าย) + การ์ดรอบ 8 ใช้ G′ vs ไม่ใช้ · Demo เพิ่ม C = 10 ข่าว · ข้อจำกัด / ข้อสังเกตเขียนใหม่ · ข้อมูลฝังใน `/*DATA*/` (script: scratchpad `build_results_data.py`)
+- **Tracker** (`Project_Tracker_RPPG-Fake.html` → https://claude.ai/artifact/PaoukVWPyHnvmy9JCxfEfq, version 8): แท็บผลการรันเพิ่ม Round 8 (ค่าเริ่มต้น) · checklist เพิ่มงานรอบ 7-8 / slide / demo / push (31/32) · timeline ถึง 10-21 · hyper-param และคำสั่งรันเป็นของรอบ 8 · ประเด็นเปิดเขียนใหม่ · บล็อก `/*LIVE*/` ยังเป็นรอบ 4 (`update_tracker.py` อ่าน tag `*_paper`)
 
 ### Demo notebooks (2026-10-20)
 `Paper-Based/Demo_RPPG-Fake/` — model + data พร้อมรัน · อัปเดต 2026-10-21: ทุกส่วนแสดงข่าว REAL / FAKE คู่กัน + ส่วนที่ 6 ข้อมูลจากแหล่งอื่น (PHEME 4 เหตุการณ์ใหม่ 64 ข่าว, `tools/export_external.py`, ได้ acc 0.25 ตรง log) + ส่วนที่ 7 สรุปจำนวนข้อมูล · zip 222 MB (ไม่ต้อง train / GPU) · `RPPG-Fake_Demo_Local.ipynb` (รันแล้ว บันทึก output 9 ภาพ) + `RPPG-Fake_Demo_Colab.ipynb` (cell แรก mount Drive → unzip `Demo_RPPG-Fake.zip` 214 MB → pip `torch_geometric`) · package `rppg_demo/` (คัดลอก Module 2-3 + make_sample/Collate, ไม่ต้องใช้ Hydra/Lightning; `bundle.py` = load/generate/predict/evaluate, `viz.py` = ภาพ, label อังกฤษเพื่อให้ Colab แสดงได้) · data จาก `tools/export_bundle.py` (PHEME seed 2, GossipCop seed 2; ตรวจแล้วได้ test acc ตรง log 0.8234 / 0.9239) · `data/` และ `*.zip` อยู่ใน `.gitignore` ของโฟลเดอร์ · ติดตั้ง matplotlib, scikit-learn, ipykernel, nbclient เพิ่มใน `Code_RPPG-Fake/.venv` แล้ว (ผู้ใช้อนุญาต) · **ยังไม่ได้ทดสอบบน Colab จริง** (ทดสอบ notebook จาก zip ที่แตกใหม่ในเครื่องแล้ว)

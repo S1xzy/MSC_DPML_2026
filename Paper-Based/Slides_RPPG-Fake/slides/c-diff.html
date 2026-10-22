@@ -1,0 +1,21 @@
+<section id="c-diff" data-transition="fade" style="background:#F4F6F9;color:#14202C;font-family:'IBM Plex Sans Thai', Tahoma, sans-serif;padding:104px 128px 150px;display:flex;flex-direction:column;gap:22px">
+<div style="display:flex;justify-content:space-between;align-items:center"><p style="font-size:24px;font-weight:600;color:#2950B8;letter-spacing:2px">07 · สรุปผล · ทำต่างจาก paper ตรงไหน</p><p style="font-size:24px;font-weight:600;color:#8A4208;background:#FBE7D3;padding:6px 18px;border-radius:999px">สิ่งที่เราทำ</p></div>
+<h2 style="font-family:'Bai Jamjuree', Tahoma, sans-serif;font-size:52px;font-weight:700;line-height:1.15">Paper vs ของเรา: data, epoch และค่าที่ใช้</h2>
+<table style="font-size:24px;width:1664px;line-height:1.3">
+<tr><th style="width:20%">หัวข้อ</th><th style="width:33%">Paper</th><th style="width:47%">ของเรา (รอบ 8)</th></tr>
+<tr><td>PHEME</td><td>3,506 ข่าว</td><td style="color:#8A4208">2,004 ข่าว · เฉพาะที่มีครบ ข้อความ + ภาพ + เส้นทาง</td></tr>
+<tr><td>GossipCop</td><td>5,526 ข่าว · real 65%</td><td style="color:#8A4208">2,827 ข่าว · real 51% · ดึงเนื้อข่าวและภาพเอง</td></tr>
+<tr><td>PolitiFact</td><td>478 ข่าว · มีภาพ</td><td style="color:#8A4208">483 ข่าวของผู้เขียน · ไม่มีภาพ</td></tr>
+<tr><td>Meta-path</td><td>PNU · NUN · UNU</td><td style="color:#8A4208">UU · NUN · UNU (ข้อมูลไม่มี publisher)</td></tr>
+<tr><td>Encoder</td><td>ไม่ได้เปิด code / weights</td><td style="color:#8A4208">CLIP ViT-B/32 ทั้งข้อความและภาพ</td></tr>
+<tr><td>จำนวนรอบ</td><td>5 รอบ · รายงานค่าเฉลี่ย</td><td style="color:#8A4208">3 seeds · สุ่ม split ใหม่ทุก seed · รายงาน ± std</td></tr>
+<tr><td>Module 1 / 2</td><td>ไม่ระบุ step / epoch</td><td style="color:#8A4208">contrastive 300 step · RL 5 epoch (รอบ 4 ใช้ 10)</td></tr>
+<tr><td>Module 3</td><td>ไม่ระบุ epoch</td><td style="color:#8A4208">≤ 30 epoch · early stop patience 10 · เลือกด้วย val acc</td></tr>
+<tr><td>τ1 τ2 λ1 λ2 K1 K2 T</td><td>มีแค่กราฟ Fig. 4</td><td style="color:#8A4208">0.4 · 0.3 · 0.4 · 0.4 · 8 · 10 · 200 (จุดสูงสุดของ Fig. 4)</td></tr>
+<tr><td>แก้เพิ่ม</td><td>—</td><td style="color:#8A4208">z-score ก่อน Eq. 7 · node view ใช้โครงสร้าง · user ใหม่ = UNK</td></tr>
+<tr><td>เครื่อง</td><td>RTX 3090 · PyTorch 1.13</td><td style="color:#8A4208">RTX 5050 Laptop 8 GB · RAM 16 GB · PyTorch 2.11</td></tr>
+<tr style="background:#E3EAFB"><td>เหมือนกัน</td><td>AdamW lr 5e-3 · batch 16 · hidden 128</td><td>split 7:1:2 · early stage = 3–5 engagements แรก</td></tr>
+</table>
+<p style="position:absolute;left:128px;bottom:60px;width:1664px;font-size:24px;color:#6B7886">สีส้ม = ต่างจาก paper · รายละเอียด: Code_RPPG-Fake/RUNNING.md ข้อ 5 และ configs/*.yaml</p>
+<aside>สรุปสิ่งที่เราทำต่างจาก paper ในหน้าเดียว ด้าน dataset เราใช้เฉพาะข่าวที่มีครบทั้งข้อความ ภาพ และเส้นทาง จึงได้น้อยกว่า paper โดย PHEME 2,004 จาก 3,506 ข่าว GossipCop 2,827 จาก 5,526 ข่าว และสัดส่วน real ต่างกัน ส่วน PolitiFact ใช้ข้อมูลของผู้เขียนที่ไม่มีภาพ ข้อมูลไม่มี publisher จึงใช้ meta-path UU แทน PNU ด้านการ train paper ไม่บอกจำนวน epoch ของทุก module เราใช้ contrastive 300 step, RL 5 epoch เพราะเครื่องรันไม่ไหว และ detector สูงสุด 30 epoch หยุดเมื่อ validation ไม่ดีขึ้น 10 epoch ค่าพารามิเตอร์ของ RL และ contrastive เลือกจากจุดสูงสุดในกราฟ Fig. 4 เพราะ paper ไม่ให้ตัวเลข เรารัน 3 seeds แทน 5 และมีการแก้เพิ่มสามจุดเพื่อแก้ bug embedding ยุบ ส่วนที่เหมือน paper คือ optimizer, learning rate, batch size, hidden size, สัดส่วน split และนิยาม early stage</aside>
+</section>
